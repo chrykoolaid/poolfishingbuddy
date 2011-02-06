@@ -58,7 +58,7 @@ namespace PoolFishingBuddy
 
         #region Overrides of BotBase
 
-        private readonly Version _version = new Version(1, 0, 1);
+        private readonly Version _version = new Version(1, 0, 2);
 
         public override string Name
         {
@@ -416,20 +416,23 @@ namespace PoolFishingBuddy
 
                         // Recast
                         new Decorator(ret => Helpers.IsFishing && !Helpers.BobberIsInTheHole && Helpers.PoolIsStillThere && tries != 20,
-                            new Sequence(
-                                new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Missed the pool!", Helpers.TimeNow)),
-                                new Action(ret => StyxWoW.Me.SetFacing(Pool.Location)),
-                                new Action(ret => Thread.Sleep((Ping * 2) + 200)),
+                            new PrioritySelector(
+
+                                // Luring
+                                new Decorator(ret => PoolFisherSettings.Instance.useLure,
+                                    new Action(Ret => Helpers.applylure())),
+
+                                // cast fishing
                                 new Sequence(
-                                    // Luring
-                                    new Decorator(ret => PoolFisherSettings.Instance.useLure,
-                                        new Action(Ret => Helpers.applylure()))),
-                                new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Try: {1} of 10.", Helpers.TimeNow, tries)),
-                                new Action(ret => TreeRoot.StatusText = "Cast Fishing."),
-                                new Action(ret => SpellManager.Cast("Fishing")),
-                                new Action(ret => tries++),
-                                new Wait(5, ret => StyxWoW.Me.IsCasting, new ActionIdle()),
-                                new Action(ret => Thread.Sleep((Ping * 2) + 500))
+                                    new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Missed the pool!", Helpers.TimeNow)),
+                                    new Action(ret => StyxWoW.Me.SetFacing(Pool.Location)),
+                                    new Action(ret => Thread.Sleep((Ping * 2) + 200)),
+                                    new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Try: {1} of 10.", Helpers.TimeNow, tries)),
+                                    new Action(ret => TreeRoot.StatusText = "Cast Fishing."),
+                                    new Action(ret => SpellManager.Cast("Fishing")),
+                                    new Action(ret => tries++),
+                                    new Wait(5, ret => StyxWoW.Me.IsCasting, new ActionIdle()),
+                                    new Action(ret => Thread.Sleep((Ping * 2) + 500)))
                                 )),
 
                         // Poolfishing
@@ -442,20 +445,21 @@ namespace PoolFishingBuddy
                                         new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Could not find any fishing Poles!", Helpers.TimeNow)),
                                         new Action(ret => TreeRoot.Stop()))),
 
+                                // Luring
+                                new Decorator(ret => PoolFisherSettings.Instance.useLure,
+                                    new Action(Ret => Helpers.applylure())),
+
                                 // cast fishing
                                 new Sequence(
                                     new Action(ret => StyxWoW.Me.SetFacing(Pool.Location)),
                                     new Action(ret => Thread.Sleep((Ping * 2) + 200)),
                                     new Sequence(
-                                        // Luring
-                                        new Decorator(ret => PoolFisherSettings.Instance.useLure,
-                                            new Action(Ret => Helpers.applylure()))),
                                     new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Try: {1} of 10.", Helpers.TimeNow, tries)),
                                     new Action(ret => TreeRoot.StatusText = "Cast Fishing"),
                                     new Action(ret => SpellManager.Cast("Fishing")),
                                     new Action(ret => tries++),
                                     new Wait(5, ret => StyxWoW.Me.IsCasting, new ActionIdle())
-                                    ))),
+                                    )))),
 
                         // The pool phased out
                         new Decorator(ret => PoolPoints.Count > 0 && PoolPoints[0].X == 0 && PoolPoints[0].Y == 0,
