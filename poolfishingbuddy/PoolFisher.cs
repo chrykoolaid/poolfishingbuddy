@@ -58,7 +58,7 @@ namespace PoolFishingBuddy
 
         #region Overrides of BotBase
 
-        private readonly Version _version = new Version(1, 0, 3);
+        private readonly Version _version = new Version(1, 0, 4);
 
         public override string Name
         {
@@ -77,6 +77,19 @@ namespace PoolFishingBuddy
                 TreeRoot.Stop();
             }
 
+            Logging.Write("{0} - Pool Fischer {1} started!", Helpers.TimeNow, _version);
+
+            WoWSpell Mount = WoWSpell.FromId(PoolFisherSettings.Instance.FlyingMountID);
+
+            Logging.Write(System.Drawing.Color.Green, "Current Settings:");
+            Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
+            Logging.Write(System.Drawing.Color.Green, "Cast Range: {0}", PoolFisherSettings.Instance.CastRange);
+            Logging.Write(System.Drawing.Color.Green, "Flying Mount: {0}", Mount.Name);
+            Logging.Write(System.Drawing.Color.Green, "Ninja Pools: {0}", PoolFisherSettings.Instance.NinjaPools);
+            Logging.Write(System.Drawing.Color.Green, "Blacklist Schools: {0}", PoolFisherSettings.Instance.BlacklistSchools);
+            Logging.Write(System.Drawing.Color.Green, "Use Lure: {0}", PoolFisherSettings.Instance.useLure);
+
+            Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
             Helpers.blacklistSchoolsFromSettings();
 
             ObjectManager.Update();
@@ -104,6 +117,7 @@ namespace PoolFishingBuddy
 
         public override void Stop()
         {
+            Logging.Write("{0} - Pool Fischer {1} stopped!", Helpers.TimeNow, _version);
             StyxSettings.Instance.LogoutForInactivity = true;
         }
 
