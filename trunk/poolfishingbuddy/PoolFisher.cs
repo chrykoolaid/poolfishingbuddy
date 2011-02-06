@@ -58,7 +58,7 @@ namespace PoolFishingBuddy
 
         #region Overrides of BotBase
 
-        private readonly Version _version = new Version(1, 0, 2);
+        private readonly Version _version = new Version(1, 0, 3);
 
         public override string Name
         {
@@ -419,8 +419,8 @@ namespace PoolFishingBuddy
                             new PrioritySelector(
 
                                 // Luring
-                                new Decorator(ret => PoolFisherSettings.Instance.useLure,
-                                    new Action(Ret => Helpers.applylure())),
+                                    //new Decorator(ret => PoolFisherSettings.Instance.useLure && !Helpers.IsLureOnPole,
+                                    //new Action(ret => Helpers.applylure())),
 
                                 // cast fishing
                                 new Sequence(
@@ -446,8 +446,8 @@ namespace PoolFishingBuddy
                                         new Action(ret => TreeRoot.Stop()))),
 
                                 // Luring
-                                new Decorator(ret => PoolFisherSettings.Instance.useLure,
-                                    new Action(Ret => Helpers.applylure())),
+                                new Decorator(ret => PoolFisherSettings.Instance.useLure && !Helpers.IsLureOnPole,
+                                    new Action(ret => Helpers.applylure())),
 
                                 // cast fishing
                                 new Sequence(
