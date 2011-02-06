@@ -10,7 +10,7 @@ Follow these steps to install and start the PoolFishingBuddy for the first time.
 
 === Details ===
 
-    * download and unzip the botbase to "/Honorbuddy/Bots/"
+    * download and unzip the botbase to "*/Honorbuddy/Bots/*"
     * create a profile which fits your characters level
     * start Honorbuddy, select the botbase and set it up to your needs
     * select your profile and go somewhere, at least on the same continent
