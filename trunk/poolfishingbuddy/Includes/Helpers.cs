@@ -36,7 +36,7 @@ namespace PoolFishingBuddy
 
         static public void Init(System.EventArgs args)
         {
-            Logging.Write("{0} - Pool Fischer Initializing", TimeNow);
+            //Logging.Write("{0} - Pool Fischer Initializing", TimeNow);
         }
 
         static public void Final(System.EventArgs args)
@@ -44,7 +44,7 @@ namespace PoolFishingBuddy
             //Lua.DoString("run ConsoleExec('Autointeract 0')"); // This is also used by FishingBuddy/FishingBuddy.lua (Fishing Buddy Addon)
             //PoolFisher.GetValuesThread.Abort();
             //PoolFisher.MonitoringThread.Abort();
-            Logging.Write("{0} - Pool Fischer Stopped!", TimeNow);
+            //Logging.Write("{0} - Pool Fischer Stopped!", TimeNow);
         }
 
         static public void findAndProtectWeapons()
