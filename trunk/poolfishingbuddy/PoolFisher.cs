@@ -122,8 +122,6 @@ namespace PoolFishingBuddy
                         new Decorator(ret => StyxWoW.Me.IsFalling,
                             new ActionSleep(1000)),
 
-                        new Decorator(ret => StyxWoW.Me.Combat,
-                            new Action(ret => Helpers.equipWeapon())),
 
                         LevelBot.CreateDeathBehavior(),
 
@@ -131,6 +129,7 @@ namespace PoolFishingBuddy
                             new Sequence(
                                 new Action(ret => MeIsFishing = false),
                                 new Action(ret => tries = 0),
+                                new Action(ret => Helpers.equipWeapon()),
                                 LevelBot.CreateCombatBehavior())),
 
                         
