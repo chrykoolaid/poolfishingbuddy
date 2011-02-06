@@ -24,7 +24,14 @@ namespace PoolFishingBuddy.Forms
 
         private void FormFishMonitoring_Load(object sender, EventArgs e)
         {
-            Icon = new Icon(new MemoryStream(new WebClient().DownloadData("http://nerathor.info/fish.ico")), 32, 32);
+            try
+            {
+                Icon = new Icon(new MemoryStream(new WebClient().DownloadData("http://poolfishingbuddy.googlecode.com/svn/images/fish.ico")), 32, 32);
+            }
+            catch (InvalidCastException ex) 
+            {
+                Logging.Write(System.Drawing.Color.Red, "{0} - Exception: {1}", Helpers.TimeNow, ex);
+            }
 
             if (StyxWoW.Me.IsValid && StyxWoW.IsInGame)
             {

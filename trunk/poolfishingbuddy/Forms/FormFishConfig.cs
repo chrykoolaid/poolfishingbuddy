@@ -26,8 +26,15 @@ namespace PoolFishingBuddy.Forms
         {
             PoolFisherSettings.Instance.Load();
 
-            pictureBox1.Image = Image.FromStream(new MemoryStream(new WebClient().DownloadData("http://poolfishingbuddy.googlecode.com/files/fish.png")));
-            Icon = new Icon(new MemoryStream(new WebClient().DownloadData("http://poolfishingbuddy.googlecode.com/files/fish.ico")), 32, 32);
+            try
+            {
+                pictureBox1.Image = Image.FromStream(new MemoryStream(new WebClient().DownloadData("http://poolfishingbuddy.googlecode.com/svn/images/fish.png")));
+                Icon = new Icon(new MemoryStream(new WebClient().DownloadData("http://poolfishingbuddy.googlecode.com/svn/images/fish.ico")), 32, 32);
+            }
+            catch (InvalidCastException ex)
+            {
+                Logging.Write(System.Drawing.Color.Red, "{0} - Exception: {1}", Helpers.TimeNow, ex);
+            }
 
             if (PoolFisherSettings.Instance.useCustomCastRange)
             {
