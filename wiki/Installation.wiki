@@ -1,0 +1,19 @@
+#labels Featured
+#sidebar Index
+
+<wiki:toc />
+
+=== Introduction ===
+
+Follow these steps to install and start the PoolFishingBuddy for the first time.
+
+
+=== Details ===
+
+    * download and unzip the botbase to "/Honorbuddy/Bots/"
+    * create a profile which fits your characters level
+    * start Honorbuddy, select the botbase and set it up to your needs
+    * select your profile and go somewhere on the same continent at least
+    * if you want to use Weather-Beaten Fishing Hat, equip it
+    * don't equip your fishing pole if you want the bot to change weapons for combat
+    * hit start and enjoy the journey 
