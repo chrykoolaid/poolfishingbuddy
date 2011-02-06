@@ -209,70 +209,62 @@ namespace PoolFishingBuddy
 
         static public bool IsLureOnPole { get { return Lua.GetReturnVal<bool>("return GetWeaponEnchantInfo()", 0); } }
 
-        static public bool applylure()
+        static public void applylure()
         {
-            if (!IsLureOnPole)
-            {
-                //TreeRoot.StatusText = "Luring";
-                if (StyxWoW.Me.Inventory.Equipped.MainHand != null && StyxWoW.Me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass != WoWItemWeaponClass.FishingPole || StyxWoW.Me.Mounted)
-                    return false;
+            //TreeRoot.StatusText = "Luring";
+            //if (StyxWoW.Me.Inventory.Equipped.MainHand != null && StyxWoW.Me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass != WoWItemWeaponClass.FishingPole || StyxWoW.Me.Mounted)
 
-                if (PoolFisherSettings.Instance.LureID == 33820)
-                {
-                    WoWItem head = StyxWoW.Me.Inventory.GetItemBySlot((uint)Styx.WoWEquipSlot.Head);
+            if (PoolFisherSettings.Instance.LureID == 33820)
+            {
+                WoWItem head = StyxWoW.Me.Inventory.GetItemBySlot((uint)Styx.WoWEquipSlot.Head);
                     
-                    if (head != null && head.Entry == 33820)
+                if (head != null && head.Entry == 33820)
+                {
+                    if (head.Cooldown == 0)
                     {
-                        if (head.Cooldown == 0)
-                        {
-                            TreeRoot.StatusText = "Luring";
-                            Logging.Write(System.Drawing.Color.Blue, "Appling Weather-Beaten Fishing Hat to fishing pole");
-                            head.Use();
-                            Thread.Sleep(PoolFisher.Ping * 2 + 50);
-                            while ((!StyxWoW.Me.Combat || !StyxWoW.Me.PetInCombat) && StyxWoW.Me.IsCasting)
-                                Thread.Sleep(100);
-                            Thread.Sleep((PoolFisher.Ping * 4) + 50);
-                            return true;
-                        }
-                        else
-                        {
-                            Logging.Write(System.Drawing.Color.Red, "{0} - Weather-Beaten Fishing Hat is on cooldown!", TimeNow);
-                            return false;
-                        }
+                        TreeRoot.StatusText = "Luring";
+                        Logging.Write(System.Drawing.Color.Blue, "Appling Weather-Beaten Fishing Hat to fishing pole");
+                        head.Use();
+                        Thread.Sleep(PoolFisher.Ping * 2 + 50);
+                        while ((!StyxWoW.Me.Combat || !StyxWoW.Me.PetInCombat) && StyxWoW.Me.IsCasting)
+                            Thread.Sleep(100);
+                        Thread.Sleep((PoolFisher.Ping * 4) + 50);
                     }
                     else
                     {
-                        Logging.Write(System.Drawing.Color.Red, "{0} - Weather-Beaten Fishing Hat is not euqipped, won't lure anymore!", TimeNow);
-                        PoolFisherSettings.Instance.Load();
-                        PoolFisherSettings.Instance.useLure = false;
-                        PoolFisherSettings.Instance.LureID = 0;
-                        PoolFisherSettings.Instance.Save();
+                        Logging.Write(System.Drawing.Color.Red, "{0} - Weather-Beaten Fishing Hat is on cooldown!", TimeNow);
                     }
                 }
                 else
                 {
-                    WoWItem _lureInBag = GetIteminBag((uint)PoolFisherSettings.Instance.LureID);
-                    if (_lureInBag != null && _lureInBag.Use())
-                    {
-                        TreeRoot.StatusText = "Luring";
-                        Logging.Write(System.Drawing.Color.Blue, "{0} - Appling lure to fishing pole", TimeNow);
-                        Thread.Sleep(PoolFisher.Ping * 2 + 50);
-                        while ((!StyxWoW.Me.Combat || !StyxWoW.Me.PetInCombat) && StyxWoW.Me.IsCasting)
-                            Thread.Sleep(100);
-                        Thread.Sleep(PoolFisher.Ping * 2 + 50);
-                        return true;
-                    }
-                    else
-                    {
-                        Logging.Write(System.Drawing.Color.Red, "{0} - Could not find lure, won't lure anymore!", TimeNow);
-                        PoolFisherSettings.Instance.Load();
-                        PoolFisherSettings.Instance.useLure = false;
-                        PoolFisherSettings.Instance.LureID = 0;
-                        PoolFisherSettings.Instance.Save();
-                    }
+                    Logging.Write(System.Drawing.Color.Red, "{0} - Weather-Beaten Fishing Hat is not euqipped, won't lure anymore!", TimeNow);
+                    PoolFisherSettings.Instance.Load();
+                    PoolFisherSettings.Instance.useLure = false;
+                    PoolFisherSettings.Instance.LureID = 0;
+                    PoolFisherSettings.Instance.Save();
                 }
             }
-            return false;
+            else
+            {
+                WoWItem _lureInBag = GetIteminBag((uint)PoolFisherSettings.Instance.LureID);
+                if (_lureInBag != null && _lureInBag.Use())
+                {
+                    TreeRoot.StatusText = "Luring";
+                    Logging.Write(System.Drawing.Color.Blue, "{0} - Appling lure to fishing pole", TimeNow);
+                    Thread.Sleep(PoolFisher.Ping * 2 + 50);
+                    while ((!StyxWoW.Me.Combat || !StyxWoW.Me.PetInCombat) && StyxWoW.Me.IsCasting)
+                        Thread.Sleep(100);
+                    Thread.Sleep(PoolFisher.Ping * 2 + 50);
+                }
+                else
+                {
+                    Logging.Write(System.Drawing.Color.Red, "{0} - Could not find lure, won't lure anymore!", TimeNow);
+                    PoolFisherSettings.Instance.Load();
+                    PoolFisherSettings.Instance.useLure = false;
+                    PoolFisherSettings.Instance.LureID = 0;
+                    PoolFisherSettings.Instance.Save();
+                }
+            }
         }
 
         static public WoWItem GetIteminBag(uint entry)
