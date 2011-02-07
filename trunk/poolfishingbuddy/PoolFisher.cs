@@ -58,7 +58,7 @@ namespace PoolFishingBuddy
 
         #region Overrides of BotBase
 
-        private readonly Version _version = new Version(1, 0, 4);
+        private readonly Version _version = new Version(1, 0, 5);
 
         public override string Name
         {
@@ -77,7 +77,7 @@ namespace PoolFishingBuddy
                 TreeRoot.Stop();
             }
 
-            Logging.Write("{0} - Pool Fischer {1} started!", Helpers.TimeNow, _version);
+            Logging.Write("{0} - Pool Fisher {1} started!", Helpers.TimeNow, _version);
 
             WoWSpell Mount = WoWSpell.FromId(PoolFisherSettings.Instance.FlyingMountID);
 
@@ -91,6 +91,8 @@ namespace PoolFishingBuddy
 
             Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
             Helpers.blacklistSchoolsFromSettings();
+
+            
 
             ObjectManager.Update();
             List<WoWGameObject> poolList = ObjectManager.GetObjectsOfType<WoWGameObject>().Where(o => o.SubType == WoWGameObjectType.FishingHole && !Blacklist.Contains(o.Guid) && !PoolFisher.PermaBlacklist.Contains(o.Entry) && o.Distance2D <= 100 && o.Location.X != 0).OrderBy(o => o.Distance).ToList();
@@ -117,7 +119,7 @@ namespace PoolFishingBuddy
 
         public override void Stop()
         {
-            Logging.Write("{0} - Pool Fischer {1} stopped!", Helpers.TimeNow, _version);
+            Logging.Write("{0} - Pool Fisher {1} stopped!", Helpers.TimeNow, _version);
             StyxSettings.Instance.LogoutForInactivity = true;
         }
 
@@ -146,7 +148,7 @@ namespace PoolFishingBuddy
                                 new Action(ret => Helpers.equipWeapon()),
                                 LevelBot.CreateCombatBehavior())),
 
-                        
+                        CreateFishingBehaviour(),
                         CreateRestBehavior(),
 
 
@@ -169,9 +171,6 @@ namespace PoolFishingBuddy
                         LevelBot.CreateLootBehavior(),
                         LevelBot.CreateVendorBehavior(),
 
-                        
-                        CreateFishingBehaviour(),
-                        
                         new Decorator(ret => !MeIsFishing,
                             new PrioritySelector(
 
@@ -300,7 +299,7 @@ namespace PoolFishingBuddy
 
         private Composite CreateFishingBehaviour()
         {
-            return new Decorator(ret => PoolPoints.Count > 0 && !looking4NewPool && StyxWoW.Me.Location.Distance2D(PoolPoints[0]) < 10 && !StyxWoW.Me.Mounted && !StyxWoW.Me.IsSwimming && !StyxWoW.Me.Combat,// && Pool.InLineOfSight,
+            return new Decorator(ret => PoolPoints.Count > 0 && !looking4NewPool && StyxWoW.Me.Location.Distance(PoolPoints[0]) < 10 && !StyxWoW.Me.Mounted && !StyxWoW.Me.IsSwimming && !StyxWoW.Me.Combat,// && Pool.InLineOfSight,
                 new Sequence(
                     new Action(ret => Logging.WriteDebug("{0} - Composit: CreateFishingBehaviour", Helpers.TimeNow)),
                     new Action(ret => MeIsFishing = true),
@@ -432,8 +431,8 @@ namespace PoolFishingBuddy
                             new PrioritySelector(
 
                                 // Luring
-                                    //new Decorator(ret => PoolFisherSettings.Instance.useLure && !Helpers.IsLureOnPole,
-                                    //new Action(ret => Helpers.applylure())),
+                                new Decorator(ret => PoolFisherSettings.Instance.useLure && !Helpers.IsLureOnPole,
+                                    new Action(ret => Helpers.applylure())),
 
                                 // cast fishing
                                 new Sequence(
