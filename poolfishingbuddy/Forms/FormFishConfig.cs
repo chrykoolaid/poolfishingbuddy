@@ -49,8 +49,13 @@ namespace PoolFishingBuddy.Forms
                 CastRangeText.Text = "15";
             }
 
+            MaxTriesCastingText.Text = PoolFisherSettings.Instance.MaxTriesCasting;
+            MaxTriesDescendText.Text = PoolFisherSettings.Instance.MaxTriesDescend;
+
             checkNinjaPools.Checked = PoolFisherSettings.Instance.NinjaPools;
             checkBlacklistSchools.Checked = PoolFisherSettings.Instance.BlacklistSchools;
+
+            checkDescendHigher.Checked = PoolFisherSettings.Instance.DescendHigher;
 
             #region Blacklist Schools
 
@@ -182,6 +187,7 @@ namespace PoolFishingBuddy.Forms
                     CastRange = 10;
                 else if (CastRange > 20)
                     CastRange = 20;
+
                 PoolFisherSettings.Instance.CastRange = CastRange;
                 PoolFisherSettings.Instance.useCustomCastRange = checkCustomCastRange.Checked;
             }
@@ -192,6 +198,10 @@ namespace PoolFishingBuddy.Forms
             }
 
             PoolFisherSettings.Instance.NinjaPools = checkNinjaPools.Checked;
+            PoolFisherSettings.Instance.DescendHigher = checkDescendHigher.Checked;
+
+            PoolFisherSettings.Instance.MaxTriesDescend = MaxTriesDescendText.Text;
+            PoolFisherSettings.Instance.MaxTriesCasting = MaxTriesCastingText.Text;
 
             #region Lures
 
@@ -274,11 +284,14 @@ namespace PoolFishingBuddy.Forms
 
             Logging.Write(System.Drawing.Color.Green, "Saved Settings:");
             Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
-            Logging.Write(System.Drawing.Color.Green, "Cast Range: {0}", PoolFisherSettings.Instance.CastRange);
             Logging.Write(System.Drawing.Color.Green, "Flying Mount: {0}", (string)comboMounts.SelectedItem);
+            Logging.Write(System.Drawing.Color.Green, "Cast Range: {0}", PoolFisherSettings.Instance.CastRange);
+            Logging.Write(System.Drawing.Color.Green, "Max. tries to cast: {0}", PoolFisherSettings.Instance.MaxTriesCasting);
             Logging.Write(System.Drawing.Color.Green, "Ninja Pools: {0}", PoolFisherSettings.Instance.NinjaPools);
             Logging.Write(System.Drawing.Color.Green, "Blacklist Schools: {0}", PoolFisherSettings.Instance.BlacklistSchools);
             Logging.Write(System.Drawing.Color.Green, "Use Lure: {0}", PoolFisherSettings.Instance.useLure);
+            Logging.Write(System.Drawing.Color.Green, "Descend higher: {0}", PoolFisherSettings.Instance.DescendHigher);
+            Logging.Write(System.Drawing.Color.Green, "Max. tries to descend: {0}", PoolFisherSettings.Instance.MaxTriesDescend);
 
             Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
             Helpers.blacklistSchoolsFromSettings();
