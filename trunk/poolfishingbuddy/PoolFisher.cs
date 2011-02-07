@@ -58,7 +58,7 @@ namespace PoolFishingBuddy
 
         #region Overrides of BotBase
 
-        private readonly Version _version = new Version(1, 0, 5);
+        private readonly Version _version = new Version(1, 0, 6);
 
         public override string Name
         {
@@ -299,7 +299,7 @@ namespace PoolFishingBuddy
 
         private Composite CreateFishingBehaviour()
         {
-            return new Decorator(ret => PoolPoints.Count > 0 && !looking4NewPool && StyxWoW.Me.Location.Distance(PoolPoints[0]) < 10 && !StyxWoW.Me.Mounted && !StyxWoW.Me.IsSwimming && !StyxWoW.Me.Combat,// && Pool.InLineOfSight,
+            return new Decorator(ret => PoolPoints.Count > 0 && !looking4NewPool && /*StyxWoW.Me.Location.Distance(PoolPoints[0]) < 10 &&*/ !StyxWoW.Me.Mounted && !StyxWoW.Me.IsSwimming && !StyxWoW.Me.Combat,// && Pool.InLineOfSight,
                 new Sequence(
                     new Action(ret => Logging.WriteDebug("{0} - Composit: CreateFishingBehaviour", Helpers.TimeNow)),
                     new Action(ret => MeIsFishing = true),
