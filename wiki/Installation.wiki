@@ -3,12 +3,16 @@
 
 <wiki:toc />
 
-=== Introduction ===
+=== Changelog ===
 
-Follow these steps to install and start the PoolFishingBuddy for the first time.
+http://code.google.com/p/poolfishingbuddy/source/list
+
+=== Download ===
+
+http://poolfishingbuddy.googlecode.com/svn/trunk/
 
 
-=== Details ===
+=== Setup ===
 
     * download and unzip the botbase to "*/Honorbuddy/Bots/*"
     * create a profile which fits your characters level
