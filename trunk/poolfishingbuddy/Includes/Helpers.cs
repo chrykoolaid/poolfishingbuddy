@@ -296,6 +296,19 @@ namespace PoolFishingBuddy
                     {
                         foreach (WoWGameObject p in poolList)
                             Logging.Write("{0} - Found - {1} - at a distance of {2}. Guid: {3}. Entry: {4}.", TimeNow, p.Name, p.Distance, p.Guid, p.Entry);
+
+                        if (PoolFisher.BlackspotList.Count != 0)
+                        {
+                            foreach (WoWPoint Blackspot in PoolFisher.BlackspotList)
+                            {
+                                if (poolList[0].Location.Distance2D(Blackspot) < 20)
+                                {
+                                    Logging.Write(System.Drawing.Color.Red, "{0} - Pool is in range of {1} (Blackspot)! Skipping.", TimeNow, Blackspot);
+                                    PoolFisher.looking4NewPool = true;
+                                    return false;
+                                }
+                            }
+                        }
                         PoolFisher.Pool = poolList[0];
                         PoolFisher.looking4NewPool = false;
                         PoolFisher.looking4NewPoint = true;
@@ -357,8 +370,12 @@ namespace PoolFishingBuddy
             }
 
             PoolFisher.PoolPoints.Sort((p1, p2) => p1.Z.CompareTo(p2.Z));
-            // Let's try the higher Z-Coords first! No more swimming ftw..
-            PoolFisher.PoolPoints.Reverse();
+
+            if (PoolFisherSettings.Instance.DescendHigher)
+            {
+                // Let's try the higher Z-Coords first! No more swimming ftw..
+                PoolFisher.PoolPoints.Reverse();
+            }
 
             foreach (WoWPoint point in PoolFisher.PoolPoints)
             {

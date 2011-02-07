@@ -20,6 +20,9 @@ namespace PoolFishingBuddy
         [Setting(Explanation = "The Cast Range to Pools this bot will use."), DefaultValue(15)]
         public int CastRange { get; set; }
 
+        [Setting(Explanation = "The maximum value of tries to cast fishing."), DefaultValue("10")]
+        public string MaxTriesCasting { get; set; }
+
         [Setting(Explanation = "Entry for custom flying mount."), DefaultValue(0)]
         public int FlyingMountID { get; set; }
 
@@ -37,6 +40,12 @@ namespace PoolFishingBuddy
 
         [Setting(Explanation = "ID for offhand item."), DefaultValue(0)]
         public int OffHand { get; set; }
+
+        [Setting(Explanation = "Descend on higher reaches or not."), DefaultValue(false)]
+        public bool DescendHigher { get; set; }
+
+        [Setting(Explanation = "The maximum value of tries to descend to ground."), DefaultValue("20")]
+        public string MaxTriesDescend { get; set; }
 
         #region Blacklist
 

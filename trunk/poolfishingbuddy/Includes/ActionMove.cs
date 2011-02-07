@@ -21,11 +21,13 @@ namespace PoolFishingBuddy
 
             WoWPoint destination = WoWPoint.Empty;
             
+            /*
             if (context is WoWObject)
             {
                 destination = ((WoWObject)context).Location;
             }
-            else if (context is WoWPoint)
+            else*/
+            if (context is WoWPoint)
             {
                 destination = (WoWPoint)context;
             }
