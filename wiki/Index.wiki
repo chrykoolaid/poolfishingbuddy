@@ -4,4 +4,4 @@
   * [HowTo HowTo Articles]
     * [Download Download]
     * [Installation Installation]
-    
+    * [Settings Settings]
