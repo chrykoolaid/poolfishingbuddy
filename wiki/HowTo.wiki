@@ -1,5 +1,6 @@
 #sidebar Index
 
-<wiki:toc />
-
+<br>
+[Download]
 [Installation]
+[Settings]
