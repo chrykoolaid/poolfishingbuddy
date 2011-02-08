@@ -4,10 +4,22 @@
 <wiki:toc />
 
 
+==== Installation ====
+
 
   * Download the Botbase from Source via HTTP or by using Subversion. For more informations go to the HowTo Article Donwload.
+
   * Unzip the botbase to "*/Honorbuddy/Bots/*"
+
+  http://poolfishingbuddy.googlecode.com/svn/wiki/images/installation/file-struct.png
+
+
   * When done start Honorbuddy and check the combobox. PoolFisher x.x.x should appear as an item to select.
+
+  http://poolfishingbuddy.googlecode.com/svn/wiki/images/installation/hb2-select-botbase.png
+
+
+
 
   * create a profile which fits your characters level
   * start Honorbuddy, select the botbase and set it up to your needs
