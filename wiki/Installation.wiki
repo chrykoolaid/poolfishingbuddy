@@ -4,33 +4,14 @@
 <wiki:toc />
 
 
-=== Changelog ===
 
-http://code.google.com/p/poolfishingbuddy/source/list
+  * Download the Botbase from Source via HTTP or by using Subversion. For more informations go to the HowTo Article Donwload.
+  * Unzip the botbase to "*/Honorbuddy/Bots/*"
+  * When done start Honorbuddy and check the combobox. PoolFisher x.x.x should appear as an item to select.
 
-
-=== Download HTTP ===
-
-http://poolfishingbuddy.googlecode.com/svn/trunk/
-
-
-=== Download Subversion ===
-
-Use this command to anonymously check out the latest project source code using Subversion:
-
-`svn checkout http://poolfishingbuddy.googlecode.com/svn/trunk/ poolfishingbuddy-read-only`
-
-GUI and IDE access
-
-This project's Subversion repository may be accessed using many [http://subversion.apache.org/packages.html different client programs and plug-ins]. See your client's documentation for more information.
-
-
-=== Setup ===
-
-    * download and unzip the botbase to "*/Honorbuddy/Bots/*"
-    * create a profile which fits your characters level
-    * start Honorbuddy, select the botbase and set it up to your needs
-    * select your profile and go somewhere, at least on the same continent
-    * if you want to use Weather-Beaten Fishing Hat, equip it
-    * don't equip your fishing pole if you want the bot to change weapons for combat
-    * hit start and enjoy the journey 
+  * create a profile which fits your characters level
+  * start Honorbuddy, select the botbase and set it up to your needs
+  * select your profile and go somewhere, at least on the same continent
+  * if you want to use Weather-Beaten Fishing Hat, equip it
+  * don't equip your fishing pole if you want the bot to change weapons for combat
+  * hit start and enjoy the journey 
