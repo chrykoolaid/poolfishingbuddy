@@ -1,0 +1,24 @@
+#sidebar Index
+
+<wiki:toc />
+
+
+=== Changelog ===
+
+http://code.google.com/p/poolfishingbuddy/source/list
+
+
+=== Download HTTP ===
+
+http://poolfishingbuddy.googlecode.com/svn/trunk/
+
+
+=== Download Subversion ===
+
+Use this command to anonymously check out the latest project source code using Subversion:
+
+`svn checkout http://poolfishingbuddy.googlecode.com/svn/trunk/ poolfishingbuddy-read-only`
+
+GUI and IDE access
+
+This project's Subversion repository may be accessed using many [http://subversion.apache.org/packages.html different client programs and plug-ins]. See your client's documentation for more information.
