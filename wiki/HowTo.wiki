@@ -1,6 +1,6 @@
 #sidebar Index
 
 <br>
-[Download]
-[Installation]
-[Settings]
+  [Download]<br>
+  [Installation]<br>
+  [Settings]<br>
