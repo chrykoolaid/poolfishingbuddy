@@ -1,8 +1,6 @@
 #labels Featured
 #sidebar Index
 
-<wiki:toc />
-
 <br>
 ==== Download HTTP ====
 
