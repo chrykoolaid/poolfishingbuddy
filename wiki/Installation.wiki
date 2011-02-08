@@ -4,7 +4,7 @@
 <br>
 ==== Installation ====
 
-  # Download the Botbase from Source via HTTP or by using Subversion. For more informations go to the HowTo Article Donwload.<br><br>
+  # Download the Botbase from Source via HTTP or by using Subversion. For more informations go to the HowTo Article Downloads.<br><br>
   # Unzip the botbase to "*/Honorbuddy/Bots/*". <br>http://poolfishingbuddy.googlecode.com/svn/wiki/images/installation/file-struct.png<br><br>
   # When done start Honorbuddy and check the combobox. "PoolFisher x.x.x" should appear as an item to select. <br><br>http://poolfishingbuddy.googlecode.com/svn/wiki/images/installation/hb2-select-botbase.png<br><br>
   # Now you are done and can continue with your Settings.
