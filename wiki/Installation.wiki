@@ -8,12 +8,3 @@
   # Unzip the botbase to "*/Honorbuddy/Bots/*". <br>http://poolfishingbuddy.googlecode.com/svn/wiki/images/installation/file-struct.png<br><br>
   # When done start Honorbuddy and check the combobox. "PoolFisher x.x.x" should appear as an item to select. <br><br>http://poolfishingbuddy.googlecode.com/svn/wiki/images/installation/hb2-select-botbase.png<br><br>
   # Now you are done and can continue with your Settings.
-<br>
-
-
-  * create a profile which fits your characters level
-  * start Honorbuddy, select the botbase and set it up to your needs
-  * select your profile and go somewhere, at least on the same continent
-  * if you want to use Weather-Beaten Fishing Hat, equip it
-  * don't equip your fishing pole if you want the bot to change weapons for combat
-  * hit start and enjoy the journey 
