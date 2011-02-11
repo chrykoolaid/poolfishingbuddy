@@ -14,17 +14,17 @@ namespace PoolFishingBuddy
             //Load();
         }
 
-        [Setting(Explanation = "Custom Cast Range enabled or not."), DefaultValue(false)]
-        public bool useCustomCastRange { get; set; }
-
-        [Setting(Explanation = "The Cast Range to Pools this bot will use."), DefaultValue(15)]
-        public int CastRange { get; set; }
-
-        [Setting(Explanation = "The maximum value of tries to cast fishing."), DefaultValue("10")]
-        public string MaxTriesCasting { get; set; }
-
         [Setting(Explanation = "Entry for custom flying mount."), DefaultValue(0)]
         public int FlyingMountID { get; set; }
+
+        [Setting(Explanation = "Bounce mode on or not."), DefaultValue(false)]
+        public bool BounceMode { get; set; }
+
+        [Setting(Explanation = "The maximum range of locations to fish from."), DefaultValue(20)]
+        public int MaxCastRange { get; set; }
+
+        [Setting(Explanation = "The maximum value of tries to cast fishing."), DefaultValue(10)]
+        public int MaxCastAttempts { get; set; }
 
         [Setting(Explanation = "Ninja pools or not."), DefaultValue(false)]
         public bool NinjaPools { get; set; }
@@ -44,8 +44,8 @@ namespace PoolFishingBuddy
         [Setting(Explanation = "Descend on higher reaches or not."), DefaultValue(false)]
         public bool DescendHigher { get; set; }
 
-        [Setting(Explanation = "The maximum value of tries to descend to ground."), DefaultValue("20")]
-        public string MaxTriesDescend { get; set; }
+        [Setting(Explanation = "The maximum value of tries to descend to ground."), DefaultValue(5)]
+        public int MaxNewLocAttempts { get; set; }
 
         #region Blacklist
 

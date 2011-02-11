@@ -36,26 +36,10 @@ namespace PoolFishingBuddy.Forms
                 Logging.Write(System.Drawing.Color.Red, "{0} - Exception: {1}", Helpers.TimeNow, ex);
             }
 
-            if (PoolFisherSettings.Instance.useCustomCastRange)
-            {
-                checkCustomCastRange.Checked = PoolFisherSettings.Instance.useCustomCastRange;
-                CastRangeText.Enabled = PoolFisherSettings.Instance.useCustomCastRange;
-                CastRangeText.Text = PoolFisherSettings.Instance.CastRange.ToString();
-            }
-            else
-            {
-                checkCustomCastRange.Checked = PoolFisherSettings.Instance.useCustomCastRange;
-                CastRangeText.Enabled = PoolFisherSettings.Instance.useCustomCastRange;
-                CastRangeText.Text = "15";
-            }
-
-            MaxTriesCastingText.Text = PoolFisherSettings.Instance.MaxTriesCasting;
-            MaxTriesDescendText.Text = PoolFisherSettings.Instance.MaxTriesDescend;
-
             checkNinjaPools.Checked = PoolFisherSettings.Instance.NinjaPools;
-            checkBlacklistSchools.Checked = PoolFisherSettings.Instance.BlacklistSchools;
-
             checkDescendHigher.Checked = PoolFisherSettings.Instance.DescendHigher;
+            MaxCastAttemptsText.Text = PoolFisherSettings.Instance.MaxCastAttempts.ToString();
+            MaxNewLocAttemptsText.Text = PoolFisherSettings.Instance.MaxNewLocAttempts.ToString();
 
             #region Blacklist Schools
 
@@ -139,6 +123,19 @@ namespace PoolFishingBuddy.Forms
 
             #endregion
 
+            #region
+
+            if (PoolFisherSettings.Instance.BounceMode)
+            {
+                comboMode.SelectedIndex = 1;
+            }
+            else
+            {
+                comboMode.SelectedIndex = 0;
+            }
+
+            #endregion
+
             #region Mounts
 
             comboMounts.Items.Clear();
@@ -179,29 +176,15 @@ namespace PoolFishingBuddy.Forms
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            if (checkCustomCastRange.Checked)
-            {
-                int CastRange;
-                int.TryParse(CastRangeText.Text, out CastRange);
-                if (CastRange < 10)
-                    CastRange = 10;
-                else if (CastRange > 20)
-                    CastRange = 20;
-
-                PoolFisherSettings.Instance.CastRange = CastRange;
-                PoolFisherSettings.Instance.useCustomCastRange = checkCustomCastRange.Checked;
-            }
-            else
-            {
-                PoolFisherSettings.Instance.CastRange = 15;
-                PoolFisherSettings.Instance.useCustomCastRange = checkCustomCastRange.Checked;
-            }
+            int MaxLocAttempts;
+            int.TryParse(MaxNewLocAttemptsText.Text, out MaxLocAttempts);
+            int MaxCastAttempts;
+            int.TryParse(MaxCastAttemptsText.Text, out MaxCastAttempts);
 
             PoolFisherSettings.Instance.NinjaPools = checkNinjaPools.Checked;
             PoolFisherSettings.Instance.DescendHigher = checkDescendHigher.Checked;
-
-            PoolFisherSettings.Instance.MaxTriesDescend = MaxTriesDescendText.Text;
-            PoolFisherSettings.Instance.MaxTriesCasting = MaxTriesCastingText.Text;
+            PoolFisherSettings.Instance.MaxNewLocAttempts = MaxLocAttempts;
+            PoolFisherSettings.Instance.MaxCastAttempts = MaxCastAttempts;
 
             #region Lures
 
@@ -280,18 +263,32 @@ namespace PoolFishingBuddy.Forms
 
             #endregion
 
+            #region
+
+            if (comboMode.SelectedIndex == 1)
+            {
+                PoolFisherSettings.Instance.BounceMode = true;
+            }
+            else
+            {
+                PoolFisherSettings.Instance.BounceMode = false;
+            }
+
+            #endregion
+
             PoolFisherSettings.Instance.Save();
 
             Logging.Write(System.Drawing.Color.Green, "Saved Settings:");
             Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
             Logging.Write(System.Drawing.Color.Green, "Flying Mount: {0}", (string)comboMounts.SelectedItem);
-            Logging.Write(System.Drawing.Color.Green, "Cast Range: {0}", PoolFisherSettings.Instance.CastRange);
-            Logging.Write(System.Drawing.Color.Green, "Max. tries to cast: {0}", PoolFisherSettings.Instance.MaxTriesCasting);
+            Logging.Write(System.Drawing.Color.Green, "Bounce mode: {0}", PoolFisherSettings.Instance.BounceMode);
+            Logging.Write(System.Drawing.Color.Green, "Max. range to cast: {0}", PoolFisherSettings.Instance.MaxCastRange);
+            Logging.Write(System.Drawing.Color.Green, "Max. attempts to cast: {0}", PoolFisherSettings.Instance.MaxCastAttempts);
             Logging.Write(System.Drawing.Color.Green, "Ninja Pools: {0}", PoolFisherSettings.Instance.NinjaPools);
             Logging.Write(System.Drawing.Color.Green, "Blacklist Schools: {0}", PoolFisherSettings.Instance.BlacklistSchools);
             Logging.Write(System.Drawing.Color.Green, "Use Lure: {0}", PoolFisherSettings.Instance.useLure);
             Logging.Write(System.Drawing.Color.Green, "Descend higher: {0}", PoolFisherSettings.Instance.DescendHigher);
-            Logging.Write(System.Drawing.Color.Green, "Max. tries to descend: {0}", PoolFisherSettings.Instance.MaxTriesDescend);
+            Logging.Write(System.Drawing.Color.Green, "Max. attempts to reach pool: {0}", PoolFisherSettings.Instance.MaxNewLocAttempts);
 
             Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
             Helpers.blacklistSchoolsFromSettings();
@@ -303,11 +300,6 @@ namespace PoolFishingBuddy.Forms
         {
             Logging.Write(System.Drawing.Color.Red, "Settings not saved!");
             Close();
-        }
-
-        private void checkCustomCastRange_CheckedChanged(object sender, EventArgs e)
-        {
-            CastRangeText.Enabled = checkCustomCastRange.Checked;
         }
 
         private void checkBlacklistSchools_CheckedChanged(object sender, EventArgs e)

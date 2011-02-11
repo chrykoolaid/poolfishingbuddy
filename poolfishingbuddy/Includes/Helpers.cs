@@ -333,41 +333,71 @@ namespace PoolFishingBuddy
         static public bool findPoolPoint()
         {
 
-            Logging.Write("{0} - Looking for pool point...", TimeNow);
-            int traceStep = 20;
+            Logging.Write("{0} - Looking for pool point. Pool location: {1}.", TimeNow, PoolFisher.Pool.Location);
+            int traceStep = 15;
+            int minRange = 10;
+            int maxRange = PoolFisherSettings.Instance.MaxCastRange + 1;
+            int maxAttempts = PoolFisherSettings.Instance.MaxNewLocAttempts;
             float _PIx2 = 3.14159f * 2f;
-            
-            WoWPoint playerLoc = StyxWoW.Me.Location;
+
             WoWPoint p = new WoWPoint();
             WoWPoint hPoint = new WoWPoint();
             WoWPoint lPoint = new WoWPoint();
-            WorldLine[] traceLine = new WorldLine[traceStep];
-            bool[] tracelineRetVals = new bool[traceStep];
 
             PoolFisher.PoolPoints.Clear();
+            PoolFisher.tempPoolPoints.Clear();
 
-            //Logging.Write("{0} - Getting PoolPoints in 15 yards range...", TimeNow);
-            for (int i = 0; i < traceStep; i++)
+            for (int i = 0, x = minRange; i < traceStep && x < maxRange; i++)
             {
-                // scans 15 yards from player for water at every 18 degress 
-                p = PoolFisher.Pool.Location.RayCast((i * _PIx2) / traceStep, PoolFisherSettings.Instance.CastRange);
-                hPoint = p; hPoint.Z += 15; lPoint = p; lPoint.Z -= 0.5f;
-                traceLine[i].Start = hPoint;
-                traceLine[i].End = lPoint;
-            }
+                p = PoolFisher.Pool.Location.RayCast((i * _PIx2) / traceStep, x);
 
-            //Logging.Write("{0} - Hittest on PoolPoints...", TimeNow);
-            GameWorld.MassTraceLine(traceLine, GameWorld.CGWorldFrameHitFlags.HitTestGroundAndStructures, out tracelineRetVals);
+                lPoint = p;
+                lPoint.Z -= 0.4f;
+                hPoint = p;
+                hPoint.Z += 15f;
+                p.Z = GetGroundZ(p);
 
-            for (int i = 0; i < traceStep; i++)
-            {
-                if (tracelineRetVals[i])
+                //Logging.Write("{0} - lPoint.Z: {1}, hPoint.Z: {2}, p.Z: {3}.", TimeNow, lPoint.Z, hPoint.Z, p.Z);
+
+                if (p.Z > lPoint.Z && p.Z < hPoint.Z && PoolFisher.Pool.Location.Distance(p) <= maxRange && GameWorld.IsInLineOfSight(p, PoolFisher.Pool.Location))
                 {
-                    traceLine[i].End.Z = GetGroundZ(traceLine[i].End);
-                    if (StyxWoW.Me.Location.Distance(traceLine[i].End) < 300)
-                        PoolFisher.PoolPoints.Add(traceLine[i].End);
+                    PoolFisher.tempPoolPoints.Add(p);
+                    //Logging.Write("{0} - Added {1} to tempPoolPoints. Distance from pool: {2}", TimeNow, p, PoolFisher.Pool.Location.Distance(p));
+                }
+
+                if (i == (traceStep - 1))
+                {
+                    i = 0;
+                    x++;
                 }
             }
+
+
+            Logging.Write("{0} - We got {1} tempPoolPoints for this pool.", TimeNow, PoolFisher.tempPoolPoints.Count);
+
+            Stopwatch test = new Stopwatch();
+            test.Start();
+            
+            if (PoolFisher.tempPoolPoints.Count > 0)
+            {
+                foreach (WoWPoint point in PoolFisher.tempPoolPoints)
+                {
+                    ThreadStart GetSlopesThread = delegate { sloapCheck(point); };
+                    PoolFisher.GetSlopesThread = new Thread(GetSlopesThread);
+                    PoolFisher.GetSlopesThread.Start();
+                }
+            }
+
+            while (PoolFisher.GetSlopesThread.IsAlive)
+            {
+                Logging.Write("{0} - Sleeping while sloapCheck is running.", TimeNow, PoolFisher.PoolPoints.Count);
+                Thread.Sleep(100);
+            }
+
+            Logging.Write("{0} - Elapsed time (ms): {1}", TimeNow, test.ElapsedMilliseconds);
+            test.Stop();
+
+            Logging.Write("{0} - We got {1} suitable points for this pool.", TimeNow, PoolFisher.PoolPoints.Count);
 
             PoolFisher.PoolPoints.Sort((p1, p2) => p1.Z.CompareTo(p2.Z));
 
@@ -375,14 +405,6 @@ namespace PoolFishingBuddy
             {
                 // Let's try the higher Z-Coords first! No more swimming ftw..
                 PoolFisher.PoolPoints.Reverse();
-            }
-
-            foreach (WoWPoint point in PoolFisher.PoolPoints)
-            {
-                //Logging.Write("Point: {0}, Distance: {1}", point, StyxWoW.Me.Location.Distance(point));
-                //Logging.Write("Point: {0}, Distance2D: {1}", point, StyxWoW.Me.Location.Distance2D(point));
-                //Logging.Write("Point: {0}, Distance2DSqr: {1}", point, StyxWoW.Me.Location.Distance2DSqr(point));
-                //Logging.Write("Point: {0}, DistanceSqr: {1}", point, StyxWoW.Me.Location.DistanceSqr(point));
             }
 
             if (StyxWoW.Me.IsFlying && PoolFisher.PoolPoints.Count > 0)
@@ -412,6 +434,13 @@ namespace PoolFishingBuddy
             return false;
         }
 
+        public static void sloapCheck(WoWPoint p)
+        {
+            //Logging.Write("{0} - New Thread.", TimeNow);
+            if (GetHighestSurroundingSlope(p) < 1.2f)
+                PoolFisher.PoolPoints.Add(p);
+        }
+
         /// <summary>
         /// Credits to 
         /// </summary>
@@ -423,13 +452,50 @@ namespace PoolFishingBuddy
                 return Navigator.FindHeights(p.X, p.Y).Max();
             }
             catch (Exception) { }
+
             WoWPoint ground = WoWPoint.Empty;
+
             GameWorld.TraceLine(new WoWPoint(p.X, p.Y, 10000), new WoWPoint(p.X, p.Y, -10000), GameWorld.CGWorldFrameHitFlags.HitTestGroundAndStructures | GameWorld.CGWorldFrameHitFlags.HitTestBoundingModels | GameWorld.CGWorldFrameHitFlags.HitTestWMO, out ground);
             if (ground != WoWPoint.Empty)
             {
                 return ground.Z;
             }
             return float.MinValue;
+        }
+
+        /// <summary>  
+        /// </summary>
+        /// <returns>Highest slope of surrounding terrain, returns 100 if the slope can't be determined</returns>
+        public static float GetHighestSurroundingSlope(WoWPoint p)
+        {
+            float _PIx2 = 3.14159f * 2f;
+            float highestSlope = -100;
+            float slope = 0;
+            int traceStep = 6;
+            float range = 1.2f;
+            WoWPoint p2;
+            for (int i = 0; i < traceStep; i++)
+            {
+                // scans 1 yard from p for cliffs at every 18 degress 
+                p2 = p.RayCast((i * _PIx2) / traceStep, range);
+                p2.Z = GetGroundZ(p2);
+                slope = Math.Abs( GetSlope(p, p2) );
+                if( slope > highestSlope )
+                {
+                    highestSlope = slope;
+                }
+            }
+            //Logging.Write("Point: {0}, Distance: {1}, Sloap: {2}", p, PoolFisher.Pool.Location.Distance(p), highestSlope);
+            //Logging.Write(" Highslope {0}", highestSlope);
+            return Math.Abs( highestSlope );
+        }
+
+        public static float GetSlope(WoWPoint p1, WoWPoint p2)
+        {
+            float rise = p2.Z - p1.Z;
+            float run = (float)Math.Sqrt(Math.Pow(p2.X - p1.X, 2) + Math.Pow(p2.Y - p1.Y, 2));
+
+            return rise / run;
         }
 
         public static float GetWaterSurface(WoWPoint p)
@@ -454,6 +520,7 @@ namespace PoolFishingBuddy
             {
                 //Logging.Write("{0} - Blacklisted Guid {1}", TimeNow, PoolFisher.Pool.Guid);
                 equipWeapon();
+                PoolFisher.newLocAttempts = 0;
                 PoolFisher.MeIsFishing = false;
                 PoolFisher.looking4NewPool = true;
                 PoolFisher.looking4NewPoint = true;
@@ -483,6 +550,7 @@ namespace PoolFishingBuddy
         {
             get
             {
+                Thread.Sleep((PoolFisher.Ping * 2) + 300);
                 if (FishingBobber != null && PoolFisher.Pool != null && FishingBobber != null)
                 {
                     if (FishingBobber.Location.Distance2D(PoolFisher.Pool.Location) <= 3.6f)

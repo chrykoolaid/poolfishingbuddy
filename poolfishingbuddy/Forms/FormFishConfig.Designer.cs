@@ -30,7 +30,7 @@
         {
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonChancel = new System.Windows.Forms.Button();
-            this.CastRangeText = new System.Windows.Forms.MaskedTextBox();
+            this.MaxCastRangeText = new System.Windows.Forms.MaskedTextBox();
             this.comboMounts = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.checkNinjaPools = new System.Windows.Forms.CheckBox();
@@ -39,11 +39,11 @@
             this.TestButton = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.MaxTriesCastingText = new System.Windows.Forms.MaskedTextBox();
+            this.MaxCastAttemptsText = new System.Windows.Forms.MaskedTextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.comboLures = new System.Windows.Forms.ComboBox();
-            this.checkCustomCastRange = new System.Windows.Forms.CheckBox();
             this.checkUseLure = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.comboBlacklist = new System.Windows.Forms.ComboBox();
@@ -58,11 +58,13 @@
             this.checkBLFathomEel = new System.Windows.Forms.CheckBox();
             this.checkBLBlackbellyMudfish = new System.Windows.Forms.CheckBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.MaxTriesDescendText = new System.Windows.Forms.MaskedTextBox();
+            this.MaxNewLocAttemptsText = new System.Windows.Forms.MaskedTextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.checkDescendHigher = new System.Windows.Forms.CheckBox();
             this.buttonMonitor = new System.Windows.Forms.Button();
+            this.label8 = new System.Windows.Forms.Label();
+            this.comboMode = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -73,7 +75,7 @@
             // 
             // buttonSave
             // 
-            this.buttonSave.Location = new System.Drawing.Point(176, 370);
+            this.buttonSave.Location = new System.Drawing.Point(176, 381);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(76, 23);
             this.buttonSave.TabIndex = 1;
@@ -83,7 +85,7 @@
             // 
             // buttonChancel
             // 
-            this.buttonChancel.Location = new System.Drawing.Point(263, 370);
+            this.buttonChancel.Location = new System.Drawing.Point(263, 381);
             this.buttonChancel.Name = "buttonChancel";
             this.buttonChancel.Size = new System.Drawing.Size(75, 23);
             this.buttonChancel.TabIndex = 2;
@@ -91,22 +93,22 @@
             this.buttonChancel.UseVisualStyleBackColor = true;
             this.buttonChancel.Click += new System.EventHandler(this.buttonChancel_Click);
             // 
-            // CastRangeText
+            // MaxCastRangeText
             // 
-            this.CastRangeText.Location = new System.Drawing.Point(141, 30);
-            this.CastRangeText.Mask = "00";
-            this.CastRangeText.Name = "CastRangeText";
-            this.CastRangeText.PromptChar = ' ';
-            this.CastRangeText.Size = new System.Drawing.Size(20, 20);
-            this.CastRangeText.TabIndex = 1;
-            this.CastRangeText.Text = "15";
-            this.CastRangeText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.MaxCastRangeText.Location = new System.Drawing.Point(153, 30);
+            this.MaxCastRangeText.Mask = "00";
+            this.MaxCastRangeText.Name = "MaxCastRangeText";
+            this.MaxCastRangeText.PromptChar = ' ';
+            this.MaxCastRangeText.Size = new System.Drawing.Size(20, 20);
+            this.MaxCastRangeText.TabIndex = 1;
+            this.MaxCastRangeText.Text = "20";
+            this.MaxCastRangeText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // comboMounts
             // 
             this.comboMounts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboMounts.FormattingEnabled = true;
-            this.comboMounts.Location = new System.Drawing.Point(4, 38);
+            this.comboMounts.Location = new System.Drawing.Point(4, 19);
             this.comboMounts.Name = "comboMounts";
             this.comboMounts.Size = new System.Drawing.Size(184, 21);
             this.comboMounts.TabIndex = 4;
@@ -114,7 +116,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(1, 22);
+            this.label2.Location = new System.Drawing.Point(1, 3);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(37, 13);
             this.label2.TabIndex = 5;
@@ -133,7 +135,7 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(188, 0);
+            this.pictureBox1.Location = new System.Drawing.Point(188, 6);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(150, 94);
             this.pictureBox1.TabIndex = 10;
@@ -142,15 +144,15 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(167, 33);
+            this.label3.Location = new System.Drawing.Point(179, 33);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(65, 13);
             this.label3.TabIndex = 12;
-            this.label3.Text = "(Default: 15)";
+            this.label3.Text = "(Default: 20)";
             // 
             // TestButton
             // 
-            this.TestButton.Location = new System.Drawing.Point(4, 370);
+            this.TestButton.Location = new System.Drawing.Point(4, 381);
             this.TestButton.Name = "TestButton";
             this.TestButton.Size = new System.Drawing.Size(41, 23);
             this.TestButton.TabIndex = 13;
@@ -163,7 +165,7 @@
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Location = new System.Drawing.Point(4, 75);
+            this.tabControl1.Location = new System.Drawing.Point(4, 86);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(334, 289);
@@ -172,50 +174,59 @@
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.Color.White;
+            this.tabPage1.Controls.Add(this.label7);
             this.tabPage1.Controls.Add(this.label6);
-            this.tabPage1.Controls.Add(this.MaxTriesCastingText);
+            this.tabPage1.Controls.Add(this.MaxCastAttemptsText);
             this.tabPage1.Controls.Add(this.label5);
             this.tabPage1.Controls.Add(this.comboLures);
-            this.tabPage1.Controls.Add(this.checkCustomCastRange);
             this.tabPage1.Controls.Add(this.checkUseLure);
-            this.tabPage1.Controls.Add(this.CastRangeText);
+            this.tabPage1.Controls.Add(this.MaxCastRangeText);
             this.tabPage1.Controls.Add(this.label3);
             this.tabPage1.Controls.Add(this.checkNinjaPools);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(302, 263);
+            this.tabPage1.Size = new System.Drawing.Size(326, 263);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Fishing";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(3, 33);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(117, 13);
+            this.label7.TabIndex = 19;
+            this.label7.Text = "Max. range to fish from:";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(167, 61);
+            this.label6.Location = new System.Drawing.Point(179, 61);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(65, 13);
             this.label6.TabIndex = 18;
             this.label6.Text = "(Default: 10)";
             // 
-            // MaxTriesCastingText
+            // MaxCastAttemptsText
             // 
-            this.MaxTriesCastingText.Location = new System.Drawing.Point(141, 58);
-            this.MaxTriesCastingText.Mask = "00";
-            this.MaxTriesCastingText.Name = "MaxTriesCastingText";
-            this.MaxTriesCastingText.PromptChar = ' ';
-            this.MaxTriesCastingText.Size = new System.Drawing.Size(20, 20);
-            this.MaxTriesCastingText.TabIndex = 17;
-            this.MaxTriesCastingText.Text = "10";
-            this.MaxTriesCastingText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.MaxCastAttemptsText.Location = new System.Drawing.Point(153, 58);
+            this.MaxCastAttemptsText.Mask = "00";
+            this.MaxCastAttemptsText.Name = "MaxCastAttemptsText";
+            this.MaxCastAttemptsText.PromptChar = ' ';
+            this.MaxCastAttemptsText.Size = new System.Drawing.Size(20, 20);
+            this.MaxCastAttemptsText.TabIndex = 17;
+            this.MaxCastAttemptsText.Text = "10";
+            this.MaxCastAttemptsText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(3, 61);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(135, 13);
+            this.label5.Size = new System.Drawing.Size(144, 13);
             this.label5.TabIndex = 16;
-            this.label5.Text = "Max. of tries to cast fishing:";
+            this.label5.Text = "Max. attempts to cast fishing:";
             // 
             // comboLures
             // 
@@ -225,17 +236,6 @@
             this.comboLures.Name = "comboLures";
             this.comboLures.Size = new System.Drawing.Size(155, 21);
             this.comboLures.TabIndex = 15;
-            // 
-            // checkCustomCastRange
-            // 
-            this.checkCustomCastRange.AutoSize = true;
-            this.checkCustomCastRange.Location = new System.Drawing.Point(6, 32);
-            this.checkCustomCastRange.Name = "checkCustomCastRange";
-            this.checkCustomCastRange.Size = new System.Drawing.Size(120, 17);
-            this.checkCustomCastRange.TabIndex = 14;
-            this.checkCustomCastRange.Text = "Custom Cast Range";
-            this.checkCustomCastRange.UseVisualStyleBackColor = true;
-            this.checkCustomCastRange.CheckedChanged += new System.EventHandler(this.checkCustomCastRange_CheckedChanged);
             // 
             // checkUseLure
             // 
@@ -384,44 +384,44 @@
             // tabPage3
             // 
             this.tabPage3.BackColor = System.Drawing.Color.White;
-            this.tabPage3.Controls.Add(this.MaxTriesDescendText);
+            this.tabPage3.Controls.Add(this.MaxNewLocAttemptsText);
             this.tabPage3.Controls.Add(this.label4);
             this.tabPage3.Controls.Add(this.label1);
             this.tabPage3.Controls.Add(this.checkDescendHigher);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(302, 263);
+            this.tabPage3.Size = new System.Drawing.Size(326, 263);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Movement";
             // 
-            // MaxTriesDescendText
+            // MaxNewLocAttemptsText
             // 
-            this.MaxTriesDescendText.Location = new System.Drawing.Point(131, 25);
-            this.MaxTriesDescendText.Mask = "00";
-            this.MaxTriesDescendText.Name = "MaxTriesDescendText";
-            this.MaxTriesDescendText.PromptChar = ' ';
-            this.MaxTriesDescendText.Size = new System.Drawing.Size(20, 20);
-            this.MaxTriesDescendText.TabIndex = 4;
-            this.MaxTriesDescendText.Text = "20";
-            this.MaxTriesDescendText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.MaxNewLocAttemptsText.Location = new System.Drawing.Point(180, 25);
+            this.MaxNewLocAttemptsText.Mask = "00";
+            this.MaxNewLocAttemptsText.Name = "MaxNewLocAttemptsText";
+            this.MaxNewLocAttemptsText.PromptChar = ' ';
+            this.MaxNewLocAttemptsText.Size = new System.Drawing.Size(20, 20);
+            this.MaxNewLocAttemptsText.TabIndex = 4;
+            this.MaxNewLocAttemptsText.Text = "5";
+            this.MaxNewLocAttemptsText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(157, 28);
+            this.label4.Location = new System.Drawing.Point(206, 28);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(65, 13);
+            this.label4.Size = new System.Drawing.Size(59, 13);
             this.label4.TabIndex = 3;
-            this.label4.Text = "(Default: 20)";
+            this.label4.Text = "(Default: 5)";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(3, 28);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(123, 13);
+            this.label1.Size = new System.Drawing.Size(142, 13);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Max. of tries to descend:";
+            this.label1.Text = "Max. attempts to reach Pool:";
             // 
             // checkDescendHigher
             // 
@@ -435,13 +435,34 @@
             // 
             // buttonMonitor
             // 
-            this.buttonMonitor.Location = new System.Drawing.Point(51, 370);
+            this.buttonMonitor.Location = new System.Drawing.Point(51, 381);
             this.buttonMonitor.Name = "buttonMonitor";
             this.buttonMonitor.Size = new System.Drawing.Size(75, 23);
             this.buttonMonitor.TabIndex = 15;
             this.buttonMonitor.Text = "Start Monitor";
             this.buttonMonitor.UseVisualStyleBackColor = true;
             this.buttonMonitor.Click += new System.EventHandler(this.buttonMonitor_Click);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(1, 43);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(34, 13);
+            this.label8.TabIndex = 16;
+            this.label8.Text = "Mode";
+            // 
+            // comboMode
+            // 
+            this.comboMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboMode.FormattingEnabled = true;
+            this.comboMode.Items.AddRange(new object[] {
+            "Circle",
+            "Bounce"});
+            this.comboMode.Location = new System.Drawing.Point(4, 59);
+            this.comboMode.Name = "comboMode";
+            this.comboMode.Size = new System.Drawing.Size(89, 21);
+            this.comboMode.TabIndex = 17;
             // 
             // FormFishConfig
             // 
@@ -450,8 +471,10 @@
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(341, 402);
+            this.ClientSize = new System.Drawing.Size(341, 410);
             this.ControlBox = false;
+            this.Controls.Add(this.comboMode);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.comboMounts);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.buttonMonitor);
@@ -484,7 +507,7 @@
 
         private System.Windows.Forms.Button buttonSave;
         private System.Windows.Forms.Button buttonChancel;
-        private System.Windows.Forms.MaskedTextBox CastRangeText;
+        private System.Windows.Forms.MaskedTextBox MaxCastRangeText;
         private System.Windows.Forms.ComboBox comboMounts;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox checkNinjaPools;
@@ -506,7 +529,6 @@
         private System.Windows.Forms.CheckBox checkBLFathomEel;
         private System.Windows.Forms.CheckBox checkBLBlackbellyMudfish;
         private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.CheckBox checkCustomCastRange;
         private System.Windows.Forms.CheckBox checkUseLure;
         private System.Windows.Forms.ComboBox comboLures;
         private System.Windows.Forms.Button buttonMonitor;
@@ -514,9 +536,12 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.MaskedTextBox MaxTriesCastingText;
+        private System.Windows.Forms.MaskedTextBox MaxCastAttemptsText;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.MaskedTextBox MaxTriesDescendText;
+        private System.Windows.Forms.MaskedTextBox MaxNewLocAttemptsText;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox comboMode;
 
     }
 }
