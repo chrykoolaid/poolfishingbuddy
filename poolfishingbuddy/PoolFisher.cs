@@ -54,10 +54,11 @@ namespace PoolFishingBuddy
         static public List<WoWPoint> tempPoolPoints = new List<WoWPoint>(100);
         static public WoWPoint WaterSurface;
 
-        //static public int MaxCastAttempts;
-        //static public int MaxLocAttempts;
+        static public List<WoWItem> mainhandList = new List<WoWItem>();
+        static public List<WoWItem> offhandList = new List<WoWItem>();
+        static public List<WoWItem> poleList = new List<WoWItem>();
+        static public List<WoWItem> BagItems = new List<WoWItem>();
         
-
         #endregion
 
         static public List<WoWPoint> HotspotList;
@@ -68,7 +69,7 @@ namespace PoolFishingBuddy
 
         #region Overrides of BotBase
 
-        private readonly Version _version = new Version(1, 0, 8);
+        private readonly Version _version = new Version(1, 0, 9);
 
         public override string Name
         {
@@ -81,20 +82,6 @@ namespace PoolFishingBuddy
 
         public override void Start()
         {
-            if (!StyxWoW.IsLifetimeUser)
-            {
-                Logging.Write(System.Drawing.Color.Red, "{0} - Your don't have lifetime subscription. Stopping!", Helpers.TimeNow);
-                TreeRoot.Stop();
-            }
-
-            if (PoolFisherSettings.Instance.FlyingMountID == 0)
-            {
-                Logging.Write(System.Drawing.Color.Red, "{0} - Your did not select any mount, please go to Settings first. Stopping!", Helpers.TimeNow);
-                TreeRoot.Stop();
-            }
-
-            Logging.Write("{0} - Pool Fisher {1} starting!", Helpers.TimeNow, _version);
-
             GrindArea = ProfileManager.CurrentProfile.GrindArea;
             HotspotList = GrindArea.Hotspots.ConvertAll<WoWPoint>(hs => hs.ToWoWPoint());
             BlackspotList = ProfileManager.CurrentProfile.Blackspots.ConvertAll<WoWPoint>(bs => bs.Location);
@@ -145,11 +132,13 @@ namespace PoolFishingBuddy
                 Helpers.Init(new System.EventArgs());
 
             StyxSettings.Instance.LogoutForInactivity = false;
+
+            Logging.Write(System.Drawing.Color.Blue, "{0} - Pool Fisher {1} starting!", Helpers.TimeNow, _version);
         }
 
         public override void Stop()
         {
-            Logging.Write("{0} - Pool Fisher {1} stopped!", Helpers.TimeNow, _version);
+            Logging.Write(System.Drawing.Color.Blue, "{0} - Pool Fisher {1} stopped!", Helpers.TimeNow, _version);
             StyxSettings.Instance.LogoutForInactivity = true;
         }
 
@@ -162,7 +151,7 @@ namespace PoolFishingBuddy
 
                         new Decorator(ret => StyxWoW.Me == null || !StyxWoW.IsInGame || !StyxWoW.IsInWorld,
                             new Sequence(
-                                new Action(ret => Logging.Write("{0} - [INVALID] Waiting", Helpers.TimeNow)),
+                                new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - [INVALID] Waiting", Helpers.TimeNow)),
                                 new ActionSleep(10000))),
 
                         new Decorator(ret => StyxWoW.Me.IsFalling,
@@ -240,7 +229,9 @@ namespace PoolFishingBuddy
 
                         // Get PoolPoint
                         new Decorator(ret => looking4NewPoint,
-                            new Action(ret => Helpers.findPoolPoint())),
+                            new Sequence(
+                                new Action(ret => WoWMovement.MoveStop()),
+                            new Action(ret => Helpers.findPoolPoint()))),
 
                         // Blacklist if Navigator can't generate Path
                         new Decorator(ret => PoolPoints.Count == 0,
@@ -323,7 +314,7 @@ namespace PoolFishingBuddy
                                             new Decorator(ret => PoolPoints.Count > 0,
                                                 new Sequence(
                                                     new Action(ret => PoolPoints.Sort((p1, p2) => PoolFisher.Pool.Location.Distance(p1).CompareTo(PoolFisher.Pool.Location.Distance(p2)))),
-                //new Action(ret => PoolPoints.Reverse()),
+                                                    //new Action(ret => PoolPoints.Reverse()),
                                                     new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - New PoolPoint: {1}, Distance: {2}", Helpers.TimeNow, PoolPoints[0], StyxWoW.Me.Location.Distance(PoolPoints[0]))),
                                                     new Action(ret => newLocAttempts++),
                                                     new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Moving.. Attempt: {1} of {2}.", Helpers.TimeNow, newLocAttempts, PoolFisherSettings.Instance.MaxNewLocAttempts))))
@@ -597,7 +588,7 @@ namespace PoolFishingBuddy
                             new PrioritySelector(
 
                                 // equip pole
-                                new Decorator(ret => !Helpers.equipPole,
+                                new Decorator(ret => !Helpers.equipFishingPole,
                                     new Sequence(
                                         new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Could not find any fishing Poles!", Helpers.TimeNow)),
                                         new Action(ret => TreeRoot.Stop()))),

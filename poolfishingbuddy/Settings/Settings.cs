@@ -35,11 +35,14 @@ namespace PoolFishingBuddy
         [Setting(Explanation = "ID for lure item."), DefaultValue(0)]
         public int LureID { get; set; }
 
+        [Setting(Explanation = "ID for fishing pole."), DefaultValue(0)]
+        public int FishingPole { get; set; }
+
         [Setting(Explanation = "ID for mainhand item."), DefaultValue(0)]
-        public int MainHand { get; set; }
+        public int Mainhand { get; set; }
 
         [Setting(Explanation = "ID for offhand item."), DefaultValue(0)]
-        public int OffHand { get; set; }
+        public int Offhand { get; set; }
 
         [Setting(Explanation = "Descend on higher reaches or not."), DefaultValue(false)]
         public bool DescendHigher { get; set; }

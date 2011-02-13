@@ -4,12 +4,14 @@ using System.IO;
 using System.Net;
 using System.Threading;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 using Styx;
 using Styx.Helpers;
 using Styx.Logic;
 using Styx.Logic.Combat;
 using Styx.Logic.Pathing;
+using Styx.Logic.Profiles;
 using Styx.WoWInternals;
 using Styx.WoWInternals.WoWObjects;
 
@@ -123,28 +125,12 @@ namespace PoolFishingBuddy.Forms
 
             #endregion
 
-            #region
-
-            if (PoolFisherSettings.Instance.BounceMode)
-            {
-                comboMode.SelectedIndex = 1;
-            }
-            else
-            {
-                comboMode.SelectedIndex = 0;
-            }
-
-            #endregion
-
             #region Mounts
 
             comboMounts.Items.Clear();
 
             WoWSpell SwiftFlightForm = WoWSpell.FromId(40120);
             WoWSpell FlightForm = WoWSpell.FromId(33943);
-
-            Logging.Write(SwiftFlightForm.Name);
-            Logging.Write(FlightForm.Name);
 
             if (SpellManager.HasSpell(SwiftFlightForm))
             {
@@ -171,6 +157,85 @@ namespace PoolFishingBuddy.Forms
                 }
             }
 
+            #endregion
+
+            #region Mode
+
+            if (PoolFisherSettings.Instance.BounceMode)
+            {
+                comboMode.SelectedIndex = 1;
+            }
+            else
+            {
+                comboMode.SelectedIndex = 0;
+            }
+
+            #endregion
+
+            #region Pole and Weapons
+
+            PoolFisher.BagItems = StyxWoW.Me.BagItems;
+
+            if (PoolFisherSettings.Instance.FishingPole != 0)
+            {
+                foreach (WoWItem i in PoolFisher.BagItems)
+                {
+                    if (i.Entry == PoolFisherSettings.Instance.FishingPole)
+                    {
+                        PoolFisher.poleList.Add(i);
+                        comboPole.Items.Add(i.Name);
+                        comboPole.SelectedItem = i.Name;
+                    }
+                }
+
+                if (StyxWoW.Me.Inventory.Equipped.MainHand != null && StyxWoW.Me.Inventory.Equipped.MainHand.Entry == PoolFisherSettings.Instance.FishingPole)
+                {
+                    PoolFisher.poleList.Add(StyxWoW.Me.Inventory.Equipped.MainHand);
+                    comboPole.Items.Add(StyxWoW.Me.Inventory.Equipped.MainHand.Name);
+                    comboPole.SelectedItem = StyxWoW.Me.Inventory.Equipped.MainHand.Name;
+                }
+            }
+
+            if (PoolFisherSettings.Instance.Mainhand != 0)
+            {
+                foreach (WoWItem i in PoolFisher.BagItems)
+                {
+                    if (i.Entry == PoolFisherSettings.Instance.Mainhand)
+                    {
+                        PoolFisher.mainhandList.Add(i);
+                        comboMainhand.Items.Add(i.Name);
+                        comboMainhand.SelectedItem = i.Name;
+                    }
+                }
+
+                if (StyxWoW.Me.Inventory.Equipped.MainHand != null && StyxWoW.Me.Inventory.Equipped.MainHand.Entry == PoolFisherSettings.Instance.Mainhand)
+                {
+                    PoolFisher.mainhandList.Add(StyxWoW.Me.Inventory.Equipped.MainHand);
+                    comboMainhand.Items.Add(StyxWoW.Me.Inventory.Equipped.MainHand.Name);
+                    comboMainhand.SelectedItem = StyxWoW.Me.Inventory.Equipped.MainHand.Name;
+                }
+            }
+
+            if (PoolFisherSettings.Instance.Offhand != 0)
+            {
+                foreach (WoWItem i in PoolFisher.BagItems)
+                {
+                    if (i.Entry == PoolFisherSettings.Instance.Offhand)
+                    {
+                        PoolFisher.offhandList.Add(i);
+                        comboOffhand.Items.Add(i.Name);
+                        comboOffhand.SelectedItem = i.Name;
+                    }
+                }
+
+                if (StyxWoW.Me.Inventory.Equipped.OffHand != null && StyxWoW.Me.Inventory.Equipped.OffHand.Entry == PoolFisherSettings.Instance.Offhand)
+                {
+                    PoolFisher.offhandList.Add(StyxWoW.Me.Inventory.Equipped.MainHand);
+                    comboOffhand.Items.Add(StyxWoW.Me.Inventory.Equipped.MainHand.Name);
+                    comboOffhand.SelectedItem = StyxWoW.Me.Inventory.Equipped.MainHand.Name;
+                }
+            }
+            
             #endregion
         }
 
@@ -242,9 +307,6 @@ namespace PoolFishingBuddy.Forms
             WoWSpell SwiftFlightForm = WoWSpell.FromId(40120);
             WoWSpell FlightForm = WoWSpell.FromId(33943);
 
-            Logging.Write(SwiftFlightForm.Name);
-            Logging.Write(FlightForm.Name);
-
             if (SpellManager.HasSpell(SwiftFlightForm) && (string)comboMounts.SelectedItem == SwiftFlightForm.Name)
             {
                 PoolFisherSettings.Instance.FlyingMountID = SwiftFlightForm.Id;
@@ -263,7 +325,7 @@ namespace PoolFishingBuddy.Forms
 
             #endregion
 
-            #region
+            #region Mode
 
             if (comboMode.SelectedIndex == 1)
             {
@@ -276,11 +338,64 @@ namespace PoolFishingBuddy.Forms
 
             #endregion
 
-            PoolFisherSettings.Instance.Save();
+            #region Pole and Weapons
+
+            if (PoolFisher.poleList.Count > 0 && comboPole.SelectedIndex != -1)
+            {
+                foreach (WoWItem i in PoolFisher.poleList)
+                {
+                    if (i.Name == comboPole.SelectedItem.ToString())
+                    {
+                        PoolFisherSettings.Instance.FishingPole = (int)i.Entry;
+                    }
+                }
+            }
+            else
+            {
+                PoolFisherSettings.Instance.FishingPole = 0;
+            }
+
+            if (PoolFisher.mainhandList.Count > 0 && comboMainhand.SelectedIndex != -1)
+            {
+                foreach (WoWItem i in PoolFisher.mainhandList)
+                {
+                    if (i.Name == comboMainhand.SelectedItem.ToString())
+                    {
+                        PoolFisherSettings.Instance.Mainhand = (int)i.Entry;
+                    }
+                }
+            }
+            else
+            {
+                PoolFisherSettings.Instance.Mainhand = 0;
+            }
+
+            if (PoolFisher.offhandList.Count > 0 && comboOffhand.SelectedIndex != -1)
+            {
+                foreach (WoWItem i in PoolFisher.offhandList)
+                {
+                    if (i.Name == comboOffhand.SelectedItem.ToString())
+                    {
+                        PoolFisherSettings.Instance.Offhand = (int)i.Entry;
+                    }
+                }
+            }
+            else
+            {
+                PoolFisherSettings.Instance.Offhand = 0;
+            }
+
+            #endregion
+
+            #region Logging
 
             Logging.Write(System.Drawing.Color.Green, "Saved Settings:");
             Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
             Logging.Write(System.Drawing.Color.Green, "Flying Mount: {0}", (string)comboMounts.SelectedItem);
+            Logging.Write(System.Drawing.Color.Green, "Fishing pole: {0}", (string)comboPole.SelectedItem);
+            Logging.Write(System.Drawing.Color.Green, "Mainhand: {0}", (string)comboMainhand.SelectedItem);
+            Logging.Write(System.Drawing.Color.Green, "Offhand: {0}", (string)comboOffhand.SelectedItem);
+
             Logging.Write(System.Drawing.Color.Green, "Bounce mode: {0}", PoolFisherSettings.Instance.BounceMode);
             Logging.Write(System.Drawing.Color.Green, "Max. range to cast: {0}", PoolFisherSettings.Instance.MaxCastRange);
             Logging.Write(System.Drawing.Color.Green, "Max. attempts to cast: {0}", PoolFisherSettings.Instance.MaxCastAttempts);
@@ -293,12 +408,15 @@ namespace PoolFishingBuddy.Forms
             Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
             Helpers.blacklistSchoolsFromSettings();
 
+            #endregion
+
+            PoolFisherSettings.Instance.Save();
             Close();
         }
 
         private void buttonChancel_Click(object sender, EventArgs e)
         {
-            Logging.Write(System.Drawing.Color.Red, "Settings not saved!");
+            Logging.Write(System.Drawing.Color.Red, "Settings not saved! {0}", comboOffhand.SelectedIndex);
             Close();
         }
 
@@ -352,5 +470,97 @@ namespace PoolFishingBuddy.Forms
             //PoolFisher.MonitoringThread = new Thread(new ThreadStart(Helpers.StartMonitoring));
             //PoolFisher.MonitoringThread.Start();
         }
+
+        private void buttonRefreshWeaponsAndPole_Click(object sender, EventArgs e)
+        {
+            PoolFisher.BagItems = StyxWoW.Me.BagItems;
+            PoolFisher.poleList.Clear();
+            PoolFisher.mainhandList.Clear();
+            PoolFisher.offhandList.Clear();
+
+            comboPole.Items.Clear();
+            comboMainhand.Items.Clear();
+            comboOffhand.Items.Clear();
+
+            foreach (WoWItem i in PoolFisher.BagItems)
+            {
+                if (i.ItemInfo.IsWeapon && i.ItemInfo.WeaponClass != WoWItemWeaponClass.FishingPole && (i.ItemInfo.InventoryType == InventoryType.WeaponMainHand ||
+                    i.ItemInfo.InventoryType == InventoryType.TwoHandWeapon) && StyxWoW.Me.CanEquipItem(i))
+                {
+                    if (!PoolFisher.mainhandList.Contains(i)) PoolFisher.mainhandList.Add(i);
+                }
+                if (i.ItemInfo.IsWeapon && (i.ItemInfo.InventoryType == InventoryType.WeaponOffHand ||
+                    i.ItemInfo.InventoryType == InventoryType.Weapon) && StyxWoW.Me.CanEquipItem(i))
+                {
+                    if (!PoolFisher.offhandList.Contains(i)) PoolFisher.offhandList.Add(i);
+                }
+                if (i.ItemInfo.IsWeapon && i.ItemInfo.WeaponClass == WoWItemWeaponClass.FishingPole
+                     && StyxWoW.Me.CanEquipItem(i))
+                {
+                    if (!PoolFisher.poleList.Contains(i)) PoolFisher.poleList.Add(i);
+                }
+            }
+            
+            if (StyxWoW.Me.Inventory.Equipped.MainHand != null && StyxWoW.Me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass != WoWItemWeaponClass.FishingPole)
+            {
+                if (!PoolFisher.mainhandList.Contains(StyxWoW.Me.Inventory.Equipped.MainHand)) PoolFisher.mainhandList.Add(StyxWoW.Me.Inventory.Equipped.MainHand);
+            }
+
+            if (StyxWoW.Me.Inventory.Equipped.MainHand != null && StyxWoW.Me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass == WoWItemWeaponClass.FishingPole)
+            {
+                if (!PoolFisher.poleList.Contains(StyxWoW.Me.Inventory.Equipped.MainHand)) PoolFisher.poleList.Add(StyxWoW.Me.Inventory.Equipped.MainHand);
+            }
+
+            if (StyxWoW.Me.Inventory.Equipped.OffHand != null)
+            {
+                if (!PoolFisher.offhandList.Contains(StyxWoW.Me.Inventory.Equipped.OffHand)) PoolFisher.offhandList.Add(StyxWoW.Me.Inventory.Equipped.OffHand);
+            }
+
+            if (PoolFisher.poleList.Count > 0)
+            {
+                //comboPole.Items.Add("");
+
+                foreach (WoWItem i in PoolFisher.poleList)
+                {
+                    if (i.Name != null)
+                        comboPole.Items.Add(i.Name);
+                }
+            }
+            else
+            {
+                comboPole.Text = "Nothing found..";
+            }
+
+            if (PoolFisher.mainhandList.Count > 0)
+            {
+                //comboMainhand.Items.Add("");
+
+                foreach (WoWItem i in PoolFisher.mainhandList)
+                {
+                    if (i.Name != null)
+                        comboMainhand.Items.Add(i.Name);
+                }
+            }
+            else
+            {
+                comboMainhand.Text = "Nothing found..";
+            }
+
+            if (PoolFisher.offhandList.Count > 0)
+            {
+                //comboOffhand.Items.Add("");
+
+                foreach (WoWItem i in PoolFisher.offhandList)
+                {
+                    if (i.Name != null)
+                        comboOffhand.Items.Add(i.Name);
+                }
+            }
+            else
+            {
+                comboOffhand.Text = "Nothing found..";
+            }
+        }
+
     }
 }

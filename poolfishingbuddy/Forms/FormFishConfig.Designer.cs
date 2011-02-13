@@ -39,6 +39,14 @@
             this.TestButton = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.comboOffhand = new System.Windows.Forms.ComboBox();
+            this.comboMainhand = new System.Windows.Forms.ComboBox();
+            this.comboPole = new System.Windows.Forms.ComboBox();
+            this.buttonRefreshWeaponsAndPole = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.MaxCastAttemptsText = new System.Windows.Forms.MaskedTextBox();
@@ -68,6 +76,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.groupBoxCata.SuspendLayout();
             this.tabPage3.SuspendLayout();
@@ -174,6 +183,7 @@
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.Color.White;
+            this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Controls.Add(this.label7);
             this.tabPage1.Controls.Add(this.label6);
             this.tabPage1.Controls.Add(this.MaxCastAttemptsText);
@@ -189,6 +199,86 @@
             this.tabPage1.Size = new System.Drawing.Size(326, 263);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Fishing";
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.label12);
+            this.groupBox1.Controls.Add(this.label11);
+            this.groupBox1.Controls.Add(this.label10);
+            this.groupBox1.Controls.Add(this.comboOffhand);
+            this.groupBox1.Controls.Add(this.comboMainhand);
+            this.groupBox1.Controls.Add(this.comboPole);
+            this.groupBox1.Controls.Add(this.buttonRefreshWeaponsAndPole);
+            this.groupBox1.Location = new System.Drawing.Point(6, 155);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(314, 102);
+            this.groupBox1.TabIndex = 29;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Select Fishing Pole and Weapons";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(8, 22);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(67, 13);
+            this.label12.TabIndex = 35;
+            this.label12.Text = "Fishing Pole:";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(8, 76);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(48, 13);
+            this.label11.TabIndex = 34;
+            this.label11.Text = "Offhand:";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(8, 49);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(57, 13);
+            this.label10.TabIndex = 33;
+            this.label10.Text = "Mainhand:";
+            // 
+            // comboOffhand
+            // 
+            this.comboOffhand.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboOffhand.FormattingEnabled = true;
+            this.comboOffhand.Location = new System.Drawing.Point(83, 73);
+            this.comboOffhand.Name = "comboOffhand";
+            this.comboOffhand.Size = new System.Drawing.Size(155, 21);
+            this.comboOffhand.TabIndex = 32;
+            // 
+            // comboMainhand
+            // 
+            this.comboMainhand.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboMainhand.FormattingEnabled = true;
+            this.comboMainhand.Location = new System.Drawing.Point(83, 46);
+            this.comboMainhand.Name = "comboMainhand";
+            this.comboMainhand.Size = new System.Drawing.Size(155, 21);
+            this.comboMainhand.TabIndex = 31;
+            // 
+            // comboPole
+            // 
+            this.comboPole.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboPole.FormattingEnabled = true;
+            this.comboPole.Location = new System.Drawing.Point(83, 19);
+            this.comboPole.Name = "comboPole";
+            this.comboPole.Size = new System.Drawing.Size(155, 21);
+            this.comboPole.TabIndex = 30;
+            // 
+            // buttonRefreshWeaponsAndPole
+            // 
+            this.buttonRefreshWeaponsAndPole.Location = new System.Drawing.Point(244, 19);
+            this.buttonRefreshWeaponsAndPole.Name = "buttonRefreshWeaponsAndPole";
+            this.buttonRefreshWeaponsAndPole.Size = new System.Drawing.Size(52, 21);
+            this.buttonRefreshWeaponsAndPole.TabIndex = 29;
+            this.buttonRefreshWeaponsAndPole.Text = "Refresh";
+            this.buttonRefreshWeaponsAndPole.UseVisualStyleBackColor = true;
+            this.buttonRefreshWeaponsAndPole.Click += new System.EventHandler(this.buttonRefreshWeaponsAndPole_Click);
             // 
             // label7
             // 
@@ -232,7 +322,7 @@
             // 
             this.comboLures.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboLures.FormattingEnabled = true;
-            this.comboLures.Location = new System.Drawing.Point(77, 88);
+            this.comboLures.Location = new System.Drawing.Point(89, 88);
             this.comboLures.Name = "comboLures";
             this.comboLures.Size = new System.Drawing.Size(155, 21);
             this.comboLures.TabIndex = 15;
@@ -492,6 +582,8 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.groupBoxCata.ResumeLayout(false);
@@ -542,6 +634,14 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox comboMode;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.ComboBox comboOffhand;
+        private System.Windows.Forms.ComboBox comboMainhand;
+        private System.Windows.Forms.ComboBox comboPole;
+        private System.Windows.Forms.Button buttonRefreshWeaponsAndPole;
 
     }
 }
