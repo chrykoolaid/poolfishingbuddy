@@ -398,6 +398,7 @@ namespace PoolFishingBuddy
                         new Decorator(ret => Styx.StyxWoW.Me.GetAllAuras().Any(Aura => Aura.SpellId == 81096),
                             new Sequence(
                                 new Action(ret => Logging.Write("{0} - Sleep while red mist is on me.", Helpers.TimeNow)),
+                                new Action(ret => castAttempts = 0),
                                 new Wait(30, ret => !Styx.StyxWoW.Me.GetAllAuras().Any(Aura => Aura.SpellId == 81096) || StyxWoW.Me.Combat, new ActionIdle())
                                 )),
 
