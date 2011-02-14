@@ -18,7 +18,7 @@ namespace PoolFishingBuddy
         public int FlyingMountID { get; set; }
 
         [Setting(Explanation = "Bounce mode on or not."), DefaultValue(false)]
-        public bool BounceMode { get; set; }
+        public bool ProfileMode { get; set; }
 
         [Setting(Explanation = "Modifier for height of profiles z-coords."), DefaultValue(0)]
         public int HeightModifier { get; set; }

@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Net;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -162,7 +163,7 @@ namespace PoolFishingBuddy.Forms
 
             #region Mode
 
-            if (PoolFisherSettings.Instance.BounceMode)
+            if (PoolFisherSettings.Instance.ProfileMode)
             {
                 comboMode.SelectedIndex = 1;
             }
@@ -331,11 +332,11 @@ namespace PoolFishingBuddy.Forms
 
             if (comboMode.SelectedIndex == 1)
             {
-                PoolFisherSettings.Instance.BounceMode = true;
+                PoolFisherSettings.Instance.ProfileMode = true;
             }
             else
             {
-                PoolFisherSettings.Instance.BounceMode = false;
+                PoolFisherSettings.Instance.ProfileMode = false;
             }
 
             #endregion
@@ -398,7 +399,8 @@ namespace PoolFishingBuddy.Forms
             Logging.Write(System.Drawing.Color.Green, "Mainhand: {0}", (string)comboMainhand.SelectedItem);
             Logging.Write(System.Drawing.Color.Green, "Offhand: {0}", (string)comboOffhand.SelectedItem);
 
-            Logging.Write(System.Drawing.Color.Green, "Bounce mode: {0}", PoolFisherSettings.Instance.BounceMode);
+            Logging.Write(System.Drawing.Color.Green, "Height: {0}", PoolFisherSettings.Instance.HeightModifier);
+            Logging.Write(System.Drawing.Color.Green, "Mode: {0}", PoolFisherSettings.Instance.ProfileMode);
             Logging.Write(System.Drawing.Color.Green, "Max. range to cast: {0}", PoolFisherSettings.Instance.MaxCastRange);
             Logging.Write(System.Drawing.Color.Green, "Max. attempts to cast: {0}", PoolFisherSettings.Instance.MaxCastAttempts);
             Logging.Write(System.Drawing.Color.Green, "Ninja Pools: {0}", PoolFisherSettings.Instance.NinjaPools);
@@ -464,6 +466,24 @@ namespace PoolFishingBuddy.Forms
             test.Z = Helpers.GetWaterSurface(StyxWoW.Me.Location);
             Logging.Write(System.Drawing.Color.Red, "Location: {0}", StyxWoW.Me.Location);
             Logging.Write(System.Drawing.Color.Red, "Water Surface: {0}", test);
+
+            ObjectManager.Update();
+            List<WoWGameObject> poolList = ObjectManager.GetObjectsOfType<WoWGameObject>().Where(o => o.SubType == WoWGameObjectType.FishingHole && !Blacklist.Contains(o.Guid) && !PoolFisher.PermaBlacklist.Contains(o.Entry) && o.Distance2D <= 150 && o.Location.X != 0).OrderBy(o => o.Distance).ToList();
+            foreach (WoWGameObject p in poolList)
+                Logging.Write("{0} - Found - {1} - at a distance of {2}. Guid: {3}. Entry: {4}.", Helpers.TimeNow, p.Name, p.Distance, p.Guid, p.Entry);
+
+            if (Styx.StyxWoW.Me.GetAllAuras().Any(Aura => Aura.SpellId == 84510))
+            {
+                Logging.Write("{0} - Sleep while red mist is on me: 84510.", Helpers.TimeNow);
+            }
+            if (Styx.StyxWoW.Me.GetAllAuras().Any(Aura => Aura.SpellId == 81096))
+            {
+                Logging.Write("{0} - Sleep while red mist is on me: 81096.", Helpers.TimeNow);
+            }
+            if (Styx.StyxWoW.Me.GetAllAuras().Any(Aura => Aura.SpellId == 81095))
+            {
+                Logging.Write("{0} - Sleep while red mist is on me: 81095.", Helpers.TimeNow);
+            }
         }
 
         private void buttonMonitor_Click(object sender, EventArgs e)

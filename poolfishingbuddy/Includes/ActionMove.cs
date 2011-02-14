@@ -30,7 +30,7 @@ namespace PoolFishingBuddy
             if (context is WoWPoint)
             {
                 destination = (WoWPoint)context;
-                destination.Z = Helpers.NormalizeGroundZ(destination) + PoolFisherSettings.Instance.HeightModifier;
+                destination.Z = Helpers.increaseGroundZ(destination);
             }
             else
             {

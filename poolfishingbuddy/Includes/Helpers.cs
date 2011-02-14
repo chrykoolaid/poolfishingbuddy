@@ -126,10 +126,9 @@ namespace PoolFishingBuddy
         /// </summary>
         static public void Final(System.EventArgs args)
         {
-            //Lua.DoString("run ConsoleExec('Autointeract 0')"); // This is also used by FishingBuddy/FishingBuddy.lua (Fishing Buddy Addon)
-            //PoolFisher.GetValuesThread.Abort();
-            //PoolFisher.MonitoringThread.Abort();
-            //Logging.Write("{0} - Pool Fischer Stopped!", TimeNow);
+            PoolFisher.HotspotList.Clear();
+            PoolFisher.BlackspotList.Clear();
+            equipWeapon();
         }
 
         /// <summary>
@@ -440,7 +439,7 @@ namespace PoolFishingBuddy
                 lPoint.Z -= 0.4f;
                 hPoint = p;
                 hPoint.Z += 15f;
-                p.Z = NormalizeGroundZ(p);
+                p.Z = getGroundZ(p);
 
                 //Logging.Write("{0} - lPoint.Z: {1}, hPoint.Z: {2}, p.Z: {3}.", TimeNow, lPoint.Z, hPoint.Z, p.Z);
 
@@ -540,11 +539,13 @@ namespace PoolFishingBuddy
         /// Credits to exemplar.
         /// </summary>
         /// <returns>Z-Coordinates for PoolPoints so we don't jump into the water.</returns>
-        public static float NormalizeGroundZ(WoWPoint p)
+        public static float getGroundZ(WoWPoint p)
         {
             try
             {
-                return Navigator.FindHeights(p.X, p.Y).Max();
+                float groundz;
+                Navigator.FindHeight(p.X, p.Y, out groundz);
+                return groundz;
             }
             catch (Exception) { }
 
@@ -556,6 +557,17 @@ namespace PoolFishingBuddy
                 return ground.Z;
             }
             return float.MinValue;
+        }
+
+        /// <summary>
+        /// Height modifier to increase Z-Coordinates by the value from settings.
+        /// </summary>
+        /// <param name="p">WoWPoint</param>
+        /// <returns>Z-Coordinates increased by the value from settings.</returns>
+        public static float increaseGroundZ(WoWPoint p)
+        {
+            float ground = p.Z + PoolFisherSettings.Instance.HeightModifier;
+            return ground;
         }
 
         /// <summary>
@@ -574,7 +586,7 @@ namespace PoolFishingBuddy
             {
                 // scans 1 yard from p for cliffs at every 18 degress 
                 p2 = p.RayCast((i * _PIx2) / traceStep, range);
-                p2.Z = NormalizeGroundZ(p2);
+                p2.Z = getGroundZ(p2);
                 slope = Math.Abs( GetSlope(p, p2) );
                 if( slope > highestSlope )
                 {
