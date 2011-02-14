@@ -440,7 +440,7 @@ namespace PoolFishingBuddy
                 lPoint.Z -= 0.4f;
                 hPoint = p;
                 hPoint.Z += 15f;
-                p.Z = GetGroundZ(p);
+                p.Z = NormalizeGroundZ(p);
 
                 //Logging.Write("{0} - lPoint.Z: {1}, hPoint.Z: {2}, p.Z: {3}.", TimeNow, lPoint.Z, hPoint.Z, p.Z);
 
@@ -462,7 +462,7 @@ namespace PoolFishingBuddy
 
             Stopwatch test = new Stopwatch();
             test.Start();
-            
+
             if (PoolFisher.tempPoolPoints.Count > 0)
             {
                 foreach (WoWPoint point in PoolFisher.tempPoolPoints)
@@ -471,6 +471,12 @@ namespace PoolFishingBuddy
                     PoolFisher.GetSlopesThread = new Thread(GetSlopesThread);
                     PoolFisher.GetSlopesThread.Start();
                 }
+            }
+            else
+            {
+                Logging.Write("{0} - No suitable point found für {1} , blacklisting for 2 minutes.", TimeNow, PoolFisher.Pool.Name);
+                BlackListPool();
+                return false;
             }
 
             while (PoolFisher.GetSlopesThread.IsAlive)
@@ -534,7 +540,7 @@ namespace PoolFishingBuddy
         /// Credits to exemplar.
         /// </summary>
         /// <returns>Z-Coordinates for PoolPoints so we don't jump into the water.</returns>
-        public static float GetGroundZ(WoWPoint p)
+        public static float NormalizeGroundZ(WoWPoint p)
         {
             try
             {
@@ -568,7 +574,7 @@ namespace PoolFishingBuddy
             {
                 // scans 1 yard from p for cliffs at every 18 degress 
                 p2 = p.RayCast((i * _PIx2) / traceStep, range);
-                p2.Z = GetGroundZ(p2);
+                p2.Z = NormalizeGroundZ(p2);
                 slope = Math.Abs( GetSlope(p, p2) );
                 if( slope > highestSlope )
                 {

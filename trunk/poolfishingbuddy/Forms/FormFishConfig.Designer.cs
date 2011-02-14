@@ -73,6 +73,8 @@
             this.buttonMonitor = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.comboMode = new System.Windows.Forms.ComboBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.numericHeightMod = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -80,6 +82,7 @@
             this.tabPage2.SuspendLayout();
             this.groupBoxCata.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericHeightMod)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonSave
@@ -554,6 +557,23 @@
             this.comboMode.Size = new System.Drawing.Size(89, 21);
             this.comboMode.TabIndex = 17;
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(104, 43);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(78, 13);
+            this.label9.TabIndex = 18;
+            this.label9.Text = "Height Modifier";
+            // 
+            // numericHeightMod
+            // 
+            this.numericHeightMod.Location = new System.Drawing.Point(107, 60);
+            this.numericHeightMod.Name = "numericHeightMod";
+            this.numericHeightMod.Size = new System.Drawing.Size(75, 20);
+            this.numericHeightMod.TabIndex = 19;
+            this.numericHeightMod.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
             // FormFishConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -563,6 +583,8 @@
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(341, 410);
             this.ControlBox = false;
+            this.Controls.Add(this.numericHeightMod);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.comboMode);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.comboMounts);
@@ -590,6 +612,7 @@
             this.groupBoxCata.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericHeightMod)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -642,6 +665,8 @@
         private System.Windows.Forms.ComboBox comboMainhand;
         private System.Windows.Forms.ComboBox comboPole;
         private System.Windows.Forms.Button buttonRefreshWeaponsAndPole;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.NumericUpDown numericHeightMod;
 
     }
 }
