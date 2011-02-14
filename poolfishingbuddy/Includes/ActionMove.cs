@@ -30,6 +30,7 @@ namespace PoolFishingBuddy
             if (context is WoWPoint)
             {
                 destination = (WoWPoint)context;
+                destination.Z = Helpers.NormalizeGroundZ(destination) + PoolFisherSettings.Instance.HeightModifier;
             }
             else
             {
@@ -38,7 +39,9 @@ namespace PoolFishingBuddy
             }
             if (StyxWoW.Me.Mounted)
             {
-                Flightor.MoveWithTrace(destination, 20);
+                //Logging.Write("Destination: {0}, Distance: {1}", destination, StyxWoW.Me.Location.Distance(destination));
+                Flightor.MoveWithTrace(destination);
+                //Flightor.MoveTo(destination);
             }
             else
             {

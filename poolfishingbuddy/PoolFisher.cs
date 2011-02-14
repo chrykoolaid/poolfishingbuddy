@@ -32,6 +32,7 @@ namespace PoolFishingBuddy
 
         private Composite _root;
         private int _currenthotspot = -1;
+        static public WoWPoint _modHotspot;
         
         static public bool looking4NewPoint;
         static public bool looking4NewPool;
@@ -69,7 +70,7 @@ namespace PoolFishingBuddy
 
         #region Overrides of BotBase
 
-        private readonly Version _version = new Version(1, 0, 9);
+        private readonly Version _version = new Version(1, 0, 10);
 
         public override string Name
         {
@@ -231,7 +232,7 @@ namespace PoolFishingBuddy
                         new Decorator(ret => looking4NewPoint,
                             new Sequence(
                                 new Action(ret => WoWMovement.MoveStop()),
-                            new Action(ret => Helpers.findPoolPoint()))),
+                                new Action(ret => Helpers.findPoolPoint()))),
 
                         // Blacklist if Navigator can't generate Path
                         new Decorator(ret => PoolPoints.Count == 0,
@@ -638,7 +639,11 @@ namespace PoolFishingBuddy
                         new Action(ret => TreeRoot.Stop()))),
 
                 new Decorator(ret => _currenthotspot < 0,
-                    new Action(ret => _currenthotspot = HotspotList.IndexOf(HotspotList.OrderBy(hs => StyxWoW.Me.Location.Distance(hs)).FirstOrDefault()))),
+                    new Sequence(
+                        new Action(ret => _currenthotspot = HotspotList.IndexOf(HotspotList.OrderBy(hs => StyxWoW.Me.Location.Distance(hs)).FirstOrDefault())),
+                        new Action(ret => _modHotspot = HotspotList.ElementAt(_currenthotspot)),
+                        new Action(ret => _modHotspot.Z = Helpers.NormalizeGroundZ(_modHotspot) + PoolFisherSettings.Instance.HeightModifier)
+                        )),
 
                 // bounce or circle mode?
                 new PrioritySelector(
@@ -647,11 +652,18 @@ namespace PoolFishingBuddy
                         new PrioritySelector(
 
                             new Decorator(ret => _currenthotspot >= HotspotList.Count,
-                                new Action(ret => _currenthotspot = 0)),
+                                new Sequence(
+                                    new Action(ret => _currenthotspot = 0),
+                                    new Action(ret => _modHotspot = HotspotList.ElementAt(_currenthotspot)),
+                                    new Action(ret => _modHotspot.Z = Helpers.NormalizeGroundZ(_modHotspot) + PoolFisherSettings.Instance.HeightModifier)
+                                )),
 
-                            new Decorator(ret => StyxWoW.Me.Location.Distance(HotspotList[_currenthotspot]) < 30,
-                                new Action(ret => _currenthotspot++))
-
+                            new Decorator(ret => StyxWoW.Me.Location.Distance(_modHotspot) < 30,
+                                new Sequence(
+                                    new Action(ret => _currenthotspot++),
+                                    new Action(ret => _modHotspot = HotspotList.ElementAt(_currenthotspot)),
+                                    new Action(ret => _modHotspot.Z = Helpers.NormalizeGroundZ(_modHotspot) + PoolFisherSettings.Instance.HeightModifier)
+                                ))
                             )),
 
 
@@ -661,18 +673,32 @@ namespace PoolFishingBuddy
                             new Decorator(ret => _currenthotspot >= HotspotList.Count,
                                 new Sequence(
                                     new Action(ret => bounceBack = true),
-                                    new Action(ret => _currenthotspot--))),
+                                    new Action(ret => _currenthotspot--),
+                                    new Action(ret => _modHotspot = HotspotList.ElementAt(_currenthotspot)),
+                                    new Action(ret => _modHotspot.Z = Helpers.NormalizeGroundZ(_modHotspot) + PoolFisherSettings.Instance.HeightModifier)
+                                    )),
 
                             new Decorator(ret => _currenthotspot == 0,
                                 new Sequence(
                                     new Action(ret => bounceBack = false),
-                                    new Action(ret => _currenthotspot++))),
+                                    new Action(ret => _currenthotspot++),
+                                    new Action(ret => _modHotspot = HotspotList.ElementAt(_currenthotspot)),
+                                    new Action(ret => _modHotspot.Z = Helpers.NormalizeGroundZ(_modHotspot) + PoolFisherSettings.Instance.HeightModifier)
+                                    )),
 
-                            new Decorator(ret => bounceBack && StyxWoW.Me.Location.Distance(HotspotList[_currenthotspot]) < 30,
-                                new Action(ret => _currenthotspot--)),
+                            new Decorator(ret => bounceBack && StyxWoW.Me.Location.Distance(_modHotspot) < 30,
+                                new Sequence(
+                                    new Action(ret => _currenthotspot--),
+                                    new Action(ret => _modHotspot = HotspotList.ElementAt(_currenthotspot)),
+                                    new Action(ret => _modHotspot.Z = Helpers.NormalizeGroundZ(_modHotspot) + PoolFisherSettings.Instance.HeightModifier)                                
+                                )),
 
-                            new Decorator(ret => !bounceBack && StyxWoW.Me.Location.Distance(HotspotList[_currenthotspot]) < 30,
-                                new Action(ret => _currenthotspot++))
+                            new Decorator(ret => !bounceBack && StyxWoW.Me.Location.Distance(_modHotspot) < 30,
+                                new Sequence(
+                                    new Action(ret => _currenthotspot++),
+                                    new Action(ret => _modHotspot = HotspotList.ElementAt(_currenthotspot)),
+                                    new Action(ret => _modHotspot.Z = Helpers.NormalizeGroundZ(_modHotspot) + PoolFisherSettings.Instance.HeightModifier)
+                                ))
                             
                             ))
                 ),
@@ -680,7 +706,7 @@ namespace PoolFishingBuddy
                 new DecoratorSetContext<WoWPoint>(() => HotspotList[_currenthotspot], hotspot => true,
                     new Sequence(
                         //new Action(ret => Logging.Write("Moving to hotspot: {0}", ret)),
-                        new ActionSetActivity(hotspot => "Moving to hotspot: " + (WoWPoint)hotspot + ", distance: " + ((WoWPoint)hotspot).Distance(StyxWoW.Me.Location)),
+                        new ActionSetActivity(hotspot => "Moving to hotspot: " + _modHotspot + ", distance: " + _modHotspot.Distance(StyxWoW.Me.Location)),
                         CreateMoveBehaviour())));
         }
 

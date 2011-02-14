@@ -42,6 +42,7 @@ namespace PoolFishingBuddy.Forms
             checkDescendHigher.Checked = PoolFisherSettings.Instance.DescendHigher;
             MaxCastAttemptsText.Text = PoolFisherSettings.Instance.MaxCastAttempts.ToString();
             MaxNewLocAttemptsText.Text = PoolFisherSettings.Instance.MaxNewLocAttempts.ToString();
+            numericHeightMod.Value = PoolFisherSettings.Instance.HeightModifier;
 
             #region Blacklist Schools
 
@@ -230,9 +231,9 @@ namespace PoolFishingBuddy.Forms
 
                 if (StyxWoW.Me.Inventory.Equipped.OffHand != null && StyxWoW.Me.Inventory.Equipped.OffHand.Entry == PoolFisherSettings.Instance.Offhand)
                 {
-                    PoolFisher.offhandList.Add(StyxWoW.Me.Inventory.Equipped.MainHand);
-                    comboOffhand.Items.Add(StyxWoW.Me.Inventory.Equipped.MainHand.Name);
-                    comboOffhand.SelectedItem = StyxWoW.Me.Inventory.Equipped.MainHand.Name;
+                    PoolFisher.offhandList.Add(StyxWoW.Me.Inventory.Equipped.OffHand);
+                    comboOffhand.Items.Add(StyxWoW.Me.Inventory.Equipped.OffHand.Name);
+                    comboOffhand.SelectedItem = StyxWoW.Me.Inventory.Equipped.OffHand.Name;
                 }
             }
             
@@ -250,6 +251,7 @@ namespace PoolFishingBuddy.Forms
             PoolFisherSettings.Instance.DescendHigher = checkDescendHigher.Checked;
             PoolFisherSettings.Instance.MaxNewLocAttempts = MaxLocAttempts;
             PoolFisherSettings.Instance.MaxCastAttempts = MaxCastAttempts;
+            PoolFisherSettings.Instance.HeightModifier = (int)numericHeightMod.Value;
 
             #region Lures
 

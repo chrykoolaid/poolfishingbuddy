@@ -20,6 +20,9 @@ namespace PoolFishingBuddy
         [Setting(Explanation = "Bounce mode on or not."), DefaultValue(false)]
         public bool BounceMode { get; set; }
 
+        [Setting(Explanation = "Modifier for height of profiles z-coords."), DefaultValue(0)]
+        public int HeightModifier { get; set; }
+
         [Setting(Explanation = "The maximum range of locations to fish from."), DefaultValue(20)]
         public int MaxCastRange { get; set; }
 
