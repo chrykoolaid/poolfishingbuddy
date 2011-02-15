@@ -31,11 +31,12 @@ namespace PoolFishingBuddy
         #region variables
 
         private Composite _root;
-        private int _currenthotspot = -1;
+        static public int _currenthotspot;
         static public WoWPoint _modHotspot;
         
         static public bool looking4NewPoint;
         static public bool looking4NewPool;
+        static public bool need2Lure;
         static public bool MeIsFishing;
         static public bool bounceBack = false;
         static public Thread MonitoringThread;
@@ -70,7 +71,7 @@ namespace PoolFishingBuddy
 
         #region Overrides of BotBase
 
-        private readonly Version _version = new Version(1, 0, 13);
+        private readonly Version _version = new Version(1, 0, 14);
 
         public override string Name
         {
@@ -86,6 +87,16 @@ namespace PoolFishingBuddy
             GrindArea = ProfileManager.CurrentProfile.GrindArea;
             HotspotList = GrindArea.Hotspots.ConvertAll<WoWPoint>(hs => hs.ToWoWPoint());
             BlackspotList = ProfileManager.CurrentProfile.Blackspots.ConvertAll<WoWPoint>(bs => bs.Location);
+
+            looking4NewPoint = false;
+            looking4NewPool = true;
+            MeIsFishing = false;
+            need2Lure = false;
+            castAttempts = 0;
+            newLocAttempts = 0;
+            PoolPoints.Clear();
+            Pool = null;
+            _currenthotspot = -1;
 
             WoWSpell Mount = WoWSpell.FromId(PoolFisherSettings.Instance.FlyingMountID);
 
@@ -121,12 +132,6 @@ namespace PoolFishingBuddy
             Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
 
             Helpers.blacklistSchoolsFromSettings();
-
-            looking4NewPoint = true;
-            looking4NewPool = true;
-            MeIsFishing = false;
-            newLocAttempts = 0;
-            PoolPoints.Clear();
 
             Styx.BotEvents.OnBotStart += Helpers.Init;
             Styx.BotEvents.OnBotStop += Helpers.Final;
@@ -201,9 +206,6 @@ namespace PoolFishingBuddy
 
                                 new Decorator(ret => PoolPoints.Count == 0,
                                     new PrioritySelector(
-
-                                        
-
                                         CreatePathBehaviour(),
                                         CreateLookForPoolBehaviour()
                                     
@@ -284,7 +286,7 @@ namespace PoolFishingBuddy
                                 )),
 
                                 // tries++
-                                new Decorator(ret => StyxWoW.Me.Location.Distance(PoolPoints[0]) <= 1.5 && !StyxWoW.Me.Mounted && !StyxWoW.Me.IsMoving,
+                                new Decorator(ret => StyxWoW.Me.Location.Distance(PoolPoints[0]) <= 2 && !StyxWoW.Me.Mounted && !StyxWoW.Me.IsMoving,
                                     new Sequence(
                                         new Wait(2, ret => MeIsFishing, new ActionIdle()),
                                         new Action(ret => newLocAttempts++),
@@ -486,6 +488,7 @@ namespace PoolFishingBuddy
                                             CreateMoveToPoolBehaviour()))
                         ))),
 
+
                         // Do we need to interact with the bobber?
                         new Decorator(ret => Helpers.BobberIsBobbing,
                             new Sequence(
@@ -573,25 +576,27 @@ namespace PoolFishingBuddy
                             new PrioritySelector(
 
                                 // Luring
-                                new Decorator(ret => PoolFisherSettings.Instance.useLure && !Helpers.IsLureOnPole,
+                                new Decorator(ret => PoolFisherSettings.Instance.useLure && !Helpers.LureIsOnPole && (!StyxWoW.Me.IsCasting || StyxWoW.Me.ChanneledCastingSpellId == 0),
                                     new Sequence(
+                                        new Action(ret => need2Lure = true),
                                         new Action(ret => StyxWoW.Me.SetFacing(Pool.Location)),
                                         new Action(ret => Thread.Sleep((Ping * 2) + 200)),
                                         new Action(ret => Helpers.applylure()),
-                                        new Wait(5, ret => !StyxWoW.Me.IsCasting, new ActionIdle()))),
+                                        new Wait(3, ret => Helpers.LureIsOnPole, new ActionIdle()))),
 
                                 // cast fishing
-                                new Sequence(
-                                    new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Missed the pool!", Helpers.TimeNow)),
-                                    new Action(ret => StyxWoW.Me.SetFacing(Pool.Location)),
-                                    //new Action(ret => Thread.Sleep((Ping * 2) + 200)),
-                                    new Action(ret => castAttempts++),
-                                    new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Casting.. Attempt: {1} of {2}.", Helpers.TimeNow, castAttempts, PoolFisherSettings.Instance.MaxCastAttempts)),
-                                    new Action(ret => TreeRoot.StatusText = "Cast Fishing."),
-                                    new Action(ret => SpellManager.Cast("Fishing")),
-                                    new Action(ret => Thread.Sleep((Ping * 2) + 250)),
-                                    new Wait(1, ret => !StyxWoW.Me.IsCasting, new ActionIdle()))
-                                )),
+                                new Decorator(ret => (PoolFisherSettings.Instance.useLure && Helpers.LureIsOnPole) || !PoolFisherSettings.Instance.useLure,
+                                    new Sequence(
+                                        new Action(ret => StyxWoW.Me.SetFacing(Pool.Location)),
+                                        //new Action(ret => Thread.Sleep((Ping * 2) + 250)),
+                                        new Action(ret => castAttempts++),
+                                        new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Casting.. Attempt: {1} of {2}.", Helpers.TimeNow, castAttempts, PoolFisherSettings.Instance.MaxCastAttempts)),
+                                        new Action(ret => TreeRoot.StatusText = "Cast Fishing"),
+                                        new Action(ret => SpellManager.Cast("Fishing")),
+                                        new Action(ret => Thread.Sleep((Ping * 2) + 250)),
+                                        new Wait(1, ret => !StyxWoW.Me.IsCasting, new ActionIdle())
+                                    ))
+                        )),
 
                         // Poolfishing
                         new Decorator(ret => !Helpers.IsFishing && !StyxWoW.Me.IsMoving && !StyxWoW.Me.Mounted && !StyxWoW.Me.IsSwimming && Helpers.PoolIsStillThere,
@@ -604,25 +609,27 @@ namespace PoolFishingBuddy
                                         new Action(ret => TreeRoot.Stop()))),
 
                                 // Luring
-                                new Decorator(ret => PoolFisherSettings.Instance.useLure && !Helpers.IsLureOnPole,
+                                new Decorator(ret => PoolFisherSettings.Instance.useLure && !Helpers.LureIsOnPole && (!StyxWoW.Me.IsCasting || StyxWoW.Me.ChanneledCastingSpellId == 0),
                                     new Sequence(
+                                        new Action(ret => need2Lure = true),
                                         new Action(ret => StyxWoW.Me.SetFacing(Pool.Location)),
                                         new Action(ret => Thread.Sleep((Ping * 2) + 200)),
                                         new Action(ret => Helpers.applylure()),
-                                        new Wait(5, ret => !StyxWoW.Me.IsCasting, new ActionIdle()))),
+                                        new Wait(3, ret => Helpers.LureIsOnPole, new ActionIdle()))),
 
                                 // cast fishing
-                                new Sequence(
-                                    new Action(ret => StyxWoW.Me.SetFacing(Pool.Location)),
-                                    new Action(ret => Thread.Sleep((Ping * 2) + 250)),
+                                new Decorator(ret => (PoolFisherSettings.Instance.useLure && Helpers.LureIsOnPole) || !PoolFisherSettings.Instance.useLure,
                                     new Sequence(
-                                    new Action(ret => castAttempts++),
-                                    new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Casting.. Attempt: {1} of {2}.", Helpers.TimeNow, castAttempts, PoolFisherSettings.Instance.MaxCastAttempts)),
-                                    new Action(ret => TreeRoot.StatusText = "Cast Fishing"),
-                                    new Action(ret => SpellManager.Cast("Fishing")),
-                                    new Action(ret => Thread.Sleep((Ping * 2) + 250)),
-                                    new Wait(1, ret => !StyxWoW.Me.IsCasting, new ActionIdle())
-                                    )))),
+                                        new Action(ret => StyxWoW.Me.SetFacing(Pool.Location)),
+                                        new Action(ret => Thread.Sleep((Ping * 2) + 250)),
+                                        new Action(ret => castAttempts++),
+                                        new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Casting.. Attempt: {1} of {2}.", Helpers.TimeNow, castAttempts, PoolFisherSettings.Instance.MaxCastAttempts)),
+                                        new Action(ret => TreeRoot.StatusText = "Cast Fishing"),
+                                        new Action(ret => SpellManager.Cast("Fishing")),
+                                        new Action(ret => Thread.Sleep((Ping * 2) + 250)),
+                                        new Wait(1, ret => !StyxWoW.Me.IsCasting, new ActionIdle())
+                                    ))
+                        )),
 
                         // The pool phased out
                         new Decorator(ret => PoolPoints.Count > 0 && PoolPoints[0].X == 0 && PoolPoints[0].Y == 0,
@@ -671,8 +678,11 @@ namespace PoolFishingBuddy
                                 new Sequence(
                                     new Action(ret => _currenthotspot++),
                                     //new Action(ret => Logging.Write("_currenthotspot: {0}, HotspotList.Count: {1}.", _currenthotspot, HotspotList.Count)),
-                                    new Action(ret => _modHotspot = HotspotList.ElementAt(_currenthotspot)),
-                                    new Action(ret => _modHotspot.Z = Helpers.increaseGroundZ(_modHotspot)) 
+                                    new Decorator(ret => _currenthotspot <= HotspotList.Count,
+                                        new Sequence(
+                                            new Action(ret => _modHotspot = HotspotList.ElementAt(_currenthotspot)),
+                                            new Action(ret => _modHotspot.Z = Helpers.increaseGroundZ(_modHotspot))
+                                    ))
                                 ))
                             )),
 
@@ -699,15 +709,21 @@ namespace PoolFishingBuddy
                             new Decorator(ret => bounceBack && StyxWoW.Me.Location.Distance(_modHotspot) < 30,
                                 new Sequence(
                                     new Action(ret => _currenthotspot--),
-                                    new Action(ret => _modHotspot = HotspotList.ElementAt(_currenthotspot)),
-                                    new Action(ret => _modHotspot.Z = Helpers.increaseGroundZ(_modHotspot))                                
+                                    new Decorator(ret => _currenthotspot >= 0,
+                                        new Sequence(
+                                            new Action(ret => _modHotspot = HotspotList.ElementAt(_currenthotspot)),
+                                            new Action(ret => _modHotspot.Z = Helpers.increaseGroundZ(_modHotspot))
+                                            ))
                                 )),
 
                             new Decorator(ret => !bounceBack && StyxWoW.Me.Location.Distance(_modHotspot) < 30,
                                 new Sequence(
                                     new Action(ret => _currenthotspot++),
-                                    new Action(ret => _modHotspot = HotspotList.ElementAt(_currenthotspot)),
-                                    new Action(ret => _modHotspot.Z = Helpers.increaseGroundZ(_modHotspot)) 
+                                    new Decorator(ret => _currenthotspot <= HotspotList.Count,
+                                        new Sequence(
+                                            new Action(ret => _modHotspot = HotspotList.ElementAt(_currenthotspot)),
+                                            new Action(ret => _modHotspot.Z = Helpers.increaseGroundZ(_modHotspot))
+                                            ))
                                 ))
                             
                             ))
@@ -747,7 +763,7 @@ namespace PoolFishingBuddy
                                 new Action(ret => Logging.Write("{0} - Mounting {1}.", Helpers.TimeNow, WoWSpell.FromId(PoolFisherSettings.Instance.FlyingMountID).Name)),
                                 new ActionSetActivity(spell => "Casting " + WoWSpell.FromId(PoolFisherSettings.Instance.FlyingMountID).Name),
                                 new Action(spell => WoWSpell.FromId(PoolFisherSettings.Instance.FlyingMountID).Cast()),
-                                new Wait(2, ret => StyxWoW.Me.IsCasting, new ActionIdle()),
+                                new Wait(2, ret => !StyxWoW.Me.IsCasting, new ActionIdle()),
                                 new Action(ret => Thread.Sleep(2000 + (Ping * 3))),
                                 new Action(ret => StyxWoW.SleepForLagDuration())
                                 )),
@@ -768,7 +784,7 @@ namespace PoolFishingBuddy
                                 new Action(ret => Logging.Write("{0} - Mounting {1}.", Helpers.TimeNow, WoWSpell.FromId(PoolFisherSettings.Instance.FlyingMountID).Name)),
                                 new ActionSetActivity(spell => "Casting " + WoWSpell.FromId(PoolFisherSettings.Instance.FlyingMountID).Name),
                                 new Action(spell => WoWSpell.FromId(PoolFisherSettings.Instance.FlyingMountID).Cast()),
-                                new Wait(2, ret => StyxWoW.Me.IsCasting, new ActionIdle()),
+                                new Wait(2, ret => !StyxWoW.Me.IsCasting, new ActionIdle()),
                                 new Action(ret => Thread.Sleep(2000 + (Ping * 3))),
                                 new Action(ret => StyxWoW.SleepForLagDuration())
                                     ))
@@ -782,7 +798,7 @@ namespace PoolFishingBuddy
                 CreateMoveStopBehaviour(),
                 new ActionSetActivity(spell => "Casting " + ((WoWSpell)spell).Name),
                 new Action(spell => ((WoWSpell)spell).Cast()),
-                new Wait(2, ret => StyxWoW.Me.IsCasting, new ActionIdle()),
+                new Wait(2, ret => !StyxWoW.Me.IsCasting, new ActionIdle()),
                 new Action(ret => StyxWoW.SleepForLagDuration()));
         }
 

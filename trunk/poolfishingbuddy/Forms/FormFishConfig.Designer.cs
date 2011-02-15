@@ -363,6 +363,7 @@
             this.checkUseLure.TabIndex = 13;
             this.checkUseLure.Text = "Use Lure:";
             this.checkUseLure.UseVisualStyleBackColor = true;
+            this.checkUseLure.CheckedChanged += new System.EventHandler(this.checkUseLure_CheckedChanged);
             // 
             // tabPage2
             // 

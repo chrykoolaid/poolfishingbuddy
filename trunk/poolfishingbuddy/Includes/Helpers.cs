@@ -126,13 +126,18 @@ namespace PoolFishingBuddy
         /// </summary>
         static public void Final(System.EventArgs args)
         {
-            PoolFisher.looking4NewPoint = true;
+            PoolFisher.looking4NewPoint = false;
             PoolFisher.looking4NewPool = true;
             PoolFisher.MeIsFishing = false;
+            PoolFisher.need2Lure = false;
             PoolFisher.newLocAttempts = 0;
+            PoolFisher.castAttempts = 0;
             PoolFisher.PoolPoints.Clear();
+            PoolFisher.Pool = null;
+            PoolFisher.GrindArea = null;
             PoolFisher.HotspotList.Clear();
             PoolFisher.BlackspotList.Clear();
+            PoolFisher._currenthotspot = -1;
             //equipWeapon();
         }
 
@@ -247,7 +252,8 @@ namespace PoolFishingBuddy
                 else if (PoolFisherSettings.Instance.FishingPole != 0)
                 {
                     Lua.DoString("EquipItemByName (\"" + PoolFisherSettings.Instance.FishingPole.ToString() + "\")", "fishingbuddy.lua");
-                    Thread.Sleep((PoolFisher.Ping * 2) + 500);
+                    while (StyxWoW.Me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass != WoWItemWeaponClass.FishingPole)
+                        Thread.Sleep((PoolFisher.Ping * 2) + 100);
                     return true;
                 }
                 return false;
@@ -285,62 +291,64 @@ namespace PoolFishingBuddy
             new LureType("Weather-Beaten Fishing Hat",33820)
         };
 
-        static public bool IsLureOnPole { get { return Lua.GetReturnVal<bool>("return GetWeaponEnchantInfo()", 0); } }
+        static public bool LureIsOnPole { get { return Lua.GetReturnValues("return GetWeaponEnchantInfo()", "fishingbuddy.lua")[0] == "1"; } }
 
         static public void applylure()
         {
-            //TreeRoot.StatusText = "Luring";
-            //if (StyxWoW.Me.Inventory.Equipped.MainHand != null && StyxWoW.Me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass != WoWItemWeaponClass.FishingPole || StyxWoW.Me.Mounted)
-
-            if (PoolFisherSettings.Instance.LureID == 33820)
+            if (PoolFisher.need2Lure && (!StyxWoW.Me.IsCasting || StyxWoW.Me.ChanneledCastingSpellId == 0))
             {
-                WoWItem head = StyxWoW.Me.Inventory.GetItemBySlot((uint)Styx.WoWEquipSlot.Head);
-                    
-                if (head != null && head.Entry == 33820)
+                if (PoolFisherSettings.Instance.LureID == 33820)
                 {
-                    if (head.Cooldown == 0)
+                    WoWItem head = StyxWoW.Me.Inventory.GetItemBySlot((uint)Styx.WoWEquipSlot.Head);
+
+                    if (head != null && head.Entry == 33820)
                     {
-                        TreeRoot.StatusText = "Luring";
-                        Logging.Write(System.Drawing.Color.Blue, "Appling Weather-Beaten Fishing Hat to fishing pole");
-                        head.Use();
-                        Thread.Sleep(PoolFisher.Ping * 2 + 50);
-                        while ((!StyxWoW.Me.Combat || !StyxWoW.Me.PetInCombat) && StyxWoW.Me.IsCasting)
-                            Thread.Sleep(100);
-                        Thread.Sleep((PoolFisher.Ping * 4) + 50);
+                        if (head.Cooldown == 0)
+                        {
+                            TreeRoot.StatusText = "Luring";
+                            Logging.Write(System.Drawing.Color.Blue, "Appling Weather-Beaten Fishing Hat to fishing pole");
+                            head.Use();
+                            Thread.Sleep(PoolFisher.Ping * 2 + 50);
+                            while ((!StyxWoW.Me.Combat || !StyxWoW.Me.PetInCombat) && (StyxWoW.Me.IsCasting || StyxWoW.Me.ChanneledCastingSpellId != 0))
+                                Thread.Sleep(150);
+                            Thread.Sleep(PoolFisher.Ping * 2 + 50);
+                            PoolFisher.need2Lure = false;
+                        }
+                        else
+                        {
+                            Logging.Write(System.Drawing.Color.Red, "{0} - Weather-Beaten Fishing Hat is on cooldown!", TimeNow);
+                        }
                     }
                     else
                     {
-                        Logging.Write(System.Drawing.Color.Red, "{0} - Weather-Beaten Fishing Hat is on cooldown!", TimeNow);
+                        Logging.Write(System.Drawing.Color.Red, "{0} - Weather-Beaten Fishing Hat is not euqipped, won't lure anymore!", TimeNow);
+                        PoolFisherSettings.Instance.Load();
+                        PoolFisherSettings.Instance.useLure = false;
+                        PoolFisherSettings.Instance.LureID = 0;
+                        PoolFisherSettings.Instance.Save();
                     }
                 }
                 else
                 {
-                    Logging.Write(System.Drawing.Color.Red, "{0} - Weather-Beaten Fishing Hat is not euqipped, won't lure anymore!", TimeNow);
-                    PoolFisherSettings.Instance.Load();
-                    PoolFisherSettings.Instance.useLure = false;
-                    PoolFisherSettings.Instance.LureID = 0;
-                    PoolFisherSettings.Instance.Save();
-                }
-            }
-            else
-            {
-                WoWItem _lureInBag = GetIteminBag((uint)PoolFisherSettings.Instance.LureID);
-                if (_lureInBag != null && _lureInBag.Use())
-                {
-                    TreeRoot.StatusText = "Luring";
-                    Logging.Write(System.Drawing.Color.Blue, "{0} - Appling lure to fishing pole", TimeNow);
-                    Thread.Sleep(PoolFisher.Ping * 2 + 50);
-                    while ((!StyxWoW.Me.Combat || !StyxWoW.Me.PetInCombat) && StyxWoW.Me.IsCasting)
-                        Thread.Sleep(100);
-                    Thread.Sleep(PoolFisher.Ping * 2 + 50);
-                }
-                else
-                {
-                    Logging.Write(System.Drawing.Color.Red, "{0} - Could not find lure, won't lure anymore!", TimeNow);
-                    PoolFisherSettings.Instance.Load();
-                    PoolFisherSettings.Instance.useLure = false;
-                    PoolFisherSettings.Instance.LureID = 0;
-                    PoolFisherSettings.Instance.Save();
+                    WoWItem _lureInBag = GetIteminBag((uint)PoolFisherSettings.Instance.LureID);
+                    if (_lureInBag != null && _lureInBag.Use())
+                    {
+                        TreeRoot.StatusText = "Luring";
+                        Logging.Write(System.Drawing.Color.Blue, "{0} - Appling lure to fishing pole", TimeNow);
+                        Thread.Sleep(PoolFisher.Ping * 2 + 50);
+                        while ((!StyxWoW.Me.Combat || !StyxWoW.Me.PetInCombat) && (StyxWoW.Me.IsCasting || StyxWoW.Me.ChanneledCastingSpellId != 0))
+                            Thread.Sleep(150);
+                        Thread.Sleep(PoolFisher.Ping * 2 + 50);
+                        PoolFisher.need2Lure = false;
+                    }
+                    else
+                    {
+                        Logging.Write(System.Drawing.Color.Red, "{0} - Could not find lure, won't lure anymore!", TimeNow);
+                        PoolFisherSettings.Instance.Load();
+                        PoolFisherSettings.Instance.useLure = false;
+                        PoolFisherSettings.Instance.LureID = 0;
+                        PoolFisherSettings.Instance.Save();
+                    }
                 }
             }
         }
@@ -740,138 +748,139 @@ namespace PoolFishingBuddy
         {
             if (PoolFisherSettings.Instance.BlacklistSchools)
             {
+                PoolFisher.PermaBlacklist.Clear();
                 Logging.Write(System.Drawing.Color.Red, "Ignoring Schools from Settings:");
                 Logging.Write(System.Drawing.Color.Red, "-------------------------------------------");
                 /// Cataclysm
-                if (PoolFisherSettings.Instance.BLAlbinoCavefish && !Styx.Logic.Blacklist.Contains(202778))
+                if (PoolFisherSettings.Instance.BLAlbinoCavefish && !PoolFisher.PermaBlacklist.Contains(202778))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Albino Cavefish");
                     PoolFisher.PermaBlacklist.Add(202778);
                 }
-                if (PoolFisherSettings.Instance.BLAlgaefinRockfish && !Styx.Logic.Blacklist.Contains(202781))
+                if (PoolFisherSettings.Instance.BLAlgaefinRockfish && !PoolFisher.PermaBlacklist.Contains(202781))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Algaefin Rockfish");
                     PoolFisher.PermaBlacklist.Add(202781);
                 }
-                if (PoolFisherSettings.Instance.BLBlackbellyMudfish && !Styx.Logic.Blacklist.Contains(202779))
+                if (PoolFisherSettings.Instance.BLBlackbellyMudfish && !PoolFisher.PermaBlacklist.Contains(202779))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Blackbelly Mudfish");
                     PoolFisher.PermaBlacklist.Add(202779);
                 }
-                if (PoolFisherSettings.Instance.BLFathomEel && !Styx.Logic.Blacklist.Contains(202780))
+                if (PoolFisherSettings.Instance.BLFathomEel && !PoolFisher.PermaBlacklist.Contains(202780))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Fathom Eel");
                     PoolFisher.PermaBlacklist.Add(202780);
                 }
 
-                if (PoolFisherSettings.Instance.BLHighlandGuppy && !Styx.Logic.Blacklist.Contains(202777))
+                if (PoolFisherSettings.Instance.BLHighlandGuppy && !PoolFisher.PermaBlacklist.Contains(202777))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Highland Guppy");
                     PoolFisher.PermaBlacklist.Add(202777);
                 }
-                if (PoolFisherSettings.Instance.BLMountainTrout && !Styx.Logic.Blacklist.Contains(202776))
+                if (PoolFisherSettings.Instance.BLMountainTrout && !PoolFisher.PermaBlacklist.Contains(202776))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Mountain Trout");
                     PoolFisher.PermaBlacklist.Add(202776);
                 }
-                if (PoolFisherSettings.Instance.BLPoolofFire && !Styx.Logic.Blacklist.Contains(207734))
+                if (PoolFisherSettings.Instance.BLPoolofFire && !PoolFisher.PermaBlacklist.Contains(207734))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Pool of Fire");
                     PoolFisher.PermaBlacklist.Add(207734);
                 }
-                if (PoolFisherSettings.Instance.BLShipwreckDebris && !Styx.Logic.Blacklist.Contains(207724))
+                if (PoolFisherSettings.Instance.BLShipwreckDebris && !PoolFisher.PermaBlacklist.Contains(207724))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Shipwreck Debris");
                     PoolFisher.PermaBlacklist.Add(207724);
                 }
                 /// Northrend
-                if (PoolFisherSettings.Instance.BLBoreanManOWar && !Styx.Logic.Blacklist.Contains(192051))
+                if (PoolFisherSettings.Instance.BLBoreanManOWar && !PoolFisher.PermaBlacklist.Contains(192051))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Borean Man O' War");
                     PoolFisher.PermaBlacklist.Add(192051);
                 }
-                if (PoolFisherSettings.Instance.BLDeepSeaMonsterbelly && !Styx.Logic.Blacklist.Contains(192053))
+                if (PoolFisherSettings.Instance.BLDeepSeaMonsterbelly && !PoolFisher.PermaBlacklist.Contains(192053))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Deep Sea Monsterbelly");
                     PoolFisher.PermaBlacklist.Add(192053);
                 }
-                if (PoolFisherSettings.Instance.BLDragonfinAngelfish && !Styx.Logic.Blacklist.Contains(192048))
+                if (PoolFisherSettings.Instance.BLDragonfinAngelfish && !PoolFisher.PermaBlacklist.Contains(192048))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Dragonfin Angelfish");
                     PoolFisher.PermaBlacklist.Add(192048);
                 }
-                if (PoolFisherSettings.Instance.BLFangtoothHerring && !Styx.Logic.Blacklist.Contains(192049))
+                if (PoolFisherSettings.Instance.BLFangtoothHerring && !PoolFisher.PermaBlacklist.Contains(192049))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Fangtooth Herring");
                     PoolFisher.PermaBlacklist.Add(192049);
                 }
-                if (PoolFisherSettings.Instance.BLGlacialSalmon && !Styx.Logic.Blacklist.Contains(192050))
+                if (PoolFisherSettings.Instance.BLGlacialSalmon && !PoolFisher.PermaBlacklist.Contains(192050))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Glacial Salmon");
                     PoolFisher.PermaBlacklist.Add(192050);
                 }
-                if (PoolFisherSettings.Instance.BLGlassfinMinnow && !Styx.Logic.Blacklist.Contains(192059))
+                if (PoolFisherSettings.Instance.BLGlassfinMinnow && !PoolFisher.PermaBlacklist.Contains(192059))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Glassfin Minnow");
                     PoolFisher.PermaBlacklist.Add(192059);
                 }
-                if (PoolFisherSettings.Instance.BLImperialMantaRay && !Styx.Logic.Blacklist.Contains(192052))
+                if (PoolFisherSettings.Instance.BLImperialMantaRay && !PoolFisher.PermaBlacklist.Contains(192052))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Imperial Manta Ray");
                     PoolFisher.PermaBlacklist.Add(192052);
                 }
-                if (PoolFisherSettings.Instance.BLMoonglowCuttlefish && !Styx.Logic.Blacklist.Contains(192054))
+                if (PoolFisherSettings.Instance.BLMoonglowCuttlefish && !PoolFisher.PermaBlacklist.Contains(192054))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Moonglow Cuttlefish");
                     PoolFisher.PermaBlacklist.Add(192054);
                 }
-                if (PoolFisherSettings.Instance.BLMusselbackSculpin && !Styx.Logic.Blacklist.Contains(192046))
+                if (PoolFisherSettings.Instance.BLMusselbackSculpin && !PoolFisher.PermaBlacklist.Contains(192046))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Musselback Sculpin");
                     PoolFisher.PermaBlacklist.Add(192046);
                 }
-                if (PoolFisherSettings.Instance.BLNettlefish && !Styx.Logic.Blacklist.Contains(192057))
+                if (PoolFisherSettings.Instance.BLNettlefish && !PoolFisher.PermaBlacklist.Contains(192057))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Nettlefish");
                     PoolFisher.PermaBlacklist.Add(192057);
                 }
                 /// Outlands
-                if (PoolFisherSettings.Instance.BLBluefish && !Styx.Logic.Blacklist.Contains(182959))
+                if (PoolFisherSettings.Instance.BLBluefish && !PoolFisher.PermaBlacklist.Contains(182959))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Bluefish");
                     PoolFisher.PermaBlacklist.Add(182959);
                 }
-                if (PoolFisherSettings.Instance.BLBrackishMix && !Styx.Logic.Blacklist.Contains(182954))
+                if (PoolFisherSettings.Instance.BLBrackishMix && !PoolFisher.PermaBlacklist.Contains(182954))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Brackish Mixed");
                     PoolFisher.PermaBlacklist.Add(182954);
                 }
-                if (PoolFisherSettings.Instance.BLHighlandMix && !Styx.Logic.Blacklist.Contains(182957))
+                if (PoolFisherSettings.Instance.BLHighlandMix && !PoolFisher.PermaBlacklist.Contains(182957))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Highland Mixed");
                     PoolFisher.PermaBlacklist.Add(182957);
                 }
-                if (PoolFisherSettings.Instance.BLMudfish && !Styx.Logic.Blacklist.Contains(182958))
+                if (PoolFisherSettings.Instance.BLMudfish && !PoolFisher.PermaBlacklist.Contains(182958))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Mudfish");
                     PoolFisher.PermaBlacklist.Add(182958);
                 }
-                if (PoolFisherSettings.Instance.BLPureWater && !Styx.Logic.Blacklist.Contains(182951))
+                if (PoolFisherSettings.Instance.BLPureWater && !PoolFisher.PermaBlacklist.Contains(182951))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Pure Water");
                     PoolFisher.PermaBlacklist.Add(182951);
                 }
-                if (PoolFisherSettings.Instance.BLDarter && !Styx.Logic.Blacklist.Contains(182956))
+                if (PoolFisherSettings.Instance.BLDarter && !PoolFisher.PermaBlacklist.Contains(182956))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Darter");
                     PoolFisher.PermaBlacklist.Add(182956);
                 }
-                if (PoolFisherSettings.Instance.BLSporefish && !Styx.Logic.Blacklist.Contains(182953))
+                if (PoolFisherSettings.Instance.BLSporefish && !PoolFisher.PermaBlacklist.Contains(182953))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Sporefish");
                     PoolFisher.PermaBlacklist.Add(182953);
                 }
-                if (PoolFisherSettings.Instance.BLSteamPumpFlotsam && !Styx.Logic.Blacklist.Contains(182952))
+                if (PoolFisherSettings.Instance.BLSteamPumpFlotsam && !PoolFisher.PermaBlacklist.Contains(182952))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Steam Pump Flotsam");
                     PoolFisher.PermaBlacklist.Add(182952);
