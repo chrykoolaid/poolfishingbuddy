@@ -342,6 +342,7 @@ namespace PoolFishingBuddy.Forms
                 PoolFisherSettings.Instance.BLDarter            = checkBLDarter.Checked;
                 PoolFisherSettings.Instance.BLSporefish         = checkBLSporefish.Checked;
                 PoolFisherSettings.Instance.BLSteamPumpFlotsam  = checkBLSteamPumpFlotsam.Checked;
+                Helpers.blacklistSchoolsFromSettings();
             }
             else
             {
@@ -374,6 +375,7 @@ namespace PoolFishingBuddy.Forms
                 PoolFisherSettings.Instance.BLDarter            = false;
                 PoolFisherSettings.Instance.BLSporefish         = false;
                 PoolFisherSettings.Instance.BLSteamPumpFlotsam  = false;
+                Helpers.blacklistSchoolsFromSettings();
             }
 
             #endregion
@@ -489,20 +491,6 @@ namespace PoolFishingBuddy.Forms
 
             PoolFisherSettings.Instance.Save();
             Close();
-        }
-
-        private void checkUseLure_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkUseLure.Checked)
-            {
-                comboLures.SelectedItem = null;
-                comboLures.Enabled = true;
-            }
-            else
-            {
-                comboLures.SelectedItem = null;
-                comboLures.Enabled = false;
-            }
         }
 
         private void buttonMonitor_Click(object sender, EventArgs e)
@@ -645,6 +633,20 @@ namespace PoolFishingBuddy.Forms
             else
             {
                 comboOffhand.Text = "Nothing found..";
+            }
+        }
+
+        private void checkUseLure_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkUseLure.Checked)
+            {
+                comboLures.SelectedItem = null;
+                comboLures.Enabled = true;
+            }
+            else
+            {
+                comboLures.SelectedItem = null;
+                comboLures.Enabled = false;
             }
         }
     }
