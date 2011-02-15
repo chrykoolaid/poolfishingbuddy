@@ -126,9 +126,14 @@ namespace PoolFishingBuddy
         /// </summary>
         static public void Final(System.EventArgs args)
         {
+            PoolFisher.looking4NewPoint = true;
+            PoolFisher.looking4NewPool = true;
+            PoolFisher.MeIsFishing = false;
+            PoolFisher.newLocAttempts = 0;
+            PoolFisher.PoolPoints.Clear();
             PoolFisher.HotspotList.Clear();
             PoolFisher.BlackspotList.Clear();
-            equipWeapon();
+            //equipWeapon();
         }
 
         /// <summary>
@@ -657,7 +662,7 @@ namespace PoolFishingBuddy
         {
             get
             {
-                Thread.Sleep((PoolFisher.Ping * 2) + 300);
+                Thread.Sleep((PoolFisher.Ping * 2) + 250);
                 if (FishingBobber != null && PoolFisher.Pool != null && FishingBobber != null)
                 {
                     if (FishingBobber.Location.Distance2D(PoolFisher.Pool.Location) <= 3.6f)
@@ -692,22 +697,52 @@ namespace PoolFishingBuddy
         }
 
         /// <summary>
-        /// Blacklists cataclysm pools from user settings.
+        /// Blacklists pools from user settings.
         /// </summary>
-        /// Albino Cavefish School      - 202778
-        /// Algaefin Rockfish School    - 202781
-        /// Blackbelly Mudfish School   - 202779
-        /// Fathom Eel School           - 202780
-        /// Highland Guppy School       - 202777
-        /// Mountain Trout School       - 202776
-        /// Pool of Fire                - 207734
-        /// Shipwreck Debris            - 207724
+        /// Cataclysm
+        /// ----------------
+        /// Albino Cavefish      - Entry: 202778
+        /// Algaefin Rockfish    - Entry: 202781
+        /// Blackbelly Mudfish   - Entry: 202779
+        /// Fathom Eel           - Entry: 202780
+        /// Highland Guppy       - Entry: 202777
+        /// Mountain Trout       - Entry: 202776
+        /// Pool of Fire                - Entry: 207734
+        /// Shipwreck Debris            - Entry: 207724
+        /// ----------------
+        /// Wrath of the Lichking
+        /// ----------------
+        /// Borean Man O' War / Boreanische Galeeren     - Entry: 192051
+        /// Deep Sea Monsterbelly / Tiefseemonsterbauch  - Entry: 192053
+        /// Dragonfin Angelfish / Engelsdrachenfisch     - Entry: 192048
+        /// Fangtooth Herring / Fangzahnhering           - Entry: 192049
+        /// Glacial Salmon / Winterlachs                 - Entry: 192050
+        /// Glassfin Minnow / Glasflossenelritze         - Entry: 192059
+        /// Imperial Manta Ray / Imperialer Mantarochen  - Entry: 192052
+        /// Moonglow Cuttlefish / Mondlichtsepia         - Entry: 192054
+        /// Musselback Sculpin / Muschelrückengroppe     - Entry: 192046
+        /// Nettlefish / Nesselfisch                     - Entry: 192057
+        /// ----------------
+        /// Burning Crusade
+        /// ----------------
+        /// Bluefish / Ein Schwarm Blauflossen              - Entry: 182959
+        /// Brackish Mixed / Brackwasserschwarm             - Entry: 182954
+        /// Highland Mixed / Hochlandschwarm                - Entry: 182957
+        /// Mudfish /Ein Schwarm Matschflosser              - Entry: 182958
+        /// Pure Water / Reines Wasser                      - Entry: 182951
+        /// Darter / Ein Schwarm Stachelflosser             - Entry: 182956
+        /// Sporefish / Ein Schwarm Sporenfische            - Entry: 182953
+        /// Steam Pump Flotsam / Treibgut der Dampfpumpe    - Entry: 182952
+        /// 
+
+
         public static void blacklistSchoolsFromSettings()
         {
             if (PoolFisherSettings.Instance.BlacklistSchools)
             {
                 Logging.Write(System.Drawing.Color.Red, "Ignoring Schools from Settings:");
                 Logging.Write(System.Drawing.Color.Red, "-------------------------------------------");
+                /// Cataclysm
                 if (PoolFisherSettings.Instance.BLAlbinoCavefish && !Styx.Logic.Blacklist.Contains(202778))
                 {
                     Logging.Write(System.Drawing.Color.Red, "Albino Cavefish");
@@ -748,6 +783,98 @@ namespace PoolFishingBuddy
                 {
                     Logging.Write(System.Drawing.Color.Red, "Shipwreck Debris");
                     PoolFisher.PermaBlacklist.Add(207724);
+                }
+                /// Northrend
+                if (PoolFisherSettings.Instance.BLBoreanManOWar && !Styx.Logic.Blacklist.Contains(192051))
+                {
+                    Logging.Write(System.Drawing.Color.Red, "Borean Man O' War");
+                    PoolFisher.PermaBlacklist.Add(192051);
+                }
+                if (PoolFisherSettings.Instance.BLDeepSeaMonsterbelly && !Styx.Logic.Blacklist.Contains(192053))
+                {
+                    Logging.Write(System.Drawing.Color.Red, "Deep Sea Monsterbelly");
+                    PoolFisher.PermaBlacklist.Add(192053);
+                }
+                if (PoolFisherSettings.Instance.BLDragonfinAngelfish && !Styx.Logic.Blacklist.Contains(192048))
+                {
+                    Logging.Write(System.Drawing.Color.Red, "Dragonfin Angelfish");
+                    PoolFisher.PermaBlacklist.Add(192048);
+                }
+                if (PoolFisherSettings.Instance.BLFangtoothHerring && !Styx.Logic.Blacklist.Contains(192049))
+                {
+                    Logging.Write(System.Drawing.Color.Red, "Fangtooth Herring");
+                    PoolFisher.PermaBlacklist.Add(192049);
+                }
+                if (PoolFisherSettings.Instance.BLGlacialSalmon && !Styx.Logic.Blacklist.Contains(192050))
+                {
+                    Logging.Write(System.Drawing.Color.Red, "Glacial Salmon");
+                    PoolFisher.PermaBlacklist.Add(192050);
+                }
+                if (PoolFisherSettings.Instance.BLGlassfinMinnow && !Styx.Logic.Blacklist.Contains(192059))
+                {
+                    Logging.Write(System.Drawing.Color.Red, "Glassfin Minnow");
+                    PoolFisher.PermaBlacklist.Add(192059);
+                }
+                if (PoolFisherSettings.Instance.BLImperialMantaRay && !Styx.Logic.Blacklist.Contains(192052))
+                {
+                    Logging.Write(System.Drawing.Color.Red, "Imperial Manta Ray");
+                    PoolFisher.PermaBlacklist.Add(192052);
+                }
+                if (PoolFisherSettings.Instance.BLMoonglowCuttlefish && !Styx.Logic.Blacklist.Contains(192054))
+                {
+                    Logging.Write(System.Drawing.Color.Red, "Moonglow Cuttlefish");
+                    PoolFisher.PermaBlacklist.Add(192054);
+                }
+                if (PoolFisherSettings.Instance.BLMusselbackSculpin && !Styx.Logic.Blacklist.Contains(192046))
+                {
+                    Logging.Write(System.Drawing.Color.Red, "Musselback Sculpin");
+                    PoolFisher.PermaBlacklist.Add(192046);
+                }
+                if (PoolFisherSettings.Instance.BLNettlefish && !Styx.Logic.Blacklist.Contains(192057))
+                {
+                    Logging.Write(System.Drawing.Color.Red, "Nettlefish");
+                    PoolFisher.PermaBlacklist.Add(192057);
+                }
+                /// Outlands
+                if (PoolFisherSettings.Instance.BLBluefish && !Styx.Logic.Blacklist.Contains(182959))
+                {
+                    Logging.Write(System.Drawing.Color.Red, "Bluefish");
+                    PoolFisher.PermaBlacklist.Add(182959);
+                }
+                if (PoolFisherSettings.Instance.BLBrackishMix && !Styx.Logic.Blacklist.Contains(182954))
+                {
+                    Logging.Write(System.Drawing.Color.Red, "Brackish Mixed");
+                    PoolFisher.PermaBlacklist.Add(182954);
+                }
+                if (PoolFisherSettings.Instance.BLHighlandMix && !Styx.Logic.Blacklist.Contains(182957))
+                {
+                    Logging.Write(System.Drawing.Color.Red, "Highland Mixed");
+                    PoolFisher.PermaBlacklist.Add(182957);
+                }
+                if (PoolFisherSettings.Instance.BLMudfish && !Styx.Logic.Blacklist.Contains(182958))
+                {
+                    Logging.Write(System.Drawing.Color.Red, "Mudfish");
+                    PoolFisher.PermaBlacklist.Add(182958);
+                }
+                if (PoolFisherSettings.Instance.BLPureWater && !Styx.Logic.Blacklist.Contains(182951))
+                {
+                    Logging.Write(System.Drawing.Color.Red, "Pure Water");
+                    PoolFisher.PermaBlacklist.Add(182951);
+                }
+                if (PoolFisherSettings.Instance.BLDarter && !Styx.Logic.Blacklist.Contains(182956))
+                {
+                    Logging.Write(System.Drawing.Color.Red, "Darter");
+                    PoolFisher.PermaBlacklist.Add(182956);
+                }
+                if (PoolFisherSettings.Instance.BLSporefish && !Styx.Logic.Blacklist.Contains(182953))
+                {
+                    Logging.Write(System.Drawing.Color.Red, "Sporefish");
+                    PoolFisher.PermaBlacklist.Add(182953);
+                }
+                if (PoolFisherSettings.Instance.BLSteamPumpFlotsam && !Styx.Logic.Blacklist.Contains(182952))
+                {
+                    Logging.Write(System.Drawing.Color.Red, "Steam Pump Flotsam");
+                    PoolFisher.PermaBlacklist.Add(182952);
                 }
                 Logging.Write(System.Drawing.Color.Red, "-------------------------------------------");
             }

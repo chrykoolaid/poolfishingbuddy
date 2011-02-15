@@ -54,17 +54,38 @@
             this.comboLures = new System.Windows.Forms.ComboBox();
             this.checkUseLure = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.comboBlacklist = new System.Windows.Forms.ComboBox();
-            this.checkBlacklistSchools = new System.Windows.Forms.CheckBox();
-            this.groupBoxCata = new System.Windows.Forms.GroupBox();
+            this.tabControlBlacklist = new System.Windows.Forms.TabControl();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
             this.checkBLShipwreckDebris = new System.Windows.Forms.CheckBox();
+            this.checkBLFathomEel = new System.Windows.Forms.CheckBox();
             this.checkBLPoolofFire = new System.Windows.Forms.CheckBox();
+            this.checkBLBlackbellyMudfish = new System.Windows.Forms.CheckBox();
             this.checkBLMountainTrout = new System.Windows.Forms.CheckBox();
+            this.checkBLAlbinoCavefish = new System.Windows.Forms.CheckBox();
             this.checkBLHighlandGuppy = new System.Windows.Forms.CheckBox();
             this.checkBLAlgaefinRockfish = new System.Windows.Forms.CheckBox();
-            this.checkBLAlbinoCavefish = new System.Windows.Forms.CheckBox();
-            this.checkBLFathomEel = new System.Windows.Forms.CheckBox();
-            this.checkBLBlackbellyMudfish = new System.Windows.Forms.CheckBox();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.checkBLNettlefish = new System.Windows.Forms.CheckBox();
+            this.checkBLMusselbackSculpin = new System.Windows.Forms.CheckBox();
+            this.checkBLMoonglowCuttlefish = new System.Windows.Forms.CheckBox();
+            this.checkBLImperialMantaRay = new System.Windows.Forms.CheckBox();
+            this.checkBLGlassfinMinnow = new System.Windows.Forms.CheckBox();
+            this.checkBLGlacialSalmon = new System.Windows.Forms.CheckBox();
+            this.checkBLFangtoothHerring = new System.Windows.Forms.CheckBox();
+            this.checkBLDragonfinAngelfish = new System.Windows.Forms.CheckBox();
+            this.checkBLDeepSeaMonsterbelly = new System.Windows.Forms.CheckBox();
+            this.checkBLBoreanManOWar = new System.Windows.Forms.CheckBox();
+            this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.checkBLSteamPumpFlotsam = new System.Windows.Forms.CheckBox();
+            this.checkBLSporefish = new System.Windows.Forms.CheckBox();
+            this.checkBLDarter = new System.Windows.Forms.CheckBox();
+            this.checkBLPureWater = new System.Windows.Forms.CheckBox();
+            this.checkBLMudfish = new System.Windows.Forms.CheckBox();
+            this.checkBLHighlandMix = new System.Windows.Forms.CheckBox();
+            this.checkBLBrackishMix = new System.Windows.Forms.CheckBox();
+            this.checkBLBluefish = new System.Windows.Forms.CheckBox();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.checkBlacklistSchools = new System.Windows.Forms.CheckBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.MaxNewLocAttemptsText = new System.Windows.Forms.MaskedTextBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -80,14 +101,17 @@
             this.tabPage1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            this.groupBoxCata.SuspendLayout();
+            this.tabControlBlacklist.SuspendLayout();
+            this.tabPage4.SuspendLayout();
+            this.tabPage5.SuspendLayout();
+            this.tabPage6.SuspendLayout();
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericHeightMod)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonSave
             // 
-            this.buttonSave.Location = new System.Drawing.Point(176, 381);
+            this.buttonSave.Location = new System.Drawing.Point(172, 460);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(76, 23);
             this.buttonSave.TabIndex = 1;
@@ -97,7 +121,7 @@
             // 
             // buttonChancel
             // 
-            this.buttonChancel.Location = new System.Drawing.Point(263, 381);
+            this.buttonChancel.Location = new System.Drawing.Point(259, 460);
             this.buttonChancel.Name = "buttonChancel";
             this.buttonChancel.Size = new System.Drawing.Size(75, 23);
             this.buttonChancel.TabIndex = 2;
@@ -164,7 +188,7 @@
             // 
             // TestButton
             // 
-            this.TestButton.Location = new System.Drawing.Point(4, 381);
+            this.TestButton.Location = new System.Drawing.Point(4, 460);
             this.TestButton.Name = "TestButton";
             this.TestButton.Size = new System.Drawing.Size(41, 23);
             this.TestButton.TabIndex = 13;
@@ -180,7 +204,7 @@
             this.tabControl1.Location = new System.Drawing.Point(4, 86);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(334, 289);
+            this.tabControl1.Size = new System.Drawing.Size(334, 368);
             this.tabControl1.TabIndex = 14;
             // 
             // tabPage1
@@ -199,7 +223,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(326, 263);
+            this.tabPage1.Size = new System.Drawing.Size(326, 342);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Fishing";
             // 
@@ -281,7 +305,6 @@
             this.buttonRefreshWeaponsAndPole.TabIndex = 29;
             this.buttonRefreshWeaponsAndPole.Text = "Refresh";
             this.buttonRefreshWeaponsAndPole.UseVisualStyleBackColor = true;
-            this.buttonRefreshWeaponsAndPole.Click += new System.EventHandler(this.buttonRefreshWeaponsAndPole_Click);
             // 
             // label7
             // 
@@ -339,32 +362,355 @@
             this.checkUseLure.TabIndex = 13;
             this.checkUseLure.Text = "Use Lure:";
             this.checkUseLure.UseVisualStyleBackColor = true;
-            this.checkUseLure.CheckedChanged += new System.EventHandler(this.checkUseLure_CheckedChanged);
             // 
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.White;
-            this.tabPage2.Controls.Add(this.comboBlacklist);
+            this.tabPage2.Controls.Add(this.tabControlBlacklist);
             this.tabPage2.Controls.Add(this.checkBlacklistSchools);
-            this.tabPage2.Controls.Add(this.groupBoxCata);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(326, 263);
+            this.tabPage2.Size = new System.Drawing.Size(326, 342);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Blacklisting";
             // 
-            // comboBlacklist
+            // tabControlBlacklist
             // 
-            this.comboBlacklist.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBlacklist.FormattingEnabled = true;
-            this.comboBlacklist.Items.AddRange(new object[] {
-            "Cataclysm"});
-            this.comboBlacklist.Location = new System.Drawing.Point(12, 35);
-            this.comboBlacklist.Name = "comboBlacklist";
-            this.comboBlacklist.Size = new System.Drawing.Size(184, 21);
-            this.comboBlacklist.TabIndex = 13;
-            this.comboBlacklist.SelectedIndexChanged += new System.EventHandler(this.ComboBlacklist_SelectedIndexChanged);
+            this.tabControlBlacklist.Controls.Add(this.tabPage4);
+            this.tabControlBlacklist.Controls.Add(this.tabPage5);
+            this.tabControlBlacklist.Controls.Add(this.tabPage6);
+            this.tabControlBlacklist.Controls.Add(this.tabPage7);
+            this.tabControlBlacklist.Location = new System.Drawing.Point(6, 25);
+            this.tabControlBlacklist.Name = "tabControlBlacklist";
+            this.tabControlBlacklist.SelectedIndex = 0;
+            this.tabControlBlacklist.Size = new System.Drawing.Size(314, 311);
+            this.tabControlBlacklist.TabIndex = 20;
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.checkBLShipwreckDebris);
+            this.tabPage4.Controls.Add(this.checkBLFathomEel);
+            this.tabPage4.Controls.Add(this.checkBLPoolofFire);
+            this.tabPage4.Controls.Add(this.checkBLBlackbellyMudfish);
+            this.tabPage4.Controls.Add(this.checkBLMountainTrout);
+            this.tabPage4.Controls.Add(this.checkBLAlbinoCavefish);
+            this.tabPage4.Controls.Add(this.checkBLHighlandGuppy);
+            this.tabPage4.Controls.Add(this.checkBLAlgaefinRockfish);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(306, 285);
+            this.tabPage4.TabIndex = 0;
+            this.tabPage4.Text = "Cataclysm";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // checkBLShipwreckDebris
+            // 
+            this.checkBLShipwreckDebris.AutoSize = true;
+            this.checkBLShipwreckDebris.Location = new System.Drawing.Point(6, 167);
+            this.checkBLShipwreckDebris.Name = "checkBLShipwreckDebris";
+            this.checkBLShipwreckDebris.Size = new System.Drawing.Size(213, 17);
+            this.checkBLShipwreckDebris.TabIndex = 15;
+            this.checkBLShipwreckDebris.Text = "Shipwreck Debris / Schiffwracktrümmer";
+            this.checkBLShipwreckDebris.UseVisualStyleBackColor = true;
+            // 
+            // checkBLFathomEel
+            // 
+            this.checkBLFathomEel.AutoSize = true;
+            this.checkBLFathomEel.Location = new System.Drawing.Point(6, 75);
+            this.checkBLFathomEel.Name = "checkBLFathomEel";
+            this.checkBLFathomEel.Size = new System.Drawing.Size(134, 17);
+            this.checkBLFathomEel.TabIndex = 1;
+            this.checkBLFathomEel.Text = "Fathom Eel / Klafteraal";
+            this.checkBLFathomEel.UseVisualStyleBackColor = true;
+            // 
+            // checkBLPoolofFire
+            // 
+            this.checkBLPoolofFire.AutoSize = true;
+            this.checkBLPoolofFire.Location = new System.Drawing.Point(6, 144);
+            this.checkBLPoolofFire.Name = "checkBLPoolofFire";
+            this.checkBLPoolofFire.Size = new System.Drawing.Size(140, 17);
+            this.checkBLPoolofFire.TabIndex = 14;
+            this.checkBLPoolofFire.Text = "Pool of Fire / Feuerteich";
+            this.checkBLPoolofFire.UseVisualStyleBackColor = true;
+            // 
+            // checkBLBlackbellyMudfish
+            // 
+            this.checkBLBlackbellyMudfish.AutoSize = true;
+            this.checkBLBlackbellyMudfish.Location = new System.Drawing.Point(6, 52);
+            this.checkBLBlackbellyMudfish.Name = "checkBLBlackbellyMudfish";
+            this.checkBLBlackbellyMudfish.Size = new System.Drawing.Size(260, 17);
+            this.checkBLBlackbellyMudfish.TabIndex = 0;
+            this.checkBLBlackbellyMudfish.Text = "Blackbelly Mudfish / Schwarzbauchmatschflosser";
+            this.checkBLBlackbellyMudfish.UseVisualStyleBackColor = true;
+            // 
+            // checkBLMountainTrout
+            // 
+            this.checkBLMountainTrout.AutoSize = true;
+            this.checkBLMountainTrout.Location = new System.Drawing.Point(6, 121);
+            this.checkBLMountainTrout.Name = "checkBLMountainTrout";
+            this.checkBLMountainTrout.Size = new System.Drawing.Size(159, 17);
+            this.checkBLMountainTrout.TabIndex = 13;
+            this.checkBLMountainTrout.Text = "Mountain Trout / Bergforelle";
+            this.checkBLMountainTrout.UseVisualStyleBackColor = true;
+            // 
+            // checkBLAlbinoCavefish
+            // 
+            this.checkBLAlbinoCavefish.AutoSize = true;
+            this.checkBLAlbinoCavefish.Location = new System.Drawing.Point(6, 6);
+            this.checkBLAlbinoCavefish.Name = "checkBLAlbinoCavefish";
+            this.checkBLAlbinoCavefish.Size = new System.Drawing.Size(193, 17);
+            this.checkBLAlbinoCavefish.TabIndex = 10;
+            this.checkBLAlbinoCavefish.Text = "Albino Cavefish / Albinohöhlenfisch";
+            this.checkBLAlbinoCavefish.UseVisualStyleBackColor = true;
+            // 
+            // checkBLHighlandGuppy
+            // 
+            this.checkBLHighlandGuppy.AutoSize = true;
+            this.checkBLHighlandGuppy.Location = new System.Drawing.Point(6, 98);
+            this.checkBLHighlandGuppy.Name = "checkBLHighlandGuppy";
+            this.checkBLHighlandGuppy.Size = new System.Drawing.Size(188, 17);
+            this.checkBLHighlandGuppy.TabIndex = 12;
+            this.checkBLHighlandGuppy.Text = "Highland Guppy / Hochlandguppy";
+            this.checkBLHighlandGuppy.UseVisualStyleBackColor = true;
+            // 
+            // checkBLAlgaefinRockfish
+            // 
+            this.checkBLAlgaefinRockfish.AutoSize = true;
+            this.checkBLAlgaefinRockfish.Location = new System.Drawing.Point(6, 29);
+            this.checkBLAlgaefinRockfish.Name = "checkBLAlgaefinRockfish";
+            this.checkBLAlgaefinRockfish.Size = new System.Drawing.Size(212, 17);
+            this.checkBLAlgaefinRockfish.TabIndex = 11;
+            this.checkBLAlgaefinRockfish.Text = "Algaefin Rockfish / Algenflossenbarsch";
+            this.checkBLAlgaefinRockfish.UseVisualStyleBackColor = true;
+            // 
+            // tabPage5
+            // 
+            this.tabPage5.Controls.Add(this.checkBLNettlefish);
+            this.tabPage5.Controls.Add(this.checkBLMusselbackSculpin);
+            this.tabPage5.Controls.Add(this.checkBLMoonglowCuttlefish);
+            this.tabPage5.Controls.Add(this.checkBLImperialMantaRay);
+            this.tabPage5.Controls.Add(this.checkBLGlassfinMinnow);
+            this.tabPage5.Controls.Add(this.checkBLGlacialSalmon);
+            this.tabPage5.Controls.Add(this.checkBLFangtoothHerring);
+            this.tabPage5.Controls.Add(this.checkBLDragonfinAngelfish);
+            this.tabPage5.Controls.Add(this.checkBLDeepSeaMonsterbelly);
+            this.tabPage5.Controls.Add(this.checkBLBoreanManOWar);
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage5.Size = new System.Drawing.Size(306, 285);
+            this.tabPage5.TabIndex = 1;
+            this.tabPage5.Text = "Northrend";
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // checkBLNettlefish
+            // 
+            this.checkBLNettlefish.AutoSize = true;
+            this.checkBLNettlefish.Location = new System.Drawing.Point(6, 213);
+            this.checkBLNettlefish.Name = "checkBLNettlefish";
+            this.checkBLNettlefish.Size = new System.Drawing.Size(135, 17);
+            this.checkBLNettlefish.TabIndex = 9;
+            this.checkBLNettlefish.Text = "Nettlefish / Nesselfisch";
+            this.checkBLNettlefish.UseVisualStyleBackColor = true;
+            // 
+            // checkBLMusselbackSculpin
+            // 
+            this.checkBLMusselbackSculpin.AutoSize = true;
+            this.checkBLMusselbackSculpin.Location = new System.Drawing.Point(6, 190);
+            this.checkBLMusselbackSculpin.Name = "checkBLMusselbackSculpin";
+            this.checkBLMusselbackSculpin.Size = new System.Drawing.Size(238, 17);
+            this.checkBLMusselbackSculpin.TabIndex = 8;
+            this.checkBLMusselbackSculpin.Text = "Musselback Sculpin / Muschelrückengroppe";
+            this.checkBLMusselbackSculpin.UseVisualStyleBackColor = true;
+            // 
+            // checkBLMoonglowCuttlefish
+            // 
+            this.checkBLMoonglowCuttlefish.AutoSize = true;
+            this.checkBLMoonglowCuttlefish.Location = new System.Drawing.Point(6, 167);
+            this.checkBLMoonglowCuttlefish.Name = "checkBLMoonglowCuttlefish";
+            this.checkBLMoonglowCuttlefish.Size = new System.Drawing.Size(203, 17);
+            this.checkBLMoonglowCuttlefish.TabIndex = 7;
+            this.checkBLMoonglowCuttlefish.Text = "Moonglow Cuttlefish / Mondlichtsepia";
+            this.checkBLMoonglowCuttlefish.UseVisualStyleBackColor = true;
+            // 
+            // checkBLImperialMantaRay
+            // 
+            this.checkBLImperialMantaRay.AutoSize = true;
+            this.checkBLImperialMantaRay.Location = new System.Drawing.Point(6, 144);
+            this.checkBLImperialMantaRay.Name = "checkBLImperialMantaRay";
+            this.checkBLImperialMantaRay.Size = new System.Drawing.Size(239, 17);
+            this.checkBLImperialMantaRay.TabIndex = 6;
+            this.checkBLImperialMantaRay.Text = "Imperial Manta Ray / Imperialer Mantarochen";
+            this.checkBLImperialMantaRay.UseVisualStyleBackColor = true;
+            // 
+            // checkBLGlassfinMinnow
+            // 
+            this.checkBLGlassfinMinnow.AutoSize = true;
+            this.checkBLGlassfinMinnow.Location = new System.Drawing.Point(6, 121);
+            this.checkBLGlassfinMinnow.Name = "checkBLGlassfinMinnow";
+            this.checkBLGlassfinMinnow.Size = new System.Drawing.Size(195, 17);
+            this.checkBLGlassfinMinnow.TabIndex = 5;
+            this.checkBLGlassfinMinnow.Text = "Glassfin Minnow / Glasflossenelritze";
+            this.checkBLGlassfinMinnow.UseVisualStyleBackColor = true;
+            // 
+            // checkBLGlacialSalmon
+            // 
+            this.checkBLGlacialSalmon.AutoSize = true;
+            this.checkBLGlacialSalmon.Location = new System.Drawing.Point(6, 98);
+            this.checkBLGlacialSalmon.Name = "checkBLGlacialSalmon";
+            this.checkBLGlacialSalmon.Size = new System.Drawing.Size(163, 17);
+            this.checkBLGlacialSalmon.TabIndex = 4;
+            this.checkBLGlacialSalmon.Text = "Glacial Salmon / Winterlachs";
+            this.checkBLGlacialSalmon.UseVisualStyleBackColor = true;
+            // 
+            // checkBLFangtoothHerring
+            // 
+            this.checkBLFangtoothHerring.AutoSize = true;
+            this.checkBLFangtoothHerring.Location = new System.Drawing.Point(6, 75);
+            this.checkBLFangtoothHerring.Name = "checkBLFangtoothHerring";
+            this.checkBLFangtoothHerring.Size = new System.Drawing.Size(198, 17);
+            this.checkBLFangtoothHerring.TabIndex = 3;
+            this.checkBLFangtoothHerring.Text = "Fangtooth Herring / Fangzahnhering";
+            this.checkBLFangtoothHerring.UseVisualStyleBackColor = true;
+            // 
+            // checkBLDragonfinAngelfish
+            // 
+            this.checkBLDragonfinAngelfish.AutoSize = true;
+            this.checkBLDragonfinAngelfish.Location = new System.Drawing.Point(6, 52);
+            this.checkBLDragonfinAngelfish.Name = "checkBLDragonfinAngelfish";
+            this.checkBLDragonfinAngelfish.Size = new System.Drawing.Size(222, 17);
+            this.checkBLDragonfinAngelfish.TabIndex = 2;
+            this.checkBLDragonfinAngelfish.Text = "Dragonfin Angelfish / Engelsdrachenfisch";
+            this.checkBLDragonfinAngelfish.UseVisualStyleBackColor = true;
+            // 
+            // checkBLDeepSeaMonsterbelly
+            // 
+            this.checkBLDeepSeaMonsterbelly.AutoSize = true;
+            this.checkBLDeepSeaMonsterbelly.Location = new System.Drawing.Point(6, 29);
+            this.checkBLDeepSeaMonsterbelly.Name = "checkBLDeepSeaMonsterbelly";
+            this.checkBLDeepSeaMonsterbelly.Size = new System.Drawing.Size(249, 17);
+            this.checkBLDeepSeaMonsterbelly.TabIndex = 1;
+            this.checkBLDeepSeaMonsterbelly.Text = "Deep Sea Monsterbelly / Tiefseemonsterbauch";
+            this.checkBLDeepSeaMonsterbelly.UseVisualStyleBackColor = true;
+            // 
+            // checkBLBoreanManOWar
+            // 
+            this.checkBLBoreanManOWar.AutoSize = true;
+            this.checkBLBoreanManOWar.Location = new System.Drawing.Point(6, 6);
+            this.checkBLBoreanManOWar.Name = "checkBLBoreanManOWar";
+            this.checkBLBoreanManOWar.Size = new System.Drawing.Size(236, 17);
+            this.checkBLBoreanManOWar.TabIndex = 0;
+            this.checkBLBoreanManOWar.Text = "Borean Man O\' War / Boreanische Galeeren";
+            this.checkBLBoreanManOWar.UseVisualStyleBackColor = true;
+            // 
+            // tabPage6
+            // 
+            this.tabPage6.Controls.Add(this.checkBLSteamPumpFlotsam);
+            this.tabPage6.Controls.Add(this.checkBLSporefish);
+            this.tabPage6.Controls.Add(this.checkBLDarter);
+            this.tabPage6.Controls.Add(this.checkBLPureWater);
+            this.tabPage6.Controls.Add(this.checkBLMudfish);
+            this.tabPage6.Controls.Add(this.checkBLHighlandMix);
+            this.tabPage6.Controls.Add(this.checkBLBrackishMix);
+            this.tabPage6.Controls.Add(this.checkBLBluefish);
+            this.tabPage6.Location = new System.Drawing.Point(4, 22);
+            this.tabPage6.Name = "tabPage6";
+            this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage6.Size = new System.Drawing.Size(306, 285);
+            this.tabPage6.TabIndex = 2;
+            this.tabPage6.Text = "Outlands";
+            this.tabPage6.UseVisualStyleBackColor = true;
+            // 
+            // checkBLSteamPumpFlotsam
+            // 
+            this.checkBLSteamPumpFlotsam.AutoSize = true;
+            this.checkBLSteamPumpFlotsam.Location = new System.Drawing.Point(6, 167);
+            this.checkBLSteamPumpFlotsam.Name = "checkBLSteamPumpFlotsam";
+            this.checkBLSteamPumpFlotsam.Size = new System.Drawing.Size(259, 17);
+            this.checkBLSteamPumpFlotsam.TabIndex = 7;
+            this.checkBLSteamPumpFlotsam.Text = "Steam Pump Flotsam / Treibgut der Dampfpumpe";
+            this.checkBLSteamPumpFlotsam.UseVisualStyleBackColor = true;
+            // 
+            // checkBLSporefish
+            // 
+            this.checkBLSporefish.AutoSize = true;
+            this.checkBLSporefish.Location = new System.Drawing.Point(6, 144);
+            this.checkBLSporefish.Name = "checkBLSporefish";
+            this.checkBLSporefish.Size = new System.Drawing.Size(137, 17);
+            this.checkBLSporefish.TabIndex = 6;
+            this.checkBLSporefish.Text = "Sporefish / Sporenfisch";
+            this.checkBLSporefish.UseVisualStyleBackColor = true;
+            // 
+            // checkBLDarter
+            // 
+            this.checkBLDarter.AutoSize = true;
+            this.checkBLDarter.Location = new System.Drawing.Point(6, 121);
+            this.checkBLDarter.Name = "checkBLDarter";
+            this.checkBLDarter.Size = new System.Drawing.Size(132, 17);
+            this.checkBLDarter.TabIndex = 5;
+            this.checkBLDarter.Text = "Darter / Stachelflosser";
+            this.checkBLDarter.UseVisualStyleBackColor = true;
+            // 
+            // checkBLPureWater
+            // 
+            this.checkBLPureWater.AutoSize = true;
+            this.checkBLPureWater.Location = new System.Drawing.Point(6, 98);
+            this.checkBLPureWater.Name = "checkBLPureWater";
+            this.checkBLPureWater.Size = new System.Drawing.Size(163, 17);
+            this.checkBLPureWater.TabIndex = 4;
+            this.checkBLPureWater.Text = "Pure Water / Reines Wasser";
+            this.checkBLPureWater.UseVisualStyleBackColor = true;
+            // 
+            // checkBLMudfish
+            // 
+            this.checkBLMudfish.AutoSize = true;
+            this.checkBLMudfish.Location = new System.Drawing.Point(6, 75);
+            this.checkBLMudfish.Name = "checkBLMudfish";
+            this.checkBLMudfish.Size = new System.Drawing.Size(139, 17);
+            this.checkBLMudfish.TabIndex = 3;
+            this.checkBLMudfish.Text = "Mudfish / Matschflosser";
+            this.checkBLMudfish.UseVisualStyleBackColor = true;
+            // 
+            // checkBLHighlandMix
+            // 
+            this.checkBLHighlandMix.AutoSize = true;
+            this.checkBLHighlandMix.Location = new System.Drawing.Point(6, 52);
+            this.checkBLHighlandMix.Name = "checkBLHighlandMix";
+            this.checkBLHighlandMix.Size = new System.Drawing.Size(186, 17);
+            this.checkBLHighlandMix.TabIndex = 2;
+            this.checkBLHighlandMix.Text = "Highland Mix / Hochlandschwarm";
+            this.checkBLHighlandMix.UseVisualStyleBackColor = true;
+            // 
+            // checkBLBrackishMix
+            // 
+            this.checkBLBrackishMix.AutoSize = true;
+            this.checkBLBrackishMix.Location = new System.Drawing.Point(6, 29);
+            this.checkBLBrackishMix.Name = "checkBLBrackishMix";
+            this.checkBLBrackishMix.Size = new System.Drawing.Size(200, 17);
+            this.checkBLBrackishMix.TabIndex = 1;
+            this.checkBLBrackishMix.Text = "Brackish Mix / Brackwasserschwarm";
+            this.checkBLBrackishMix.UseVisualStyleBackColor = true;
+            // 
+            // checkBLBluefish
+            // 
+            this.checkBLBluefish.AutoSize = true;
+            this.checkBLBluefish.Location = new System.Drawing.Point(6, 6);
+            this.checkBLBluefish.Name = "checkBLBluefish";
+            this.checkBLBluefish.Size = new System.Drawing.Size(122, 17);
+            this.checkBLBluefish.TabIndex = 0;
+            this.checkBLBluefish.Text = "Bluefish / Blauflosse";
+            this.checkBLBluefish.UseVisualStyleBackColor = true;
+            // 
+            // tabPage7
+            // 
+            this.tabPage7.Location = new System.Drawing.Point(4, 22);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Size = new System.Drawing.Size(306, 285);
+            this.tabPage7.TabIndex = 3;
+            this.tabPage7.Text = "Old Azeroth";
+            this.tabPage7.UseVisualStyleBackColor = true;
             // 
             // checkBlacklistSchools
             // 
@@ -378,102 +724,6 @@
             this.checkBlacklistSchools.UseVisualStyleBackColor = false;
             this.checkBlacklistSchools.CheckedChanged += new System.EventHandler(this.checkBlacklistSchools_CheckedChanged);
             // 
-            // groupBoxCata
-            // 
-            this.groupBoxCata.Controls.Add(this.checkBLShipwreckDebris);
-            this.groupBoxCata.Controls.Add(this.checkBLPoolofFire);
-            this.groupBoxCata.Controls.Add(this.checkBLMountainTrout);
-            this.groupBoxCata.Controls.Add(this.checkBLHighlandGuppy);
-            this.groupBoxCata.Controls.Add(this.checkBLAlgaefinRockfish);
-            this.groupBoxCata.Controls.Add(this.checkBLAlbinoCavefish);
-            this.groupBoxCata.Controls.Add(this.checkBLFathomEel);
-            this.groupBoxCata.Controls.Add(this.checkBLBlackbellyMudfish);
-            this.groupBoxCata.Location = new System.Drawing.Point(4, 50);
-            this.groupBoxCata.Name = "groupBoxCata";
-            this.groupBoxCata.Size = new System.Drawing.Size(316, 198);
-            this.groupBoxCata.TabIndex = 14;
-            this.groupBoxCata.TabStop = false;
-            // 
-            // checkBLShipwreckDebris
-            // 
-            this.checkBLShipwreckDebris.AutoSize = true;
-            this.checkBLShipwreckDebris.Location = new System.Drawing.Point(8, 174);
-            this.checkBLShipwreckDebris.Name = "checkBLShipwreckDebris";
-            this.checkBLShipwreckDebris.Size = new System.Drawing.Size(213, 17);
-            this.checkBLShipwreckDebris.TabIndex = 15;
-            this.checkBLShipwreckDebris.Text = "Shipwreck Debris / Schiffwracktrümmer";
-            this.checkBLShipwreckDebris.UseVisualStyleBackColor = true;
-            // 
-            // checkBLPoolofFire
-            // 
-            this.checkBLPoolofFire.AutoSize = true;
-            this.checkBLPoolofFire.Location = new System.Drawing.Point(8, 151);
-            this.checkBLPoolofFire.Name = "checkBLPoolofFire";
-            this.checkBLPoolofFire.Size = new System.Drawing.Size(140, 17);
-            this.checkBLPoolofFire.TabIndex = 14;
-            this.checkBLPoolofFire.Text = "Pool of Fire / Feuerteich";
-            this.checkBLPoolofFire.UseVisualStyleBackColor = true;
-            // 
-            // checkBLMountainTrout
-            // 
-            this.checkBLMountainTrout.AutoSize = true;
-            this.checkBLMountainTrout.Location = new System.Drawing.Point(8, 128);
-            this.checkBLMountainTrout.Name = "checkBLMountainTrout";
-            this.checkBLMountainTrout.Size = new System.Drawing.Size(159, 17);
-            this.checkBLMountainTrout.TabIndex = 13;
-            this.checkBLMountainTrout.Text = "Mountain Trout / Bergforelle";
-            this.checkBLMountainTrout.UseVisualStyleBackColor = true;
-            // 
-            // checkBLHighlandGuppy
-            // 
-            this.checkBLHighlandGuppy.AutoSize = true;
-            this.checkBLHighlandGuppy.Location = new System.Drawing.Point(8, 104);
-            this.checkBLHighlandGuppy.Name = "checkBLHighlandGuppy";
-            this.checkBLHighlandGuppy.Size = new System.Drawing.Size(188, 17);
-            this.checkBLHighlandGuppy.TabIndex = 12;
-            this.checkBLHighlandGuppy.Text = "Highland Guppy / Hochlandguppy";
-            this.checkBLHighlandGuppy.UseVisualStyleBackColor = true;
-            // 
-            // checkBLAlgaefinRockfish
-            // 
-            this.checkBLAlgaefinRockfish.AutoSize = true;
-            this.checkBLAlgaefinRockfish.Location = new System.Drawing.Point(8, 35);
-            this.checkBLAlgaefinRockfish.Name = "checkBLAlgaefinRockfish";
-            this.checkBLAlgaefinRockfish.Size = new System.Drawing.Size(212, 17);
-            this.checkBLAlgaefinRockfish.TabIndex = 11;
-            this.checkBLAlgaefinRockfish.Text = "Algaefin Rockfish / Algenflossenbarsch";
-            this.checkBLAlgaefinRockfish.UseVisualStyleBackColor = true;
-            // 
-            // checkBLAlbinoCavefish
-            // 
-            this.checkBLAlbinoCavefish.AutoSize = true;
-            this.checkBLAlbinoCavefish.Location = new System.Drawing.Point(8, 13);
-            this.checkBLAlbinoCavefish.Name = "checkBLAlbinoCavefish";
-            this.checkBLAlbinoCavefish.Size = new System.Drawing.Size(193, 17);
-            this.checkBLAlbinoCavefish.TabIndex = 10;
-            this.checkBLAlbinoCavefish.Text = "Albino Cavefish / Albinohöhlenfisch";
-            this.checkBLAlbinoCavefish.UseVisualStyleBackColor = true;
-            // 
-            // checkBLFathomEel
-            // 
-            this.checkBLFathomEel.AutoSize = true;
-            this.checkBLFathomEel.Location = new System.Drawing.Point(8, 81);
-            this.checkBLFathomEel.Name = "checkBLFathomEel";
-            this.checkBLFathomEel.Size = new System.Drawing.Size(134, 17);
-            this.checkBLFathomEel.TabIndex = 1;
-            this.checkBLFathomEel.Text = "Fathom Eel / Klafteraal";
-            this.checkBLFathomEel.UseVisualStyleBackColor = true;
-            // 
-            // checkBLBlackbellyMudfish
-            // 
-            this.checkBLBlackbellyMudfish.AutoSize = true;
-            this.checkBLBlackbellyMudfish.Location = new System.Drawing.Point(8, 58);
-            this.checkBLBlackbellyMudfish.Name = "checkBLBlackbellyMudfish";
-            this.checkBLBlackbellyMudfish.Size = new System.Drawing.Size(260, 17);
-            this.checkBLBlackbellyMudfish.TabIndex = 0;
-            this.checkBLBlackbellyMudfish.Text = "Blackbelly Mudfish / Schwarzbauchmatschflosser";
-            this.checkBLBlackbellyMudfish.UseVisualStyleBackColor = true;
-            // 
             // tabPage3
             // 
             this.tabPage3.BackColor = System.Drawing.Color.White;
@@ -483,7 +733,7 @@
             this.tabPage3.Controls.Add(this.checkDescendHigher);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(326, 263);
+            this.tabPage3.Size = new System.Drawing.Size(326, 342);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Movement";
             // 
@@ -528,13 +778,12 @@
             // 
             // buttonMonitor
             // 
-            this.buttonMonitor.Location = new System.Drawing.Point(51, 381);
+            this.buttonMonitor.Location = new System.Drawing.Point(51, 460);
             this.buttonMonitor.Name = "buttonMonitor";
             this.buttonMonitor.Size = new System.Drawing.Size(75, 23);
             this.buttonMonitor.TabIndex = 15;
             this.buttonMonitor.Text = "Start Monitor";
             this.buttonMonitor.UseVisualStyleBackColor = true;
-            this.buttonMonitor.Click += new System.EventHandler(this.buttonMonitor_Click);
             // 
             // label8
             // 
@@ -581,7 +830,7 @@
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(341, 410);
+            this.ClientSize = new System.Drawing.Size(341, 495);
             this.ControlBox = false;
             this.Controls.Add(this.numericHeightMod);
             this.Controls.Add(this.label9);
@@ -608,8 +857,13 @@
             this.groupBox1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
-            this.groupBoxCata.ResumeLayout(false);
-            this.groupBoxCata.PerformLayout();
+            this.tabControlBlacklist.ResumeLayout(false);
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
+            this.tabPage5.ResumeLayout(false);
+            this.tabPage5.PerformLayout();
+            this.tabPage6.ResumeLayout(false);
+            this.tabPage6.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericHeightMod)).EndInit();
@@ -632,9 +886,7 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.ComboBox comboBlacklist;
         private System.Windows.Forms.CheckBox checkBlacklistSchools;
-        private System.Windows.Forms.GroupBox groupBoxCata;
         private System.Windows.Forms.CheckBox checkBLShipwreckDebris;
         private System.Windows.Forms.CheckBox checkBLPoolofFire;
         private System.Windows.Forms.CheckBox checkBLMountainTrout;
@@ -667,6 +919,29 @@
         private System.Windows.Forms.Button buttonRefreshWeaponsAndPole;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.NumericUpDown numericHeightMod;
+        private System.Windows.Forms.TabControl tabControlBlacklist;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.TabPage tabPage6;
+        private System.Windows.Forms.TabPage tabPage7;
+        private System.Windows.Forms.CheckBox checkBLBoreanManOWar;
+        private System.Windows.Forms.CheckBox checkBLMoonglowCuttlefish;
+        private System.Windows.Forms.CheckBox checkBLImperialMantaRay;
+        private System.Windows.Forms.CheckBox checkBLGlassfinMinnow;
+        private System.Windows.Forms.CheckBox checkBLGlacialSalmon;
+        private System.Windows.Forms.CheckBox checkBLFangtoothHerring;
+        private System.Windows.Forms.CheckBox checkBLDragonfinAngelfish;
+        private System.Windows.Forms.CheckBox checkBLDeepSeaMonsterbelly;
+        private System.Windows.Forms.CheckBox checkBLNettlefish;
+        private System.Windows.Forms.CheckBox checkBLMusselbackSculpin;
+        private System.Windows.Forms.CheckBox checkBLSteamPumpFlotsam;
+        private System.Windows.Forms.CheckBox checkBLSporefish;
+        private System.Windows.Forms.CheckBox checkBLDarter;
+        private System.Windows.Forms.CheckBox checkBLPureWater;
+        private System.Windows.Forms.CheckBox checkBLMudfish;
+        private System.Windows.Forms.CheckBox checkBLHighlandMix;
+        private System.Windows.Forms.CheckBox checkBLBrackishMix;
+        private System.Windows.Forms.CheckBox checkBLBluefish;
 
     }
 }
