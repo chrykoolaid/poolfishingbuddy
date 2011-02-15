@@ -305,6 +305,7 @@
             this.buttonRefreshWeaponsAndPole.TabIndex = 29;
             this.buttonRefreshWeaponsAndPole.Text = "Refresh";
             this.buttonRefreshWeaponsAndPole.UseVisualStyleBackColor = true;
+            this.buttonRefreshWeaponsAndPole.Click += new System.EventHandler(this.buttonRefreshWeaponsAndPole_Click);
             // 
             // label7
             // 
