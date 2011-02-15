@@ -70,7 +70,7 @@ namespace PoolFishingBuddy
 
         #region Overrides of BotBase
 
-        private readonly Version _version = new Version(1, 0, 11);
+        private readonly Version _version = new Version(1, 0, 12);
 
         public override string Name
         {
@@ -93,7 +93,7 @@ namespace PoolFishingBuddy
             Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
             Logging.Write(System.Drawing.Color.Green, "Flying Mount: {0}", Mount.Name);
             Logging.Write(System.Drawing.Color.Green, "Height: {0}", PoolFisherSettings.Instance.HeightModifier);
-            Logging.Write(System.Drawing.Color.Green, "Mode: {0}", PoolFisherSettings.Instance.ProfileMode);
+            Logging.Write(System.Drawing.Color.Green, "Mode: {0}", PoolFisherSettings.Instance.BounceMode);
             Logging.Write(System.Drawing.Color.Green, "Max. range to cast: {0}", PoolFisherSettings.Instance.MaxCastRange);
             Logging.Write(System.Drawing.Color.Green, "Max. attempts to cast: {0}", PoolFisherSettings.Instance.MaxCastAttempts);
             Logging.Write(System.Drawing.Color.Green, "Ninja Pools: {0}", PoolFisherSettings.Instance.NinjaPools);
@@ -166,6 +166,7 @@ namespace PoolFishingBuddy
                             new Sequence(
                                 new Action(ret => MeIsFishing = false),
                                 new Action(ret => newLocAttempts = 0),
+                                new Action(ret => castAttempts = 0),
                                 new Action(ret => Helpers.equipWeapon()),
                                 LevelBot.CreateCombatBehavior())),
 
@@ -583,7 +584,7 @@ namespace PoolFishingBuddy
                                 new Sequence(
                                     new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Missed the pool!", Helpers.TimeNow)),
                                     new Action(ret => StyxWoW.Me.SetFacing(Pool.Location)),
-                                    new Action(ret => Thread.Sleep((Ping * 2) + 200)),
+                                    //new Action(ret => Thread.Sleep((Ping * 2) + 200)),
                                     new Action(ret => castAttempts++),
                                     new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Casting.. Attempt: {1} of {2}.", Helpers.TimeNow, castAttempts, PoolFisherSettings.Instance.MaxCastAttempts)),
                                     new Action(ret => TreeRoot.StatusText = "Cast Fishing."),
@@ -656,7 +657,7 @@ namespace PoolFishingBuddy
                 // bounce or circle mode?
                 new PrioritySelector(
 
-                    new Decorator(ret => !PoolFisherSettings.Instance.ProfileMode,
+                    new Decorator(ret => !PoolFisherSettings.Instance.BounceMode,
                         new PrioritySelector(
 
                             new Decorator(ret => _currenthotspot >= HotspotList.Count,
@@ -669,13 +670,14 @@ namespace PoolFishingBuddy
                             new Decorator(ret => StyxWoW.Me.Location.Distance(_modHotspot) < 30,
                                 new Sequence(
                                     new Action(ret => _currenthotspot++),
+                                    //new Action(ret => Logging.Write("_currenthotspot: {0}, HotspotList.Count: {1}.", _currenthotspot, HotspotList.Count)),
                                     new Action(ret => _modHotspot = HotspotList.ElementAt(_currenthotspot)),
                                     new Action(ret => _modHotspot.Z = Helpers.increaseGroundZ(_modHotspot)) 
                                 ))
                             )),
 
 
-                    new Decorator(ret => PoolFisherSettings.Instance.ProfileMode,
+                    new Decorator(ret => PoolFisherSettings.Instance.BounceMode,
                         new PrioritySelector(
                             
                             new Decorator(ret => _currenthotspot >= HotspotList.Count,

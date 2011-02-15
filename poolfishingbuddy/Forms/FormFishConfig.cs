@@ -45,20 +45,14 @@ namespace PoolFishingBuddy.Forms
             MaxNewLocAttemptsText.Text = PoolFisherSettings.Instance.MaxNewLocAttempts.ToString();
             numericHeightMod.Value = PoolFisherSettings.Instance.HeightModifier;
 
-            #region Blacklist Schools
+            #region Blacklist
 
             checkBlacklistSchools.Checked = PoolFisherSettings.Instance.BlacklistSchools;
+            tabControlBlacklist.Visible = PoolFisherSettings.Instance.BlacklistSchools;
 
             if (PoolFisherSettings.Instance.BlacklistSchools)
             {
-                comboBlacklist.Enabled = true;
-                comboBlacklist.SelectedItem = (string) PoolFisherSettings.Instance.BlacklistComboValue;
-
-                if (comboBlacklist.SelectedText.Contains("Cataclysm"))
-                {
-                    groupBoxCata.Visible = true;
-                }
-
+                /// Cataclysm
                 checkBLAlbinoCavefish.Checked       = PoolFisherSettings.Instance.BLAlbinoCavefish;
                 checkBLAlgaefinRockfish.Checked     = PoolFisherSettings.Instance.BLAlgaefinRockfish;
                 checkBLBlackbellyMudfish.Checked    = PoolFisherSettings.Instance.BLBlackbellyMudfish;
@@ -67,11 +61,30 @@ namespace PoolFishingBuddy.Forms
                 checkBLMountainTrout.Checked        = PoolFisherSettings.Instance.BLMountainTrout;
                 checkBLPoolofFire.Checked           = PoolFisherSettings.Instance.BLPoolofFire;
                 checkBLShipwreckDebris.Checked      = PoolFisherSettings.Instance.BLShipwreckDebris;
+                /// Wrath of the Lich King
+                checkBLBoreanManOWar.Checked        = PoolFisherSettings.Instance.BLBoreanManOWar;
+                checkBLDeepSeaMonsterbelly.Checked  = PoolFisherSettings.Instance.BLDeepSeaMonsterbelly;
+                checkBLDragonfinAngelfish.Checked   = PoolFisherSettings.Instance.BLDragonfinAngelfish;
+                checkBLFangtoothHerring.Checked     = PoolFisherSettings.Instance.BLFangtoothHerring;
+                checkBLGlacialSalmon.Checked        = PoolFisherSettings.Instance.BLGlacialSalmon;
+                checkBLGlassfinMinnow.Checked       = PoolFisherSettings.Instance.BLGlassfinMinnow;
+                checkBLImperialMantaRay.Checked     = PoolFisherSettings.Instance.BLImperialMantaRay;
+                checkBLMoonglowCuttlefish.Checked   = PoolFisherSettings.Instance.BLMoonglowCuttlefish;
+                checkBLMusselbackSculpin.Checked    = PoolFisherSettings.Instance.BLMusselbackSculpin;
+                checkBLNettlefish.Checked           = PoolFisherSettings.Instance.BLNettlefish;
+                /// Burning Crusade 
+                checkBLBluefish.Checked         = PoolFisherSettings.Instance.BLBluefish;
+                checkBLBrackishMix.Checked      = PoolFisherSettings.Instance.BLBrackishMix;
+                checkBLHighlandMix.Checked      = PoolFisherSettings.Instance.BLHighlandMix;
+                checkBLMudfish.Checked          = PoolFisherSettings.Instance.BLMudfish;
+                checkBLPureWater.Checked        = PoolFisherSettings.Instance.BLPureWater;
+                checkBLDarter.Checked           = PoolFisherSettings.Instance.BLDarter;
+                checkBLSporefish.Checked        = PoolFisherSettings.Instance.BLSporefish;
+                checkBLSteamPumpFlotsam.Checked = PoolFisherSettings.Instance.BLSteamPumpFlotsam;
             }
             else
             {
-                comboBlacklist.Enabled              = false;
-                groupBoxCata.Visible                = false;
+                /// Cataclysm
                 checkBLAlbinoCavefish.Checked       = false;
                 checkBLAlgaefinRockfish.Checked     = false;
                 checkBLBlackbellyMudfish.Checked    = false;
@@ -80,6 +93,26 @@ namespace PoolFishingBuddy.Forms
                 checkBLMountainTrout.Checked        = false;
                 checkBLPoolofFire.Checked           = false;
                 checkBLShipwreckDebris.Checked      = false;
+                /// Wrath of the Lich King
+                checkBLBoreanManOWar.Checked        = false;
+                checkBLDeepSeaMonsterbelly.Checked  = false;
+                checkBLDragonfinAngelfish.Checked   = false;
+                checkBLFangtoothHerring.Checked     = false;
+                checkBLGlacialSalmon.Checked        = false;
+                checkBLGlassfinMinnow.Checked       = false;
+                checkBLImperialMantaRay.Checked     = false;
+                checkBLMoonglowCuttlefish.Checked   = false;
+                checkBLMusselbackSculpin.Checked    = false;
+                checkBLNettlefish.Checked           = false;
+                /// Burning Crusade 
+                checkBLBluefish.Checked         = false;
+                checkBLBrackishMix.Checked      = false;
+                checkBLHighlandMix.Checked      = false;
+                checkBLMudfish.Checked          = false;
+                checkBLPureWater.Checked        = false;
+                checkBLDarter.Checked           = false;
+                checkBLSporefish.Checked        = false;
+                checkBLSteamPumpFlotsam.Checked = false;
             }
 
             #endregion
@@ -163,7 +196,7 @@ namespace PoolFishingBuddy.Forms
 
             #region Mode
 
-            if (PoolFisherSettings.Instance.ProfileMode)
+            if (PoolFisherSettings.Instance.BounceMode)
             {
                 comboMode.SelectedIndex = 1;
             }
@@ -280,27 +313,67 @@ namespace PoolFishingBuddy.Forms
 
             if (checkBlacklistSchools.Checked)
             {
-                PoolFisherSettings.Instance.BlacklistComboValue = (string)comboBlacklist.SelectedItem;
-                PoolFisherSettings.Instance.BLAlbinoCavefish = checkBLAlbinoCavefish.Checked;
-                PoolFisherSettings.Instance.BLAlgaefinRockfish = checkBLAlgaefinRockfish.Checked;
+                /// Cataclysm
+                PoolFisherSettings.Instance.BLAlbinoCavefish    = checkBLAlbinoCavefish.Checked;
+                PoolFisherSettings.Instance.BLAlgaefinRockfish  = checkBLAlgaefinRockfish.Checked;
                 PoolFisherSettings.Instance.BLBlackbellyMudfish = checkBLBlackbellyMudfish.Checked;
-                PoolFisherSettings.Instance.BLFathomEel = checkBLFathomEel.Checked;
-                PoolFisherSettings.Instance.BLHighlandGuppy = checkBLHighlandGuppy.Checked;
-                PoolFisherSettings.Instance.BLMountainTrout = checkBLMountainTrout.Checked;
-                PoolFisherSettings.Instance.BLPoolofFire = checkBLPoolofFire.Checked;
-                PoolFisherSettings.Instance.BLShipwreckDebris = checkBLShipwreckDebris.Checked;
+                PoolFisherSettings.Instance.BLFathomEel         = checkBLFathomEel.Checked;
+                PoolFisherSettings.Instance.BLHighlandGuppy     = checkBLHighlandGuppy.Checked;
+                PoolFisherSettings.Instance.BLMountainTrout     = checkBLMountainTrout.Checked;
+                PoolFisherSettings.Instance.BLPoolofFire        = checkBLPoolofFire.Checked;
+                PoolFisherSettings.Instance.BLShipwreckDebris   = checkBLShipwreckDebris.Checked;
+                /// Wrath of the Lich King
+                PoolFisherSettings.Instance.BLBoreanManOWar         = checkBLBoreanManOWar.Checked;
+                PoolFisherSettings.Instance.BLDeepSeaMonsterbelly   = checkBLDeepSeaMonsterbelly.Checked;
+                PoolFisherSettings.Instance.BLDragonfinAngelfish    = checkBLDragonfinAngelfish.Checked;
+                PoolFisherSettings.Instance.BLFangtoothHerring      = checkBLFangtoothHerring.Checked;
+                PoolFisherSettings.Instance.BLGlacialSalmon         = checkBLGlacialSalmon.Checked;
+                PoolFisherSettings.Instance.BLGlassfinMinnow        = checkBLGlassfinMinnow.Checked;
+                PoolFisherSettings.Instance.BLImperialMantaRay      = checkBLImperialMantaRay.Checked;
+                PoolFisherSettings.Instance.BLMoonglowCuttlefish    = checkBLMoonglowCuttlefish.Checked;
+                PoolFisherSettings.Instance.BLMusselbackSculpin     = checkBLMusselbackSculpin.Checked;
+                PoolFisherSettings.Instance.BLNettlefish            = checkBLNettlefish.Checked;
+                /// Burning Crusade 
+                PoolFisherSettings.Instance.BLBluefish          = checkBLBluefish.Checked;
+                PoolFisherSettings.Instance.BLBrackishMix       = checkBLBrackishMix.Checked;
+                PoolFisherSettings.Instance.BLHighlandMix       = checkBLHighlandMix.Checked;
+                PoolFisherSettings.Instance.BLMudfish           = checkBLMudfish.Checked;
+                PoolFisherSettings.Instance.BLPureWater         = checkBLPureWater.Checked;
+                PoolFisherSettings.Instance.BLDarter            = checkBLDarter.Checked;
+                PoolFisherSettings.Instance.BLSporefish         = checkBLSporefish.Checked;
+                PoolFisherSettings.Instance.BLSteamPumpFlotsam  = checkBLSteamPumpFlotsam.Checked;
             }
             else
             {
-                PoolFisherSettings.Instance.BlacklistComboValue = null;
-                PoolFisherSettings.Instance.BLAlbinoCavefish = false;
-                PoolFisherSettings.Instance.BLAlgaefinRockfish = false;
+                /// Cataclysm
+                PoolFisherSettings.Instance.BLAlbinoCavefish    = false;
+                PoolFisherSettings.Instance.BLAlgaefinRockfish  = false;
                 PoolFisherSettings.Instance.BLBlackbellyMudfish = false;
-                PoolFisherSettings.Instance.BLFathomEel = false;
-                PoolFisherSettings.Instance.BLHighlandGuppy = false;
-                PoolFisherSettings.Instance.BLMountainTrout = false;
-                PoolFisherSettings.Instance.BLPoolofFire = false;
-                PoolFisherSettings.Instance.BLShipwreckDebris = false;
+                PoolFisherSettings.Instance.BLFathomEel         = false;
+                PoolFisherSettings.Instance.BLHighlandGuppy     = false;
+                PoolFisherSettings.Instance.BLMountainTrout     = false;
+                PoolFisherSettings.Instance.BLPoolofFire        = false;
+                PoolFisherSettings.Instance.BLShipwreckDebris   = false;
+                /// Wrath of the Lich King
+                PoolFisherSettings.Instance.BLBoreanManOWar         = false;
+                PoolFisherSettings.Instance.BLDeepSeaMonsterbelly   = false;
+                PoolFisherSettings.Instance.BLDragonfinAngelfish    = false;
+                PoolFisherSettings.Instance.BLFangtoothHerring      = false;
+                PoolFisherSettings.Instance.BLGlacialSalmon         = false;
+                PoolFisherSettings.Instance.BLGlassfinMinnow        = false;
+                PoolFisherSettings.Instance.BLImperialMantaRay      = false;
+                PoolFisherSettings.Instance.BLMoonglowCuttlefish    = false;
+                PoolFisherSettings.Instance.BLMusselbackSculpin     = false;
+                PoolFisherSettings.Instance.BLNettlefish            = false;
+                /// Burning Crusade
+                PoolFisherSettings.Instance.BLBluefish          = false;
+                PoolFisherSettings.Instance.BLBrackishMix       = false;
+                PoolFisherSettings.Instance.BLHighlandMix       = false;
+                PoolFisherSettings.Instance.BLMudfish           = false;
+                PoolFisherSettings.Instance.BLPureWater         = false;
+                PoolFisherSettings.Instance.BLDarter            = false;
+                PoolFisherSettings.Instance.BLSporefish         = false;
+                PoolFisherSettings.Instance.BLSteamPumpFlotsam  = false;
             }
 
             #endregion
@@ -332,11 +405,11 @@ namespace PoolFishingBuddy.Forms
 
             if (comboMode.SelectedIndex == 1)
             {
-                PoolFisherSettings.Instance.ProfileMode = true;
+                PoolFisherSettings.Instance.BounceMode = true;
             }
             else
             {
-                PoolFisherSettings.Instance.ProfileMode = false;
+                PoolFisherSettings.Instance.BounceMode = false;
             }
 
             #endregion
@@ -400,7 +473,7 @@ namespace PoolFishingBuddy.Forms
             Logging.Write(System.Drawing.Color.Green, "Offhand: {0}", (string)comboOffhand.SelectedItem);
 
             Logging.Write(System.Drawing.Color.Green, "Height: {0}", PoolFisherSettings.Instance.HeightModifier);
-            Logging.Write(System.Drawing.Color.Green, "Mode: {0}", PoolFisherSettings.Instance.ProfileMode);
+            Logging.Write(System.Drawing.Color.Green, "Mode: {0}", PoolFisherSettings.Instance.BounceMode);
             Logging.Write(System.Drawing.Color.Green, "Max. range to cast: {0}", PoolFisherSettings.Instance.MaxCastRange);
             Logging.Write(System.Drawing.Color.Green, "Max. attempts to cast: {0}", PoolFisherSettings.Instance.MaxCastAttempts);
             Logging.Write(System.Drawing.Color.Green, "Ninja Pools: {0}", PoolFisherSettings.Instance.NinjaPools);
@@ -418,33 +491,6 @@ namespace PoolFishingBuddy.Forms
             Close();
         }
 
-        private void buttonChancel_Click(object sender, EventArgs e)
-        {
-            Logging.Write(System.Drawing.Color.Red, "Settings not saved! {0}", comboOffhand.SelectedIndex);
-            Close();
-        }
-
-        private void checkBlacklistSchools_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBlacklistSchools.Checked)
-            {
-                comboBlacklist.Enabled = true;
-                comboBlacklist.SelectedItem = null;
-            }
-            else
-            {
-                comboBlacklist.Enabled = false;
-                groupBoxCata.Visible = false;
-                comboBlacklist.SelectedItem = null;
-            }
-        }
-
-        private void ComboBlacklist_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if ((string)comboBlacklist.SelectedItem == "Cataclysm")
-                groupBoxCata.Visible = true;
-        }
-
         private void checkUseLure_CheckedChanged(object sender, EventArgs e)
         {
             if (checkUseLure.Checked)
@@ -456,33 +502,6 @@ namespace PoolFishingBuddy.Forms
             {
                 comboLures.SelectedItem = null;
                 comboLures.Enabled = false;
-            }
-        }
-
-        private void TestButton_Click(object sender, EventArgs e)
-        {
-            WoWPoint test = StyxWoW.Me.Location;
-
-            test.Z = Helpers.GetWaterSurface(StyxWoW.Me.Location);
-            Logging.Write(System.Drawing.Color.Red, "Location: {0}", StyxWoW.Me.Location);
-            Logging.Write(System.Drawing.Color.Red, "Water Surface: {0}", test);
-
-            ObjectManager.Update();
-            List<WoWGameObject> poolList = ObjectManager.GetObjectsOfType<WoWGameObject>().Where(o => o.SubType == WoWGameObjectType.FishingHole && !Blacklist.Contains(o.Guid) && !PoolFisher.PermaBlacklist.Contains(o.Entry) && o.Distance2D <= 150 && o.Location.X != 0).OrderBy(o => o.Distance).ToList();
-            foreach (WoWGameObject p in poolList)
-                Logging.Write("{0} - Found - {1} - at a distance of {2}. Guid: {3}. Entry: {4}.", Helpers.TimeNow, p.Name, p.Distance, p.Guid, p.Entry);
-
-            if (Styx.StyxWoW.Me.GetAllAuras().Any(Aura => Aura.SpellId == 84510))
-            {
-                Logging.Write("{0} - Sleep while red mist is on me: 84510.", Helpers.TimeNow);
-            }
-            if (Styx.StyxWoW.Me.GetAllAuras().Any(Aura => Aura.SpellId == 81096))
-            {
-                Logging.Write("{0} - Sleep while red mist is on me: 81096.", Helpers.TimeNow);
-            }
-            if (Styx.StyxWoW.Me.GetAllAuras().Any(Aura => Aura.SpellId == 81095))
-            {
-                Logging.Write("{0} - Sleep while red mist is on me: 81095.", Helpers.TimeNow);
             }
         }
 
@@ -584,5 +603,49 @@ namespace PoolFishingBuddy.Forms
             }
         }
 
+        private void checkBlacklistSchools_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBlacklistSchools.Checked)
+            {
+                tabControlBlacklist.Visible = true;
+            }
+            else
+            {
+                tabControlBlacklist.Visible = false;
+            }
+        }
+
+        private void buttonChancel_Click(object sender, EventArgs e)
+        {
+            Logging.Write(System.Drawing.Color.Red, "Settings not saved!");
+            Close();
+        }
+
+        private void TestButton_Click(object sender, EventArgs e)
+        {
+            WoWPoint test = StyxWoW.Me.Location;
+
+            test.Z = Helpers.GetWaterSurface(StyxWoW.Me.Location);
+            Logging.Write(System.Drawing.Color.Red, "Location: {0}", StyxWoW.Me.Location);
+            Logging.Write(System.Drawing.Color.Red, "Water Surface: {0}", test);
+
+            ObjectManager.Update();
+            List<WoWGameObject> poolList = ObjectManager.GetObjectsOfType<WoWGameObject>().Where(o => o.SubType == WoWGameObjectType.FishingHole && !Blacklist.Contains(o.Guid) && !PoolFisher.PermaBlacklist.Contains(o.Entry) && o.Distance2D <= 150 && o.Location.X != 0).OrderBy(o => o.Distance).ToList();
+            foreach (WoWGameObject p in poolList)
+                Logging.Write("{0} - Found - {1} - at a distance of {2}. Guid: {3}. Entry: {4}.", Helpers.TimeNow, p.Name, p.Distance, p.Guid, p.Entry);
+
+            if (Styx.StyxWoW.Me.GetAllAuras().Any(Aura => Aura.SpellId == 84510))
+            {
+                Logging.Write("{0} - Sleep while red mist is on me: 84510.", Helpers.TimeNow);
+            }
+            if (Styx.StyxWoW.Me.GetAllAuras().Any(Aura => Aura.SpellId == 81096))
+            {
+                Logging.Write("{0} - Sleep while red mist is on me: 81096.", Helpers.TimeNow);
+            }
+            if (Styx.StyxWoW.Me.GetAllAuras().Any(Aura => Aura.SpellId == 81095))
+            {
+                Logging.Write("{0} - Sleep while red mist is on me: 81095.", Helpers.TimeNow);
+            }
+        }
     }
 }
