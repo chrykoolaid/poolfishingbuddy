@@ -512,6 +512,51 @@ namespace PoolFishingBuddy.Forms
             //PoolFisher.MonitoringThread.Start();
         }
 
+        private void checkBlacklistSchools_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBlacklistSchools.Checked)
+            {
+                tabControlBlacklist.Visible = true;
+            }
+            else
+            {
+                tabControlBlacklist.Visible = false;
+            }
+        }
+
+        private void buttonChancel_Click(object sender, EventArgs e)
+        {
+            Logging.Write(System.Drawing.Color.Red, "Settings not saved!");
+            Close();
+        }
+
+        private void TestButton_Click(object sender, EventArgs e)
+        {
+            WoWPoint test = StyxWoW.Me.Location;
+
+            test.Z = Helpers.GetWaterSurface(StyxWoW.Me.Location);
+            Logging.Write(System.Drawing.Color.Red, "Location: {0}", StyxWoW.Me.Location);
+            Logging.Write(System.Drawing.Color.Red, "Water Surface: {0}", test);
+
+            ObjectManager.Update();
+            List<WoWGameObject> poolList = ObjectManager.GetObjectsOfType<WoWGameObject>().Where(o => o.SubType == WoWGameObjectType.FishingHole && !Blacklist.Contains(o.Guid) && !PoolFisher.PermaBlacklist.Contains(o.Entry) && o.Distance2D <= 150 && o.Location.X != 0).OrderBy(o => o.Distance).ToList();
+            foreach (WoWGameObject p in poolList)
+                Logging.Write("{0} - Found - {1} - at a distance of {2}. Guid: {3}. Entry: {4}.", Helpers.TimeNow, p.Name, p.Distance, p.Guid, p.Entry);
+
+            if (Styx.StyxWoW.Me.GetAllAuras().Any(Aura => Aura.SpellId == 84510))
+            {
+                Logging.Write("{0} - Sleep while red mist is on me: 84510.", Helpers.TimeNow);
+            }
+            if (Styx.StyxWoW.Me.GetAllAuras().Any(Aura => Aura.SpellId == 81096))
+            {
+                Logging.Write("{0} - Sleep while red mist is on me: 81096.", Helpers.TimeNow);
+            }
+            if (Styx.StyxWoW.Me.GetAllAuras().Any(Aura => Aura.SpellId == 81095))
+            {
+                Logging.Write("{0} - Sleep while red mist is on me: 81095.", Helpers.TimeNow);
+            }
+        }
+
         private void buttonRefreshWeaponsAndPole_Click(object sender, EventArgs e)
         {
             PoolFisher.BagItems = StyxWoW.Me.BagItems;
@@ -541,7 +586,7 @@ namespace PoolFishingBuddy.Forms
                     if (!PoolFisher.poleList.Contains(i)) PoolFisher.poleList.Add(i);
                 }
             }
-            
+
             if (StyxWoW.Me.Inventory.Equipped.MainHand != null && StyxWoW.Me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass != WoWItemWeaponClass.FishingPole)
             {
                 if (!PoolFisher.mainhandList.Contains(StyxWoW.Me.Inventory.Equipped.MainHand)) PoolFisher.mainhandList.Add(StyxWoW.Me.Inventory.Equipped.MainHand);
@@ -600,51 +645,6 @@ namespace PoolFishingBuddy.Forms
             else
             {
                 comboOffhand.Text = "Nothing found..";
-            }
-        }
-
-        private void checkBlacklistSchools_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBlacklistSchools.Checked)
-            {
-                tabControlBlacklist.Visible = true;
-            }
-            else
-            {
-                tabControlBlacklist.Visible = false;
-            }
-        }
-
-        private void buttonChancel_Click(object sender, EventArgs e)
-        {
-            Logging.Write(System.Drawing.Color.Red, "Settings not saved!");
-            Close();
-        }
-
-        private void TestButton_Click(object sender, EventArgs e)
-        {
-            WoWPoint test = StyxWoW.Me.Location;
-
-            test.Z = Helpers.GetWaterSurface(StyxWoW.Me.Location);
-            Logging.Write(System.Drawing.Color.Red, "Location: {0}", StyxWoW.Me.Location);
-            Logging.Write(System.Drawing.Color.Red, "Water Surface: {0}", test);
-
-            ObjectManager.Update();
-            List<WoWGameObject> poolList = ObjectManager.GetObjectsOfType<WoWGameObject>().Where(o => o.SubType == WoWGameObjectType.FishingHole && !Blacklist.Contains(o.Guid) && !PoolFisher.PermaBlacklist.Contains(o.Entry) && o.Distance2D <= 150 && o.Location.X != 0).OrderBy(o => o.Distance).ToList();
-            foreach (WoWGameObject p in poolList)
-                Logging.Write("{0} - Found - {1} - at a distance of {2}. Guid: {3}. Entry: {4}.", Helpers.TimeNow, p.Name, p.Distance, p.Guid, p.Entry);
-
-            if (Styx.StyxWoW.Me.GetAllAuras().Any(Aura => Aura.SpellId == 84510))
-            {
-                Logging.Write("{0} - Sleep while red mist is on me: 84510.", Helpers.TimeNow);
-            }
-            if (Styx.StyxWoW.Me.GetAllAuras().Any(Aura => Aura.SpellId == 81096))
-            {
-                Logging.Write("{0} - Sleep while red mist is on me: 81096.", Helpers.TimeNow);
-            }
-            if (Styx.StyxWoW.Me.GetAllAuras().Any(Aura => Aura.SpellId == 81095))
-            {
-                Logging.Write("{0} - Sleep while red mist is on me: 81095.", Helpers.TimeNow);
             }
         }
     }
