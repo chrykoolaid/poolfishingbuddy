@@ -325,7 +325,7 @@ namespace PoolFishingBuddy
                                 )),
 
                                 // Move without Mount
-                                new Decorator(ret => StyxWoW.Me.Location.Distance(PoolPoints[0]) > 2.5 && StyxWoW.Me.Location.Distance(PoolPoints[0]) <= 10 && !StyxWoW.Me.Mounted && GameWorld.IsInLineOfSight(StyxWoW.Me.Location, PoolPoints[0]),
+                                new Decorator(ret => StyxWoW.Me.Location.Distance(PoolPoints[0]) > 0.5 && StyxWoW.Me.Location.Distance(PoolPoints[0]) <= 10 && !StyxWoW.Me.Mounted && GameWorld.IsInLineOfSight(StyxWoW.Me.Location, PoolPoints[0]),
                                     new PrioritySelector(
 
                                         new Decorator(ret => !Navigator.CanNavigateFully(StyxWoW.Me.Location, PoolPoints[0]),
