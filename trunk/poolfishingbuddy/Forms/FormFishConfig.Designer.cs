@@ -39,6 +39,18 @@
             this.TestButton = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.MaxCastAttemptsText = new System.Windows.Forms.MaskedTextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.comboLures = new System.Windows.Forms.ComboBox();
+            this.checkUseLure = new System.Windows.Forms.CheckBox();
+            this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.button1 = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.textMailTo = new System.Windows.Forms.TextBox();
+            this.radioMailTo = new System.Windows.Forms.RadioButton();
+            this.radioHearthAndExit = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label12 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
@@ -47,12 +59,6 @@
             this.comboMainhand = new System.Windows.Forms.ComboBox();
             this.comboPole = new System.Windows.Forms.ComboBox();
             this.buttonRefreshWeaponsAndPole = new System.Windows.Forms.Button();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.MaxCastAttemptsText = new System.Windows.Forms.MaskedTextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.comboLures = new System.Windows.Forms.ComboBox();
-            this.checkUseLure = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabControlBlacklist = new System.Windows.Forms.TabControl();
             this.tabPage4 = new System.Windows.Forms.TabPage();
@@ -86,32 +92,31 @@
             this.checkBLBluefish = new System.Windows.Forms.CheckBox();
             this.tabPage7 = new System.Windows.Forms.TabPage();
             this.checkBlacklistSchools = new System.Windows.Forms.CheckBox();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.MaxNewLocAttemptsText = new System.Windows.Forms.MaskedTextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.checkDescendHigher = new System.Windows.Forms.CheckBox();
             this.buttonMonitor = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.comboMode = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.numericHeightMod = new System.Windows.Forms.NumericUpDown();
+            this.MaxNewLocAttemptsText = new System.Windows.Forms.MaskedTextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabPage8.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabControlBlacklist.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.tabPage6.SuspendLayout();
-            this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericHeightMod)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonSave
             // 
-            this.buttonSave.Location = new System.Drawing.Point(172, 460);
+            this.buttonSave.Location = new System.Drawing.Point(172, 508);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(76, 23);
             this.buttonSave.TabIndex = 1;
@@ -121,7 +126,7 @@
             // 
             // buttonChancel
             // 
-            this.buttonChancel.Location = new System.Drawing.Point(259, 460);
+            this.buttonChancel.Location = new System.Drawing.Point(259, 508);
             this.buttonChancel.Name = "buttonChancel";
             this.buttonChancel.Size = new System.Drawing.Size(75, 23);
             this.buttonChancel.TabIndex = 2;
@@ -131,7 +136,7 @@
             // 
             // MaxCastRangeText
             // 
-            this.MaxCastRangeText.Location = new System.Drawing.Point(153, 30);
+            this.MaxCastRangeText.Location = new System.Drawing.Point(153, 55);
             this.MaxCastRangeText.Mask = "00";
             this.MaxCastRangeText.Name = "MaxCastRangeText";
             this.MaxCastRangeText.PromptChar = ' ';
@@ -180,7 +185,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(179, 33);
+            this.label3.Location = new System.Drawing.Point(179, 58);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(65, 13);
             this.label3.TabIndex = 12;
@@ -188,7 +193,7 @@
             // 
             // TestButton
             // 
-            this.TestButton.Location = new System.Drawing.Point(4, 460);
+            this.TestButton.Location = new System.Drawing.Point(4, 508);
             this.TestButton.Name = "TestButton";
             this.TestButton.Size = new System.Drawing.Size(41, 23);
             this.TestButton.TabIndex = 13;
@@ -199,9 +204,9 @@
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage8);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Location = new System.Drawing.Point(4, 86);
+            this.tabControl1.Location = new System.Drawing.Point(4, 106);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(334, 368);
@@ -210,7 +215,9 @@
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.Color.White;
-            this.tabPage1.Controls.Add(this.groupBox1);
+            this.tabPage1.Controls.Add(this.MaxNewLocAttemptsText);
+            this.tabPage1.Controls.Add(this.label4);
+            this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.label7);
             this.tabPage1.Controls.Add(this.label6);
             this.tabPage1.Controls.Add(this.MaxCastAttemptsText);
@@ -227,6 +234,130 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Fishing";
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(3, 58);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(117, 13);
+            this.label7.TabIndex = 19;
+            this.label7.Text = "Max. range to fish from:";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(179, 86);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(65, 13);
+            this.label6.TabIndex = 18;
+            this.label6.Text = "(Default: 10)";
+            // 
+            // MaxCastAttemptsText
+            // 
+            this.MaxCastAttemptsText.Location = new System.Drawing.Point(153, 83);
+            this.MaxCastAttemptsText.Mask = "00";
+            this.MaxCastAttemptsText.Name = "MaxCastAttemptsText";
+            this.MaxCastAttemptsText.PromptChar = ' ';
+            this.MaxCastAttemptsText.Size = new System.Drawing.Size(20, 20);
+            this.MaxCastAttemptsText.TabIndex = 17;
+            this.MaxCastAttemptsText.Text = "10";
+            this.MaxCastAttemptsText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(3, 86);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(144, 13);
+            this.label5.TabIndex = 16;
+            this.label5.Text = "Max. attempts to cast fishing:";
+            // 
+            // comboLures
+            // 
+            this.comboLures.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboLures.FormattingEnabled = true;
+            this.comboLures.Location = new System.Drawing.Point(89, 25);
+            this.comboLures.Name = "comboLures";
+            this.comboLures.Size = new System.Drawing.Size(155, 21);
+            this.comboLures.TabIndex = 15;
+            // 
+            // checkUseLure
+            // 
+            this.checkUseLure.AutoSize = true;
+            this.checkUseLure.Location = new System.Drawing.Point(6, 29);
+            this.checkUseLure.Name = "checkUseLure";
+            this.checkUseLure.Size = new System.Drawing.Size(72, 17);
+            this.checkUseLure.TabIndex = 13;
+            this.checkUseLure.Text = "Use Lure:";
+            this.checkUseLure.UseVisualStyleBackColor = true;
+            this.checkUseLure.CheckedChanged += new System.EventHandler(this.checkUseLure_CheckedChanged);
+            // 
+            // tabPage8
+            // 
+            this.tabPage8.Controls.Add(this.button1);
+            this.tabPage8.Controls.Add(this.groupBox2);
+            this.tabPage8.Controls.Add(this.groupBox1);
+            this.tabPage8.Location = new System.Drawing.Point(4, 22);
+            this.tabPage8.Name = "tabPage8";
+            this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage8.Size = new System.Drawing.Size(326, 342);
+            this.tabPage8.TabIndex = 3;
+            this.tabPage8.Text = "Advanced";
+            this.tabPage8.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(6, 274);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 32;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.textMailTo);
+            this.groupBox2.Controls.Add(this.radioMailTo);
+            this.groupBox2.Controls.Add(this.radioHearthAndExit);
+            this.groupBox2.Location = new System.Drawing.Point(6, 114);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(314, 72);
+            this.groupBox2.TabIndex = 31;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Full Bags";
+            // 
+            // textMailTo
+            // 
+            this.textMailTo.Location = new System.Drawing.Point(117, 41);
+            this.textMailTo.Name = "textMailTo";
+            this.textMailTo.Size = new System.Drawing.Size(117, 20);
+            this.textMailTo.TabIndex = 2;
+            // 
+            // radioMailTo
+            // 
+            this.radioMailTo.AutoSize = true;
+            this.radioMailTo.Location = new System.Drawing.Point(11, 42);
+            this.radioMailTo.Name = "radioMailTo";
+            this.radioMailTo.Size = new System.Drawing.Size(59, 17);
+            this.radioMailTo.TabIndex = 1;
+            this.radioMailTo.TabStop = true;
+            this.radioMailTo.Text = "Mail to:";
+            this.radioMailTo.UseVisualStyleBackColor = true;
+            this.radioMailTo.CheckedChanged += new System.EventHandler(this.radioMailTo_CheckedChanged);
+            // 
+            // radioHearthAndExit
+            // 
+            this.radioHearthAndExit.AutoSize = true;
+            this.radioHearthAndExit.Location = new System.Drawing.Point(11, 19);
+            this.radioHearthAndExit.Name = "radioHearthAndExit";
+            this.radioHearthAndExit.Size = new System.Drawing.Size(98, 17);
+            this.radioHearthAndExit.TabIndex = 0;
+            this.radioHearthAndExit.TabStop = true;
+            this.radioHearthAndExit.Text = "Hearth and Exit";
+            this.radioHearthAndExit.UseVisualStyleBackColor = true;
+            this.radioHearthAndExit.CheckedChanged += new System.EventHandler(this.radioHearthAndExit_CheckedChanged);
+            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.label12);
@@ -236,12 +367,12 @@
             this.groupBox1.Controls.Add(this.comboMainhand);
             this.groupBox1.Controls.Add(this.comboPole);
             this.groupBox1.Controls.Add(this.buttonRefreshWeaponsAndPole);
-            this.groupBox1.Location = new System.Drawing.Point(6, 155);
+            this.groupBox1.Location = new System.Drawing.Point(6, 6);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(314, 102);
-            this.groupBox1.TabIndex = 29;
+            this.groupBox1.TabIndex = 30;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Select Fishing Pole and Weapons";
+            this.groupBox1.Text = "Fishing Pole and Weapons";
             // 
             // label12
             // 
@@ -306,64 +437,6 @@
             this.buttonRefreshWeaponsAndPole.Text = "Refresh";
             this.buttonRefreshWeaponsAndPole.UseVisualStyleBackColor = true;
             this.buttonRefreshWeaponsAndPole.Click += new System.EventHandler(this.buttonRefreshWeaponsAndPole_Click);
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(3, 33);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(117, 13);
-            this.label7.TabIndex = 19;
-            this.label7.Text = "Max. range to fish from:";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(179, 61);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(65, 13);
-            this.label6.TabIndex = 18;
-            this.label6.Text = "(Default: 10)";
-            // 
-            // MaxCastAttemptsText
-            // 
-            this.MaxCastAttemptsText.Location = new System.Drawing.Point(153, 58);
-            this.MaxCastAttemptsText.Mask = "00";
-            this.MaxCastAttemptsText.Name = "MaxCastAttemptsText";
-            this.MaxCastAttemptsText.PromptChar = ' ';
-            this.MaxCastAttemptsText.Size = new System.Drawing.Size(20, 20);
-            this.MaxCastAttemptsText.TabIndex = 17;
-            this.MaxCastAttemptsText.Text = "10";
-            this.MaxCastAttemptsText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(3, 61);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(144, 13);
-            this.label5.TabIndex = 16;
-            this.label5.Text = "Max. attempts to cast fishing:";
-            // 
-            // comboLures
-            // 
-            this.comboLures.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboLures.FormattingEnabled = true;
-            this.comboLures.Location = new System.Drawing.Point(89, 88);
-            this.comboLures.Name = "comboLures";
-            this.comboLures.Size = new System.Drawing.Size(155, 21);
-            this.comboLures.TabIndex = 15;
-            // 
-            // checkUseLure
-            // 
-            this.checkUseLure.AutoSize = true;
-            this.checkUseLure.Location = new System.Drawing.Point(6, 92);
-            this.checkUseLure.Name = "checkUseLure";
-            this.checkUseLure.Size = new System.Drawing.Size(72, 17);
-            this.checkUseLure.TabIndex = 13;
-            this.checkUseLure.Text = "Use Lure:";
-            this.checkUseLure.UseVisualStyleBackColor = true;
-            this.checkUseLure.CheckedChanged += new System.EventHandler(this.checkUseLure_CheckedChanged);
             // 
             // tabPage2
             // 
@@ -726,61 +799,9 @@
             this.checkBlacklistSchools.UseVisualStyleBackColor = false;
             this.checkBlacklistSchools.CheckedChanged += new System.EventHandler(this.checkBlacklistSchools_CheckedChanged);
             // 
-            // tabPage3
-            // 
-            this.tabPage3.BackColor = System.Drawing.Color.White;
-            this.tabPage3.Controls.Add(this.MaxNewLocAttemptsText);
-            this.tabPage3.Controls.Add(this.label4);
-            this.tabPage3.Controls.Add(this.label1);
-            this.tabPage3.Controls.Add(this.checkDescendHigher);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(326, 342);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Movement";
-            // 
-            // MaxNewLocAttemptsText
-            // 
-            this.MaxNewLocAttemptsText.Location = new System.Drawing.Point(180, 25);
-            this.MaxNewLocAttemptsText.Mask = "00";
-            this.MaxNewLocAttemptsText.Name = "MaxNewLocAttemptsText";
-            this.MaxNewLocAttemptsText.PromptChar = ' ';
-            this.MaxNewLocAttemptsText.Size = new System.Drawing.Size(20, 20);
-            this.MaxNewLocAttemptsText.TabIndex = 4;
-            this.MaxNewLocAttemptsText.Text = "5";
-            this.MaxNewLocAttemptsText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(206, 28);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(59, 13);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "(Default: 5)";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 28);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(142, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Max. attempts to reach Pool:";
-            // 
-            // checkDescendHigher
-            // 
-            this.checkDescendHigher.AutoSize = true;
-            this.checkDescendHigher.Location = new System.Drawing.Point(6, 6);
-            this.checkDescendHigher.Name = "checkDescendHigher";
-            this.checkDescendHigher.Size = new System.Drawing.Size(157, 17);
-            this.checkDescendHigher.TabIndex = 0;
-            this.checkDescendHigher.Text = "Descend on higher reaches";
-            this.checkDescendHigher.UseVisualStyleBackColor = true;
-            // 
             // buttonMonitor
             // 
-            this.buttonMonitor.Location = new System.Drawing.Point(51, 460);
+            this.buttonMonitor.Location = new System.Drawing.Point(51, 508);
             this.buttonMonitor.Name = "buttonMonitor";
             this.buttonMonitor.Size = new System.Drawing.Size(75, 23);
             this.buttonMonitor.TabIndex = 15;
@@ -790,7 +811,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(1, 43);
+            this.label8.Location = new System.Drawing.Point(1, 49);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(34, 13);
             this.label8.TabIndex = 16;
@@ -803,7 +824,7 @@
             this.comboMode.Items.AddRange(new object[] {
             "Circle",
             "Bounce"});
-            this.comboMode.Location = new System.Drawing.Point(4, 59);
+            this.comboMode.Location = new System.Drawing.Point(4, 65);
             this.comboMode.Name = "comboMode";
             this.comboMode.Size = new System.Drawing.Size(89, 21);
             this.comboMode.TabIndex = 17;
@@ -811,7 +832,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(104, 43);
+            this.label9.Location = new System.Drawing.Point(104, 49);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(78, 13);
             this.label9.TabIndex = 18;
@@ -819,11 +840,40 @@
             // 
             // numericHeightMod
             // 
-            this.numericHeightMod.Location = new System.Drawing.Point(107, 60);
+            this.numericHeightMod.Location = new System.Drawing.Point(107, 66);
             this.numericHeightMod.Name = "numericHeightMod";
             this.numericHeightMod.Size = new System.Drawing.Size(75, 20);
             this.numericHeightMod.TabIndex = 19;
             this.numericHeightMod.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // MaxNewLocAttemptsText
+            // 
+            this.MaxNewLocAttemptsText.Location = new System.Drawing.Point(153, 111);
+            this.MaxNewLocAttemptsText.Mask = "00";
+            this.MaxNewLocAttemptsText.Name = "MaxNewLocAttemptsText";
+            this.MaxNewLocAttemptsText.PromptChar = ' ';
+            this.MaxNewLocAttemptsText.Size = new System.Drawing.Size(20, 20);
+            this.MaxNewLocAttemptsText.TabIndex = 22;
+            this.MaxNewLocAttemptsText.Text = "5";
+            this.MaxNewLocAttemptsText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(179, 114);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(59, 13);
+            this.label4.TabIndex = 21;
+            this.label4.Text = "(Default: 5)";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 114);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(142, 13);
+            this.label1.TabIndex = 20;
+            this.label1.Text = "Max. attempts to reach Pool:";
             // 
             // FormFishConfig
             // 
@@ -832,7 +882,7 @@
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(341, 495);
+            this.ClientSize = new System.Drawing.Size(342, 543);
             this.ControlBox = false;
             this.Controls.Add(this.numericHeightMod);
             this.Controls.Add(this.label9);
@@ -855,6 +905,9 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.tabPage8.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
@@ -866,8 +919,6 @@
             this.tabPage5.PerformLayout();
             this.tabPage6.ResumeLayout(false);
             this.tabPage6.PerformLayout();
-            this.tabPage3.ResumeLayout(false);
-            this.tabPage3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericHeightMod)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -897,28 +948,15 @@
         private System.Windows.Forms.CheckBox checkBLAlbinoCavefish;
         private System.Windows.Forms.CheckBox checkBLFathomEel;
         private System.Windows.Forms.CheckBox checkBLBlackbellyMudfish;
-        private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.CheckBox checkUseLure;
         private System.Windows.Forms.ComboBox comboLures;
         private System.Windows.Forms.Button buttonMonitor;
-        private System.Windows.Forms.CheckBox checkDescendHigher;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.MaskedTextBox MaxCastAttemptsText;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.MaskedTextBox MaxNewLocAttemptsText;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox comboMode;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.ComboBox comboOffhand;
-        private System.Windows.Forms.ComboBox comboMainhand;
-        private System.Windows.Forms.ComboBox comboPole;
-        private System.Windows.Forms.Button buttonRefreshWeaponsAndPole;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.NumericUpDown numericHeightMod;
         private System.Windows.Forms.TabControl tabControlBlacklist;
@@ -944,6 +982,23 @@
         private System.Windows.Forms.CheckBox checkBLHighlandMix;
         private System.Windows.Forms.CheckBox checkBLBrackishMix;
         private System.Windows.Forms.CheckBox checkBLBluefish;
+        private System.Windows.Forms.TabPage tabPage8;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.TextBox textMailTo;
+        private System.Windows.Forms.RadioButton radioMailTo;
+        private System.Windows.Forms.RadioButton radioHearthAndExit;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.ComboBox comboOffhand;
+        private System.Windows.Forms.ComboBox comboMainhand;
+        private System.Windows.Forms.ComboBox comboPole;
+        private System.Windows.Forms.Button buttonRefreshWeaponsAndPole;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.MaskedTextBox MaxNewLocAttemptsText;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label1;
 
     }
 }

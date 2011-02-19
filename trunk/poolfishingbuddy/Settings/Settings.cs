@@ -17,6 +17,12 @@ namespace PoolFishingBuddy
         [Setting(Explanation = "Entry for custom flying mount."), DefaultValue(0)]
         public int FlyingMountID { get; set; }
 
+        [Setting(Explanation = "Should the bot mail or not."), DefaultValue(false)]
+        public bool ShouldMail { get; set; }
+
+        [Setting(Explanation = "Name of the character you want to mail to."), DefaultValue("")]
+        public string MailRecipient { get; set; }
+
         [Setting(Explanation = "Bounce mode on or not."), DefaultValue(false)]
         public bool BounceMode { get; set; }
 
@@ -46,9 +52,6 @@ namespace PoolFishingBuddy
 
         [Setting(Explanation = "ID for offhand item."), DefaultValue(0)]
         public int Offhand { get; set; }
-
-        [Setting(Explanation = "Descend on higher reaches or not."), DefaultValue(false)]
-        public bool DescendHigher { get; set; }
 
         [Setting(Explanation = "The maximum value of tries to descend to ground."), DefaultValue(5)]
         public int MaxNewLocAttempts { get; set; }

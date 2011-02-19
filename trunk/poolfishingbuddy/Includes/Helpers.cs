@@ -60,6 +60,13 @@ namespace PoolFishingBuddy
                 TreeRoot.Stop();
             }
 
+            if (PoolFisherSettings.Instance.ShouldMail == true && PoolFisherSettings.Instance.MailRecipient != "")
+            {
+                LevelbotSettings.Instance.Load();
+                LevelbotSettings.Instance.MailRecipient = PoolFisherSettings.Instance.MailRecipient;
+                LevelbotSettings.Instance.Save();
+            }
+
             if (TreeRoot.IsRunning)
             {
                 Logging.Write(System.Drawing.Color.Blue, "{0} - Looking for weapons and fishing pole and add them to protected items.", Helpers.TimeNow);
@@ -71,6 +78,8 @@ namespace PoolFishingBuddy
 
                 foreach (WoWItem i in PoolFisher.BagItems)
                 {
+                    if (!ProtectedItemsManager.Contains(i.Name)) ProtectedItemsManager.Add(i.Name);
+
                     if (i.Entry == PoolFisherSettings.Instance.FishingPole && TreeRoot.IsRunning)
                     {
                         if (!ProtectedItemsManager.Contains((uint)PoolFisherSettings.Instance.FishingPole)) ProtectedItemsManager.Add((uint)PoolFisherSettings.Instance.FishingPole);
@@ -85,13 +94,11 @@ namespace PoolFishingBuddy
                         Logging.Write(System.Drawing.Color.Green, "{0} is valid.", i.Name);
                     }
                     
-                    /*
-                    if (i.Entry == PoolFisherSettings.Instance.Offhand && PoolFisherSettings.Instance.Offhand != 0 && TreeRoot.IsRunning)
+                    if (PoolFisherSettings.Instance.Offhand != 0 && i.Entry == PoolFisherSettings.Instance.Offhand && TreeRoot.IsRunning)
                     {
                         if (!ProtectedItemsManager.Contains((uint)PoolFisherSettings.Instance.FishingPole)) ProtectedItemsManager.Add((uint)PoolFisherSettings.Instance.FishingPole);
                         Logging.Write(System.Drawing.Color.Green, "{0} is valid.", i.Name);
                     }
-                    */
                 }
 
                 if (StyxWoW.Me.Inventory.Equipped.MainHand != null && StyxWoW.Me.Inventory.Equipped.MainHand.Entry == PoolFisherSettings.Instance.FishingPole)
@@ -107,6 +114,8 @@ namespace PoolFishingBuddy
                     hasMainhand = true;
                     Logging.Write(System.Drawing.Color.Green, "{0} is valid.", StyxWoW.Me.Inventory.Equipped.MainHand.Name);
                 }
+
+                Logging.Write(System.Drawing.Color.Red, "{0} - ProtectedItems count: {1}", Helpers.TimeNow, ProtectedItemsManager.GetAllItemIds().Count);
 
                 if (!hasPole)
                 {
@@ -126,6 +135,7 @@ namespace PoolFishingBuddy
         /// </summary>
         static public void Final(System.EventArgs args)
         {
+            /*
             PoolFisher.looking4NewPoint = false;
             PoolFisher.looking4NewPool = true;
             PoolFisher.MeIsFishing = false;
@@ -138,94 +148,18 @@ namespace PoolFishingBuddy
             PoolFisher.HotspotList.Clear();
             PoolFisher.BlackspotList.Clear();
             PoolFisher._currenthotspot = -1;
-            //equipWeapon();
+            equipWeapon();
+            */
         }
 
-        /// <summary>
-        /// Not in use.
-        /// </summary>
-        static public void findAndProtectWeapons()
+        static public void quitWoW()
         {
-            TreeRoot.StatusText = "Protecting equiped Weapons";
-            List<WoWItem> _items = StyxWoW.Me.BagItems;
-            List<WoWItem> mainhandList = new List<WoWItem>();
-            List<WoWItem> offhandList = new List<WoWItem>();
-            int mainHand, offHand;
-            foreach (WoWItem i in _items)
-            {
-                if (i.ItemInfo.IsWeapon && (i.ItemInfo.InventoryType == InventoryType.WeaponMainHand ||
-                    i.ItemInfo.InventoryType == InventoryType.TwoHandWeapon) && StyxWoW.Me.CanEquipItem(i))
-                {
-                    if (!mainhandList.Contains(i)) mainhandList.Add(i);
-                }
-                if (i.ItemInfo.IsWeapon && (i.ItemInfo.InventoryType == InventoryType.WeaponOffHand ||
-                    i.ItemInfo.InventoryType == InventoryType.Weapon) && StyxWoW.Me.CanEquipItem(i))
-                {
-                    if (!offhandList.Contains(i)) offhandList.Add(i);
-                }
-            }
-            if (mainhandList.Count > 0)
-            {
-                mainhandList.Sort((i1, i2) => i2.ItemInfo.Level.CompareTo(i1.ItemInfo.Level));
-                mainHand = (int)mainhandList[0].Entry;
-                if (!ProtectedItemsManager.Contains((uint)mainHand)) ProtectedItemsManager.Add((uint)mainHand);
-                PoolFisherSettings.Instance.Mainhand = mainHand;
-            }
-            if (offhandList.Count > 0)
-            {
-                offhandList.Sort((i1, i2) => i2.ItemInfo.Level.CompareTo(i1.ItemInfo.Level));
-                offHand = (int)offhandList[0].Entry;
-                if (!ProtectedItemsManager.Contains((uint)offHand)) ProtectedItemsManager.Add((uint)offHand);
-                PoolFisherSettings.Instance.Offhand = offHand;
-            }
-            PoolFisherSettings.Instance.Save();
+            Lua.DoString("Logout()", "fishingbuddy.lua"); // Quit gives WoW Errors for some reason
+
+            while (StyxWoW.IsInGame && (!StyxWoW.Me.Combat || !StyxWoW.Me.PetInCombat))
+                Thread.Sleep(500);
         }
 
-        /// <summary>
-        /// Not in use.
-        /// </summary>
-        static public bool equipPole
-        {
-            get
-            {
-                List<WoWItem> _items = StyxWoW.Me.BagItems;
-                int mainHand, offHand;
-
-                if (StyxWoW.Me.Inventory.Equipped.MainHand != null && StyxWoW.Me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass == WoWItemWeaponClass.FishingPole)
-                {
-                    return true;
-                }
-                else if (StyxWoW.Me.Inventory.Equipped.MainHand == null && PoolFisherSettings.Instance.Mainhand == 0)
-                {
-                    findAndProtectWeapons();
-                }
-                mainHand = (int)(StyxWoW.Me.Inventory.Equipped.MainHand != null ? StyxWoW.Me.Inventory.Equipped.MainHand.Entry : 0);
-                offHand = (int)(StyxWoW.Me.Inventory.Equipped.OffHand != null ? StyxWoW.Me.Inventory.Equipped.OffHand.Entry : 0);
-                if (mainHand != 0)
-                {
-                    if (!ProtectedItemsManager.Contains((uint)mainHand)) ProtectedItemsManager.Add((uint)mainHand);
-                    PoolFisherSettings.Instance.Mainhand = mainHand;
-                }
-                if (offHand != 0)
-                {
-                    if (!ProtectedItemsManager.Contains((uint)offHand)) ProtectedItemsManager.Add((uint)offHand);
-                    PoolFisherSettings.Instance.Offhand = offHand;
-                }
-                PoolFisherSettings.Instance.Save();
-
-                foreach (WoWItem i in _items)
-                {
-                    if ((i.ItemInfo.WeaponClass == WoWItemWeaponClass.FishingPole) && StyxWoW.Me.CanEquipItem(i))
-                    {
-                        Logging.Write(System.Drawing.Color.Blue, "{0} - Equipping: {1}.", TimeNow, i.Name);
-                        Lua.DoString("EquipItemByName (\"" + i.Name + "\")", "fishingbuddy.lua");
-                        Thread.Sleep(1000);
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }
 
         /// <summary>
         /// EquipItemByName(itemId or "itemName" or "itemLink"[, slot]) - Equips an item, optionally into a specified slot. 
@@ -422,44 +356,40 @@ namespace PoolFishingBuddy
         /// Returns current time "hh:mm:ss tt"
         /// </summary>
         static public string TimeNow { get { return DateTime.Now.ToString("hh:mm:ss tt", System.Globalization.DateTimeFormatInfo.InvariantInfo); } }
-        
-        /// <summary>
-        /// Credits to
-        /// </summary>
-        /// <returns>Array List of WoWPoints around the pool we might try to fish from.</returns>
-        static public bool findPoolPoint()
-        {
 
+
+        static public void PoolPoint()
+        {
             Logging.Write("{0} - Looking for pool point. Pool location: {1}.", TimeNow, PoolFisher.Pool.Location);
-            int traceStep = 15;
-            int minRange = 10;
+            Stopwatch test = new Stopwatch();
+            test.Start();
+
+            int traceStep = 50;
+            int minRange = 12;
             int maxRange = PoolFisherSettings.Instance.MaxCastRange + 1;
-            int maxAttempts = PoolFisherSettings.Instance.MaxNewLocAttempts;
+
             float _PIx2 = 3.14159f * 2f;
 
             WoWPoint p = new WoWPoint();
-            WoWPoint hPoint = new WoWPoint();
-            WoWPoint lPoint = new WoWPoint();
 
-            PoolFisher.PoolPoints.Clear();
-            PoolFisher.tempPoolPoints.Clear();
-
-            for (int i = 0, x = minRange; i < traceStep && x < maxRange; i++)
+            for (int i = 0, x = minRange; i < traceStep && x < maxRange && PoolFisher.PoolPoints.Count < 1; i++)
             {
                 p = PoolFisher.Pool.Location.RayCast((i * _PIx2) / traceStep, x);
 
-                lPoint = p;
-                lPoint.Z -= 0.4f;
-                hPoint = p;
-                hPoint.Z += 15f;
+                //Logging.Write("{0} - testing: {1}.", TimeNow, p);
+
                 p.Z = getGroundZ(p);
 
-                //Logging.Write("{0} - lPoint.Z: {1}, hPoint.Z: {2}, p.Z: {3}.", TimeNow, lPoint.Z, hPoint.Z, p.Z);
-
-                if (p.Z > lPoint.Z && p.Z < hPoint.Z && PoolFisher.Pool.Location.Distance(p) <= maxRange && GameWorld.IsInLineOfSight(p, PoolFisher.Pool.Location))
+                if (p.Z != float.MinValue && !PoolFisher.badPoolPoints.Contains(p) && StyxWoW.Me.Location.Distance(p) > 1)
                 {
-                    PoolFisher.tempPoolPoints.Add(p);
-                    //Logging.Write("{0} - Added {1} to tempPoolPoints. Distance from pool: {2}", TimeNow, p, PoolFisher.Pool.Location.Distance(p));
+                    if (GetHighestSurroundingSlope(p) < 1.2f && GameWorld.IsInLineOfSight(p, PoolFisher.Pool.Location))
+                    {
+                        PoolFisher.PoolPoints.Add(p);
+                        PoolFisher.looking4NewPoint = false;
+                        Logging.Write("{0} - Added {1} to PoolPoints. Distance from pool: {2}", TimeNow, p, PoolFisher.Pool.Location.Distance(p));
+                        test.Stop();
+
+                    }
                 }
 
                 if (i == (traceStep - 1))
@@ -468,84 +398,11 @@ namespace PoolFishingBuddy
                     x++;
                 }
             }
-
-
-            Logging.Write("{0} - We got {1} tempPoolPoints for this pool.", TimeNow, PoolFisher.tempPoolPoints.Count);
-
-            Stopwatch test = new Stopwatch();
-            test.Start();
-
-            if (PoolFisher.tempPoolPoints.Count > 0)
+            if (PoolFisher.PoolPoints.Count == 0)
             {
-                foreach (WoWPoint point in PoolFisher.tempPoolPoints)
-                {
-                    ThreadStart GetSlopesThread = delegate { sloapCheck(point); };
-                    PoolFisher.GetSlopesThread = new Thread(GetSlopesThread);
-                    PoolFisher.GetSlopesThread.Start();
-                }
-            }
-            else
-            {
-                Logging.Write("{0} - No suitable point found für {1} , blacklisting for 2 minutes.", TimeNow, PoolFisher.Pool.Name);
+                Logging.Write(System.Drawing.Color.Red, "{0} - No valid points returned by RayCast, blacklisting for 2 minutes.", TimeNow);
                 BlackListPool();
-                return false;
             }
-
-            while (PoolFisher.GetSlopesThread.IsAlive)
-            {
-                Logging.Write("{0} - Sleeping while sloapCheck is running.", TimeNow, PoolFisher.PoolPoints.Count);
-                Thread.Sleep(100);
-            }
-
-            Logging.Write("{0} - Elapsed time (ms): {1}", TimeNow, test.ElapsedMilliseconds);
-            test.Stop();
-
-            Logging.Write("{0} - We got {1} suitable points for this pool.", TimeNow, PoolFisher.PoolPoints.Count);
-
-            PoolFisher.PoolPoints.Sort((p1, p2) => p1.Z.CompareTo(p2.Z));
-
-            if (PoolFisherSettings.Instance.DescendHigher)
-            {
-                // Let's try the higher Z-Coords first! No more swimming ftw..
-                PoolFisher.PoolPoints.Reverse();
-            }
-
-            if (StyxWoW.Me.IsFlying && PoolFisher.PoolPoints.Count > 0)
-            {
-                Logging.Write("{0} - PoolPoint: {1}. Count total: {2}", TimeNow, PoolFisher.PoolPoints[0], PoolFisher.PoolPoints.Count);
-                PoolFisher.looking4NewPoint = false;
-                return true;
-            }
-
-            for (int i = 0; i < PoolFisher.PoolPoints.Count; )
-            {
-                //Logging.Write("{0} - Looking for nearest point...", TimeNow);
-                WoWPoint[] testP = Navigator.GeneratePath(StyxWoW.Me.Location, PoolFisher.PoolPoints[i]);
-                if (testP.Length > 0)
-                {
-                    PoolFisher.looking4NewPoint = false;
-                    return true;
-                }
-                else
-                {
-                    PoolFisher.PoolPoints.Remove(PoolFisher.PoolPoints[i]);
-                    PoolFisher.PoolPoints.Sort((a, b) => a.Distance(StyxWoW.Me.Location).CompareTo(b.Distance(StyxWoW.Me.Location)));
-                }
-            }
-            Logging.Write("{0} - No suitable point found für {1} , blacklisting for 2 minutes.", TimeNow, PoolFisher.Pool.Name);
-            BlackListPool();
-            return false;
-        }
-
-        /// <summary>
-        /// Checks for sloaps on multiple WoWPoints by multithreading and adds them to PoolPoints.
-        /// </summary>
-        /// <param name="p">WoWPoint</param>
-        public static void sloapCheck(WoWPoint p)
-        {
-            //Logging.Write("{0} - New Thread.", TimeNow);
-            if (GetHighestSurroundingSlope(p) < 1.2f)
-                PoolFisher.PoolPoints.Add(p);
         }
 
         /// <summary>
@@ -554,6 +411,7 @@ namespace PoolFishingBuddy
         /// <returns>Z-Coordinates for PoolPoints so we don't jump into the water.</returns>
         public static float getGroundZ(WoWPoint p)
         {
+            /*
             try
             {
                 float groundz;
@@ -561,14 +419,18 @@ namespace PoolFishingBuddy
                 return groundz;
             }
             catch (Exception) { }
+            */
 
             WoWPoint ground = WoWPoint.Empty;
 
-            GameWorld.TraceLine(new WoWPoint(p.X, p.Y, 10000), new WoWPoint(p.X, p.Y, -10000), GameWorld.CGWorldFrameHitFlags.HitTestGroundAndStructures | GameWorld.CGWorldFrameHitFlags.HitTestBoundingModels | GameWorld.CGWorldFrameHitFlags.HitTestWMO, out ground);
+            GameWorld.TraceLine(new WoWPoint(p.X, p.Y, (p.Z -= 0.6f)), new WoWPoint(p.X, p.Y, (p.Z += (float)PoolFisherSettings.Instance.MaxCastRange)), GameWorld.CGWorldFrameHitFlags.HitTestGroundAndStructures/* | GameWorld.CGWorldFrameHitFlags.HitTestBoundingModels | GameWorld.CGWorldFrameHitFlags.HitTestWMO*/, out ground);
+
             if (ground != WoWPoint.Empty)
             {
+                //Logging.Write("{0} - Ground Z: {1}.", TimeNow, ground.Z);
                 return ground.Z;
             }
+            //Logging.Write("{0} - Ground Z returned float.MinValue.", TimeNow);
             return float.MinValue;
         }
 
@@ -589,11 +451,12 @@ namespace PoolFishingBuddy
         /// <returns>Highest slope of surrounding terrain, returns 100 if the slope can't be determined</returns>
         public static float GetHighestSurroundingSlope(WoWPoint p)
         {
+            Logging.Write("Sloapcheck on Point: {0}", p);
             float _PIx2 = 3.14159f * 2f;
             float highestSlope = -100;
             float slope = 0;
-            int traceStep = 6;
-            float range = 1.2f;
+            int traceStep = 4;
+            float range = 0.2f;
             WoWPoint p2;
             for (int i = 0; i < traceStep; i++)
             {
@@ -603,11 +466,10 @@ namespace PoolFishingBuddy
                 slope = Math.Abs( GetSlope(p, p2) );
                 if( slope > highestSlope )
                 {
-                    highestSlope = slope;
+                    highestSlope = (float)slope;
                 }
             }
-            //Logging.Write("Point: {0}, Distance: {1}, Sloap: {2}", p, PoolFisher.Pool.Location.Distance(p), highestSlope);
-            //Logging.Write(" Highslope {0}", highestSlope);
+            Logging.Write("Highslope {0}", highestSlope);
             return Math.Abs( highestSlope );
         }
 
@@ -646,6 +508,12 @@ namespace PoolFishingBuddy
             return float.MinValue;
         }
 
+        static public void BlacklistPoolPoint(WoWPoint p)
+        {
+            if (!PoolFisher.badPoolPoints.Contains(p))
+                PoolFisher.badPoolPoints.Add(p);
+        }
+
         /// <summary>
         /// Blacklists current pool and resets all variables.
         /// </summary>
@@ -655,11 +523,15 @@ namespace PoolFishingBuddy
             {
                 //Logging.Write("{0} - Blacklisted Guid {1}", TimeNow, PoolFisher.Pool.Guid);
                 equipWeapon();
-                PoolFisher.newLocAttempts = 0;
-                PoolFisher.MeIsFishing = false;
+                PoolFisher.looking4NewPoint = false;
                 PoolFisher.looking4NewPool = true;
-                PoolFisher.looking4NewPoint = true;
+                PoolFisher.MeIsFishing = false;
+                PoolFisher.need2Lure = false;
+                PoolFisher.castAttempts = 0;
+                PoolFisher.newLocAttempts = 0;
                 PoolFisher.PoolPoints.Clear();
+                PoolFisher.Pool = null;
+                PoolFisher._currenthotspot = -1;
             }
         }
 
@@ -900,7 +772,7 @@ namespace PoolFishingBuddy
                 List<WoWPlayer> players = new List<WoWPlayer>(ObjectManager.GetObjectsOfType<WoWPlayer>(false));
                 foreach (WoWUnit unit in players)
                 {
-                    if (PoolFisher.Pool.Location.Distance(unit.Location) < 30)
+                    if (PoolFisher.Pool.Location.Distance2D(unit.Location) < 30)
                     {
                         Logging.Write(System.Drawing.Color.Red, "{0} - Player detected!", TimeNow);
                         return true;
