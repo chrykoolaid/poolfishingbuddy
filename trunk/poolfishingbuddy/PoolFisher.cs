@@ -76,7 +76,7 @@ namespace PoolFishingBuddy
 
         #region Overrides of BotBase
 
-        private readonly Version _version = new Version(1, 0, 16);
+        private readonly Version _version = new Version(1, 0, 17);
 
         public override string Name
         {
@@ -184,7 +184,7 @@ namespace PoolFishingBuddy
                                 LevelBot.CreateCombatBehavior())),
 
                         // ToDo: own need to rest check on top of this..
-                        CreateFishingBehaviour(),
+                        CreateFishingBehavior(),
                         CreateRestBehavior(),
 
 
@@ -245,13 +245,13 @@ namespace PoolFishingBuddy
                         new Decorator(ret => !MeIsFishing && StyxWoW.Me.FreeBagSlots > ProfileManager.CurrentProfile.MinFreeBagSlots,
                             new PrioritySelector(
 
-                                CreateMoveToPoolBehaviour(),
+                                CreateMoveToPoolBehavior(),
 
                                 new Decorator(ret => PoolPoints.Count == 0,
                                     new PrioritySelector(
 
-                                        CreatePathBehaviour(),
-                                        CreateLookForPoolBehaviour()
+                                        CreatePathBehavior(),
+                                        CreateLookForPoolBehavior()
                                     
                                     ))
                             ))
@@ -261,7 +261,7 @@ namespace PoolFishingBuddy
 
         #endregion
 
-        private Composite CreateLookForPoolBehaviour()
+        private Composite CreateLookForPoolBehavior()
         {
             return new Decorator(ret => Helpers.findPool && looking4NewPool && Pool.X != 0,
                 new Sequence(
@@ -269,7 +269,7 @@ namespace PoolFishingBuddy
                     ));
         }
 
-        private Composite CreateMoveToPoolBehaviour()
+        private Composite CreateMoveToPoolBehavior()
         {
             return new Decorator(ret => Pool != null && !MeIsFishing && !Blacklist.Contains(Pool.Guid) && !PoolFisher.PermaBlacklist.Contains(Pool.Entry),
                 new Sequence(
@@ -366,7 +366,7 @@ namespace PoolFishingBuddy
                                     new PrioritySelector(
 
                                         new Decorator(ret => !Navigator.CanNavigateFully(StyxWoW.Me.Location, PoolPoints[0]),
-                                            CreateMountBehaviour()),
+                                            CreateMountBehavior()),
 
                                         new Sequence(
                                             new ActionSetActivity(ret => "Moving to PoolPoint: " + PoolPoints[0] + ", Location: " + StyxWoW.Me.Location + ", distance: " + PoolPoints[0].Distance(StyxWoW.Me.Location) + "(Not Mounted)"),
@@ -386,7 +386,7 @@ namespace PoolFishingBuddy
                                         new Action(ret => Logging.Write("{0} - Moving to PoolPoint: {1}, Location: {2}, Distance: {3}. (Mounted)", Helpers.TimeNow, PoolPoints[0], StyxWoW.Me.Location, PoolPoints[0].Distance(StyxWoW.Me.Location))),
                                         new PrioritySelector(
                                             // Mount if not mounted
-                                            CreateMountBehaviour(),
+                                            CreateMountBehavior(),
 
                                             // Move
                                             new Sequence(
@@ -401,7 +401,7 @@ namespace PoolFishingBuddy
                 )));
         }
 
-        private Composite CreateFishingBehaviour()
+        private Composite CreateFishingBehavior()
         {
             return new Decorator(ret => PoolPoints.Count > 0 && StyxWoW.Me.Location.Distance(PoolPoints[0]) <= 2.5 && !looking4NewPool && !StyxWoW.Me.Mounted && !StyxWoW.Me.IsSwimming && !StyxWoW.Me.IsMoving && !StyxWoW.Me.Combat,// && Pool.InLineOfSight,
                 new Sequence(
@@ -445,7 +445,7 @@ namespace PoolFishingBuddy
                                 new Action(ret => looking4NewPoint = true),
                                 new Action(ret => MeIsFishing = false),
                                 new Action(ret => castAttempts = 0),
-                                CreateMoveToPoolBehaviour()
+                                CreateMoveToPoolBehavior()
                         )),
 
                         // in Line Line of sight?
@@ -457,7 +457,7 @@ namespace PoolFishingBuddy
                                 new Action(ret => newLocAttempts++),
                                 new Action(ret => looking4NewPoint = true),
                                 new Action(ret => MeIsFishing = false),
-                                CreateMoveToPoolBehaviour()
+                                CreateMoveToPoolBehavior()
                         )),
 
                         // swimming?
@@ -469,7 +469,7 @@ namespace PoolFishingBuddy
                                 new Action(ret => newLocAttempts++),
                                 new Action(ret => looking4NewPoint = true),
                                 new Action(ret => MeIsFishing = false),
-                                CreateMoveToPoolBehaviour()
+                                CreateMoveToPoolBehavior()
                         )),
 
 
@@ -629,7 +629,7 @@ namespace PoolFishingBuddy
         }
 
 
-        private Composite CreatePathBehaviour()
+        private Composite CreatePathBehavior()
         {
             return new PrioritySelector(
 
@@ -717,10 +717,10 @@ namespace PoolFishingBuddy
                     new Sequence(
                         //new Action(ret => Logging.Write("Moving to hotspot: {0}", ret)),
                         new ActionSetActivity(hotspot => "Moving to hotspot: " + _modHotspot + ", distance: " + _modHotspot.Distance(StyxWoW.Me.Location)),
-                        CreateMoveBehaviour())));
+                        CreateMoveBehavior())));
         }
 
-        private Composite CreateMoveBehaviour()
+        private Composite CreateMoveBehavior()
         {
             return new Sequence(
                 new Action(ret => Logging.WriteDebug("{0} - Composit: CreateMoveBehaviour", Helpers.TimeNow)),
@@ -728,11 +728,11 @@ namespace PoolFishingBuddy
                 new PrioritySelector(
 
                     new Decorator(ret => !StyxWoW.Me.Mounted && !StyxWoW.Me.IsIndoors,
-                        CreateMountBehaviour()),
+                        CreateMountBehavior()),
                     new ActionMove()));
         }
 
-        private Composite CreateMountBehaviour()
+        private Composite CreateMountBehavior()
         {
             return new Decorator(ret => !StyxWoW.Me.Mounted && !StyxWoW.Me.Combat,
                 new Sequence(
@@ -775,18 +775,18 @@ namespace PoolFishingBuddy
                         )));
         }
 
-        private Composite CreateCastBehaviour()
+        private Composite CreateCastBehavior()
         {
             return new Sequence(
                 new Action(ret => Logging.WriteDebug("{0} - Composit: CreateCastBehaviour", Helpers.TimeNow)),
-                CreateMoveStopBehaviour(),
+                CreateMoveStopBehavior(),
                 new ActionSetActivity(spell => "Casting " + ((WoWSpell)spell).Name),
                 new Action(spell => ((WoWSpell)spell).Cast()),
                 new Wait(2, ret => !StyxWoW.Me.IsCasting, new ActionIdle()),
                 new Action(ret => StyxWoW.SleepForLagDuration()));
         }
 
-        private Composite CreateMoveStopBehaviour()
+        private Composite CreateMoveStopBehavior()
         {
             return new Decorator(ret => StyxWoW.Me.IsMoving,
                 new Sequence(
