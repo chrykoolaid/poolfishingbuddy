@@ -42,12 +42,13 @@ namespace PoolFishingBuddy
         /// </summary>
         static public void Init(System.EventArgs args)
         {
+            /*
             if (!StyxWoW.IsLifetimeUser)
             {
                 Logging.Write(System.Drawing.Color.Red, "{0} - You don't have lifetime subscription. Stopping..", Helpers.TimeNow);
                 TreeRoot.Stop();
             }
-
+            */
             if (PoolFisherSettings.Instance.FlyingMountID == 0 && TreeRoot.IsRunning)
             {
                 Logging.Write(System.Drawing.Color.Red, "{0} - You did not select any flying mount, please go to settings first. Stopping..", Helpers.TimeNow);
@@ -78,7 +79,7 @@ namespace PoolFishingBuddy
 
                 foreach (WoWItem i in PoolFisher.BagItems)
                 {
-                    if (!ProtectedItemsManager.Contains(i.Name)) ProtectedItemsManager.Add(i.Name);
+                    //if (!ProtectedItemsManager.Contains(i.Name)) ProtectedItemsManager.Add(i.Name);
 
                     if (i.Entry == PoolFisherSettings.Instance.FishingPole && TreeRoot.IsRunning)
                     {
