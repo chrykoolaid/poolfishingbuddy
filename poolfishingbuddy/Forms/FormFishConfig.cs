@@ -14,7 +14,12 @@ using Styx.Logic.Combat;
 using Styx.Logic.Pathing;
 using Styx.Logic.Profiles;
 using Styx.WoWInternals;
+using Styx.WoWInternals.World;
 using Styx.WoWInternals.WoWObjects;
+
+using Bots.Grind;
+using Styx.Logic.POI;
+
 
 namespace PoolFishingBuddy.Forms
 {
@@ -28,6 +33,8 @@ namespace PoolFishingBuddy.Forms
         private void FormFishConfig_Load(object sender, EventArgs e)
         {
             PoolFisherSettings.Instance.Load();
+            ProtectedItemsManager.ReloadProtectedItems();
+            //Logging.Write(System.Drawing.Color.Red, "{0} - ProtectedItems count: {1}", Helpers.TimeNow, ProtectedItemsManager.GetAllItemIds().Count);
 
             try
             {
@@ -40,10 +47,28 @@ namespace PoolFishingBuddy.Forms
             }
 
             checkNinjaPools.Checked = PoolFisherSettings.Instance.NinjaPools;
-            checkDescendHigher.Checked = PoolFisherSettings.Instance.DescendHigher;
             MaxCastAttemptsText.Text = PoolFisherSettings.Instance.MaxCastAttempts.ToString();
             MaxNewLocAttemptsText.Text = PoolFisherSettings.Instance.MaxNewLocAttempts.ToString();
             numericHeightMod.Value = PoolFisherSettings.Instance.HeightModifier;
+
+            #region Bags full
+
+            if (PoolFisherSettings.Instance.ShouldMail == false)
+            {
+                radioHearthAndExit.Checked = true;
+                radioMailTo.Checked = false;
+                textMailTo.Text = "";
+                textMailTo.Enabled = false;
+            }
+            else
+            {
+                radioHearthAndExit.Checked = false;
+                radioMailTo.Checked = true;
+                textMailTo.Enabled = true;
+                textMailTo.Text = PoolFisherSettings.Instance.MailRecipient;
+            }
+
+            #endregion
 
             #region Blacklist
 
@@ -282,10 +307,27 @@ namespace PoolFishingBuddy.Forms
             int.TryParse(MaxCastAttemptsText.Text, out MaxCastAttempts);
 
             PoolFisherSettings.Instance.NinjaPools = checkNinjaPools.Checked;
-            PoolFisherSettings.Instance.DescendHigher = checkDescendHigher.Checked;
             PoolFisherSettings.Instance.MaxNewLocAttempts = MaxLocAttempts;
             PoolFisherSettings.Instance.MaxCastAttempts = MaxCastAttempts;
             PoolFisherSettings.Instance.HeightModifier = (int)numericHeightMod.Value;
+
+            #region Bags full
+
+            if (radioHearthAndExit.Checked)
+            {
+                PoolFisherSettings.Instance.ShouldMail = false;
+                PoolFisherSettings.Instance.MailRecipient = "";
+            }
+            else
+            {
+                PoolFisherSettings.Instance.ShouldMail = true;
+                PoolFisherSettings.Instance.MailRecipient = textMailTo.Text;
+                LevelbotSettings.Instance.Load();
+                LevelbotSettings.Instance.MailRecipient = PoolFisherSettings.Instance.MailRecipient;
+                LevelbotSettings.Instance.Save();
+            }
+
+            #endregion
 
             #region Lures
 
@@ -475,13 +517,12 @@ namespace PoolFishingBuddy.Forms
             Logging.Write(System.Drawing.Color.Green, "Offhand: {0}", (string)comboOffhand.SelectedItem);
 
             Logging.Write(System.Drawing.Color.Green, "Height: {0}", PoolFisherSettings.Instance.HeightModifier);
-            Logging.Write(System.Drawing.Color.Green, "Mode: {0}", PoolFisherSettings.Instance.BounceMode);
+            Logging.Write(System.Drawing.Color.Green, "Bouncemode: {0}", PoolFisherSettings.Instance.BounceMode);
             Logging.Write(System.Drawing.Color.Green, "Max. range to cast: {0}", PoolFisherSettings.Instance.MaxCastRange);
             Logging.Write(System.Drawing.Color.Green, "Max. attempts to cast: {0}", PoolFisherSettings.Instance.MaxCastAttempts);
             Logging.Write(System.Drawing.Color.Green, "Ninja Pools: {0}", PoolFisherSettings.Instance.NinjaPools);
             Logging.Write(System.Drawing.Color.Green, "Blacklist Schools: {0}", PoolFisherSettings.Instance.BlacklistSchools);
             Logging.Write(System.Drawing.Color.Green, "Use Lure: {0}", PoolFisherSettings.Instance.useLure);
-            Logging.Write(System.Drawing.Color.Green, "Descend higher: {0}", PoolFisherSettings.Instance.DescendHigher);
             Logging.Write(System.Drawing.Color.Green, "Max. attempts to reach pool: {0}", PoolFisherSettings.Instance.MaxNewLocAttempts);
 
             Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
@@ -520,6 +561,10 @@ namespace PoolFishingBuddy.Forms
 
         private void TestButton_Click(object sender, EventArgs e)
         {
+            Logging.Write("Count of badPoolPoints: {0}", PoolFisher.badPoolPoints.Count);
+
+            
+
             WoWPoint test = StyxWoW.Me.Location;
 
             test.Z = Helpers.GetWaterSurface(StyxWoW.Me.Location);
@@ -531,17 +576,34 @@ namespace PoolFishingBuddy.Forms
             foreach (WoWGameObject p in poolList)
                 Logging.Write("{0} - Found - {1} - at a distance of {2}. Guid: {3}. Entry: {4}.", Helpers.TimeNow, p.Name, p.Distance, p.Guid, p.Entry);
 
-            if (Styx.StyxWoW.Me.GetAllAuras().Any(Aura => Aura.SpellId == 84510))
+            try
             {
-                Logging.Write("{0} - Sleep while red mist is on me: 84510.", Helpers.TimeNow);
+                float groundz;
+                Navigator.FindHeight(StyxWoW.Me.Location.X, StyxWoW.Me.Location.Y, out groundz);
+                Logging.Write("{0} - Navigator groundz: {1}.", Helpers.TimeNow, groundz);
             }
-            if (Styx.StyxWoW.Me.GetAllAuras().Any(Aura => Aura.SpellId == 81096))
+            catch (Exception) { }
+
+            WoWPoint ground = WoWPoint.Empty;
+
+            GameWorld.TraceLine(new WoWPoint(StyxWoW.Me.Location.X, StyxWoW.Me.Location.Y, 10000), new WoWPoint(StyxWoW.Me.Location.X, StyxWoW.Me.Location.Y, -10000), GameWorld.CGWorldFrameHitFlags.HitTestGroundAndStructures | GameWorld.CGWorldFrameHitFlags.HitTestBoundingModels | GameWorld.CGWorldFrameHitFlags.HitTestWMO, out ground);
+            if (ground != WoWPoint.Empty)
             {
-                Logging.Write("{0} - Sleep while red mist is on me: 81096.", Helpers.TimeNow);
+                Logging.Write("{0} - TraceLine groundz: {1}.", Helpers.TimeNow, ground.Z);
             }
-            if (Styx.StyxWoW.Me.GetAllAuras().Any(Aura => Aura.SpellId == 81095))
+        }
+
+        private void checkUseLure_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkUseLure.Checked)
             {
-                Logging.Write("{0} - Sleep while red mist is on me: 81095.", Helpers.TimeNow);
+                comboLures.SelectedItem = null;
+                comboLures.Enabled = true;
+            }
+            else
+            {
+                comboLures.SelectedItem = null;
+                comboLures.Enabled = false;
             }
         }
 
@@ -636,17 +698,37 @@ namespace PoolFishingBuddy.Forms
             }
         }
 
-        private void checkUseLure_CheckedChanged(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-            if (checkUseLure.Checked)
+            
+            //Global.ShouldMail = true;
+            //LevelBot.CreateVendorBehavior();
+            //BotPoi.Current = new BotPoi(ProfileManager.CurrentProfile.MailboxManager.GetClosestMailbox().Location, PoiType.Mail);
+            Styx.Global.ShouldMail = true;
+            Styx.Logic.Vendors.ForceMail = true;
+        }
+
+        private void radioMailTo_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioMailTo.Checked)
             {
-                comboLures.SelectedItem = null;
-                comboLures.Enabled = true;
+                textMailTo.Enabled = true;
             }
             else
             {
-                comboLures.SelectedItem = null;
-                comboLures.Enabled = false;
+                textMailTo.Enabled = false;
+            }
+        }
+
+        private void radioHearthAndExit_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioHearthAndExit.Checked)
+            {
+                textMailTo.Enabled = false;
+            }
+            else
+            {
+                textMailTo.Enabled = true;
             }
         }
     }

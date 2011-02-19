@@ -43,6 +43,14 @@ namespace PoolFishingBuddy
                 Flightor.MoveWithTrace(destination);
                 //Flightor.MoveTo(destination);
             }
+            else if (!StyxWoW.Me.Mounted && StyxWoW.Me.IsIndoors)
+            {
+                float groundz;
+                Navigator.FindHeight(destination.X, destination.Y, out groundz);
+                destination.Z = groundz;
+                while (StyxWoW.Me.IsIndoors)
+                    Navigator.MoveTo(destination);
+            }
             else
             {
                 Logging.Write("Not Mounted! Return: {0}", RunStatus.Failure);

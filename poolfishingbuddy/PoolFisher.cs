@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Bots.Grind;
 using Bots.ArchaeologyBuddy;
+using Levelbot;
 using CommonBehaviors.Actions;
 using PoolFishingBuddy.Forms;
 using Styx;
@@ -42,7 +43,8 @@ namespace PoolFishingBuddy
         static public Thread MonitoringThread;
         static public Thread GetValuesThread;
 
-        static public Thread GetSlopesThread;
+        static public Thread TempThread1;
+        static public Thread TempThread2;
 
         static public int Ping;
         static public int newLocAttempts = 0;
@@ -54,12 +56,15 @@ namespace PoolFishingBuddy
         static public WoWFishingBobber Bobber = null;
         static public List<WoWPoint> PoolPoints = new List<WoWPoint>(100);
         static public List<WoWPoint> tempPoolPoints = new List<WoWPoint>(100);
+        static public List<WoWPoint> badPoolPoints = new List<WoWPoint>(100);
+        static public WoWPoint PoolPoint;
         static public WoWPoint WaterSurface;
 
         static public List<WoWItem> mainhandList = new List<WoWItem>();
         static public List<WoWItem> offhandList = new List<WoWItem>();
         static public List<WoWItem> poleList = new List<WoWItem>();
         static public List<WoWItem> BagItems = new List<WoWItem>();
+        static public WoWItem Heartstone = Helpers.GetIteminBag(6948);
         
         #endregion
 
@@ -71,7 +76,7 @@ namespace PoolFishingBuddy
 
         #region Overrides of BotBase
 
-        private readonly Version _version = new Version(1, 0, 14);
+        private readonly Version _version = new Version(1, 0, 16);
 
         public override string Name
         {
@@ -87,6 +92,9 @@ namespace PoolFishingBuddy
             GrindArea = ProfileManager.CurrentProfile.GrindArea;
             HotspotList = GrindArea.Hotspots.ConvertAll<WoWPoint>(hs => hs.ToWoWPoint());
             BlackspotList = ProfileManager.CurrentProfile.Blackspots.ConvertAll<WoWPoint>(bs => bs.Location);
+
+            ProtectedItemsManager.ReloadProtectedItems();
+            ForceMailManager.ReloadProtectedItems();
 
             looking4NewPoint = false;
             looking4NewPool = true;
@@ -104,13 +112,12 @@ namespace PoolFishingBuddy
             Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
             Logging.Write(System.Drawing.Color.Green, "Flying Mount: {0}", Mount.Name);
             Logging.Write(System.Drawing.Color.Green, "Height: {0}", PoolFisherSettings.Instance.HeightModifier);
-            Logging.Write(System.Drawing.Color.Green, "Mode: {0}", PoolFisherSettings.Instance.BounceMode);
+            Logging.Write(System.Drawing.Color.Green, "Bouncemode: {0}", PoolFisherSettings.Instance.BounceMode);
             Logging.Write(System.Drawing.Color.Green, "Max. range to cast: {0}", PoolFisherSettings.Instance.MaxCastRange);
             Logging.Write(System.Drawing.Color.Green, "Max. attempts to cast: {0}", PoolFisherSettings.Instance.MaxCastAttempts);
             Logging.Write(System.Drawing.Color.Green, "Ninja Pools: {0}", PoolFisherSettings.Instance.NinjaPools);
             Logging.Write(System.Drawing.Color.Green, "Blacklist Schools: {0}", PoolFisherSettings.Instance.BlacklistSchools);
             Logging.Write(System.Drawing.Color.Green, "Use Lure: {0}", PoolFisherSettings.Instance.useLure);
-            Logging.Write(System.Drawing.Color.Green, "Descend higher: {0}", PoolFisherSettings.Instance.DescendHigher);
             Logging.Write(System.Drawing.Color.Green, "Max. attempts to reach pool: {0}", PoolFisherSettings.Instance.MaxNewLocAttempts);
 
             Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
@@ -123,6 +130,7 @@ namespace PoolFishingBuddy
                 Logging.Write(System.Drawing.Color.Green, "Blackspots: {0}", ProfileManager.CurrentProfile.Blackspots.Count);
                 //Logging.Write(System.Drawing.Color.Green, "Vendor: {0}", ProfileManager.CurrentProfile.VendorManager.Vendors.Count);
                 //Logging.Write(System.Drawing.Color.Green, "Mailbox: {0}", ProfileManager.CurrentProfile.MailboxManager.Mailboxes.Count);
+                Logging.Write(System.Drawing.Color.Green, "Protected Items: {0}", ProtectedItemsManager.GetAllItemIds().Count);
             }
             catch (Exception e) 
             {
@@ -164,8 +172,8 @@ namespace PoolFishingBuddy
                         new Decorator(ret => StyxWoW.Me.IsFalling,
                             new ActionSleep(1000)),
 
-
-                        LevelBot.CreateDeathBehavior(),
+                        new Decorator(ret => StyxWoW.Me.Dead || StyxWoW.Me.IsGhost,
+                            LevelBot.CreateDeathBehavior()),
 
                         new Decorator(ret => !StyxWoW.Me.Mounted && StyxWoW.Me.Combat,
                             new Sequence(
@@ -197,15 +205,51 @@ namespace PoolFishingBuddy
                         #endregion
                         
                         LevelBot.CreateLootBehavior(),
-                        LevelBot.CreateVendorBehavior(),
 
-                        new Decorator(ret => !MeIsFishing,
+                        new Decorator(ret => StyxWoW.Me.FreeBagSlots <= ProfileManager.CurrentProfile.MinFreeBagSlots && PoolFisherSettings.Instance.ShouldMail,
+                            new Sequence(
+                                new Action(ret => Global.ShouldMail = true),
+                                new Action(ret => Vendors.ForceRepair = true),
+                                new Action(ret => Vendors.ForceMail = true),
+                                new Action(ret => Vendors.ForceSell = true),
+                                new Action(ret => Vendors.ForceTrainer = true),
+                                new Action(ret => MeIsFishing = false),
+                                new Action(ret => newLocAttempts = 0),
+                                new Action(ret => castAttempts = 0),
+                                new Action(ret => Helpers.equipWeapon()),
+                                //CreateMountBehaviour(),
+                                CreateRestBehavior(),
+                                LevelBot.CreateVendorBehavior()
+                            
+                            )),
+
+                        new Decorator(ret => StyxWoW.Me.FreeBagSlots <= ProfileManager.CurrentProfile.MinFreeBagSlots && !PoolFisherSettings.Instance.ShouldMail,
+                            new PrioritySelector(
+
+                                new Decorator(ret => Heartstone.Cooldown == 0,
+                                    new Sequence(
+                                        new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Bags are full. Heart and Exit now!", Helpers.TimeNow)),
+                                        new Action(ret => Heartstone.Use())
+                                        //new Wait(30, ret => !StyxWoW.Me.IsCasting, new ActionIdle())
+                                    )),
+
+                                new Decorator(ret => Heartstone.Cooldown > 0,
+                                    new Sequence(
+                                        new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Bags are full. Exit now!", Helpers.TimeNow)),
+                                        new Action(ret => Helpers.quitWoW()),
+                                        //new Wait(30, ret => !StyxWoW.IsInGame, new ActionIdle()),
+                                        new Action(ret => TreeRoot.Stop())
+                                    ))
+                        )),
+
+                        new Decorator(ret => !MeIsFishing && StyxWoW.Me.FreeBagSlots > ProfileManager.CurrentProfile.MinFreeBagSlots,
                             new PrioritySelector(
 
                                 CreateMoveToPoolBehaviour(),
 
                                 new Decorator(ret => PoolPoints.Count == 0,
                                     new PrioritySelector(
+
                                         CreatePathBehaviour(),
                                         CreateLookForPoolBehaviour()
                                     
@@ -232,20 +276,6 @@ namespace PoolFishingBuddy
                     new Action(ret => Logging.WriteDebug("{0} - Composit: CreateMoveToPoolBehaviour", Helpers.TimeNow)),
                     new PrioritySelector(
 
-                        // Get PoolPoint
-                        new Decorator(ret => looking4NewPoint,
-                            new Sequence(
-                                new Action(ret => WoWMovement.MoveStop()),
-                                new Action(ret => Helpers.findPoolPoint()))),
-
-                        // Blacklist if Navigator can't generate Path
-                        new Decorator(ret => PoolPoints.Count == 0,
-                            new Sequence(
-                                    new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - No path found to {1}, blacklisting for 2 minutes. (PoolFisher)", Helpers.TimeNow, Pool.Name)),
-                                    new Action(ret => Helpers.BlackListPool()),
-                                    new Action(delegate { return RunStatus.Success; })
-                        )),
-
                         // Blacklist if other Player is detected
                         new Decorator(ret => Helpers.PlayerDetected && !PoolFisherSettings.Instance.NinjaPools,
                             new Sequence(
@@ -254,6 +284,19 @@ namespace PoolFishingBuddy
                                     new Action(delegate { return RunStatus.Success; })
                         )),
 
+                        // Get PoolPoint
+                        new Decorator(ret => looking4NewPoint,
+                            new Sequence(
+                                new Action(ret => WoWMovement.MoveStop()),
+                                new Action(ret => Helpers.PoolPoint()))),
+
+                        // Blacklist if Navigator can't generate Path
+                        new Decorator(ret => PoolPoints.Count == 0,
+                            new Sequence(
+                                    new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - No path found to {1}, blacklisting for 2 minutes. (PoolFisher)", Helpers.TimeNow, Pool.Name)),
+                                    new Action(ret => Helpers.BlackListPool()),
+                                    new Action(delegate { return RunStatus.Success; })
+                        )),
 
                         // Move to PoolPoint
                         new Decorator(pool => PoolPoints.Count > 0 && !looking4NewPoint,
@@ -278,11 +321,6 @@ namespace PoolFishingBuddy
                                     new Sequence(
                                     new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Reached max. attempts for new locations!", Helpers.TimeNow)),
                                     new Action(ret => Helpers.BlackListPool())
-                                    
-                                    //new Action(ret => PoolPoints.Remove(PoolPoints[0])),
-                                    //new Action(ret => PoolPoints.Sort((p1, p2) => p1.Z.CompareTo(p2.Z))),
-                                    //new Action(ret => PoolPoints.Reverse()),
-                                    //new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - New PoolPoint: {1}, Distance: {2}", Helpers.TimeNow, PoolPoints[0], StyxWoW.Me.Location.Distance(PoolPoints[0])))
                                 )),
 
                                 // tries++
@@ -295,9 +333,8 @@ namespace PoolFishingBuddy
                                             
 
                                 // Dismount
-                                new Decorator(ret => StyxWoW.Me.Location.Distance(PoolPoints[0]) <= 1.5 && StyxWoW.Me.Mounted, //&& !StyxWoW.Me.IsMoving,
+                                new Decorator(ret => StyxWoW.Me.Location.Distance(PoolPoints[0]) <= 1 && StyxWoW.Me.Mounted, //&& !StyxWoW.Me.IsMoving,
                                     new Sequence(
-                                        //new Action(ret => newLocAttempts = 0),
                                         new Action(ret => Mount.Dismount()),
                                         new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Location {1}, PoolPoint: {2}, Distance: {3}", Helpers.TimeNow, StyxWoW.Me.Location, PoolPoints[0], StyxWoW.Me.Location.Distance(PoolPoints[0]))),
                                         new Wait(3, ret => StyxWoW.Me.Mounted, new ActionIdle()),
@@ -308,46 +345,24 @@ namespace PoolFishingBuddy
                                 new Decorator(ret => StyxWoW.Me.Location.Distance2D(PoolPoints[0]) <= 2 && !Pool.InLineOfSight && !StyxWoW.Me.IsMoving && !StyxWoW.Me.Mounted,
                                     new Sequence(
                                     new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Pool is not in Line of Sight!", Helpers.TimeNow)),
+                                    new Action(ret => Helpers.BlacklistPoolPoint(PoolPoints[0])),
                                     new Action(ret => PoolPoints.Remove(PoolPoints[0])),
-                                    new Action(ret => PoolPoints.Sort((p1, p2) => p1.Z.CompareTo(p2.Z))),
-                                    //new Action(ret => PoolPoints.Reverse()),
-                                    new PrioritySelector(
-
-                                            new Decorator(ret => PoolPoints.Count == 0 && StyxWoW.Me.Location.Distance(PoolPoints[0]) > 2,
-                                                new Action(ret => Helpers.BlackListPool())),
-
-                                            new Decorator(ret => PoolPoints.Count > 0,
-                                                new Sequence(
-                                                    new Action(ret => PoolPoints.Sort((p1, p2) => PoolFisher.Pool.Location.Distance(p1).CompareTo(PoolFisher.Pool.Location.Distance(p2)))),
-                                                    //new Action(ret => PoolPoints.Reverse()),
-                                                    new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - New PoolPoint: {1}, Distance: {2}", Helpers.TimeNow, PoolPoints[0], StyxWoW.Me.Location.Distance(PoolPoints[0]))),
-                                                    new Action(ret => newLocAttempts++),
-                                                    new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Moving.. Attempt: {1} of {2}.", Helpers.TimeNow, newLocAttempts, PoolFisherSettings.Instance.MaxNewLocAttempts))))
-                                        )
+                                    new Action(ret => newLocAttempts++),
+                                    new Action(ret => looking4NewPoint = true)
                                 )),
 
                                 // swimming?
-                                new Decorator(ret => StyxWoW.Me.Location.Distance2D(PoolPoints[0]) <= 2 && StyxWoW.Me.IsSwimming && !StyxWoW.Me.IsMoving && !StyxWoW.Me.Mounted,
+                                new Decorator(ret => StyxWoW.Me.Location.Distance2D(PoolPoints[0]) <= 5 && StyxWoW.Me.IsSwimming && !StyxWoW.Me.IsMoving && !StyxWoW.Me.Mounted,
                                     new Sequence(
                                         new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Swimming at {1}...", Helpers.TimeNow, StyxWoW.Me.Location)),
+                                        new Action(ret => Helpers.BlacklistPoolPoint(PoolPoints[0])),
                                         new Action(ret => PoolPoints.Remove(PoolPoints[0])),
-                                        new PrioritySelector(
-
-                                            new Decorator(ret => PoolPoints.Count == 0 && StyxWoW.Me.Location.Distance(PoolPoints[0]) > 2,
-                                                new Action(ret => Helpers.BlackListPool())),
-
-                                            new Decorator(ret => PoolPoints.Count > 0,
-                                                new Sequence(
-                                                    new Action(ret => PoolPoints.Sort((p1, p2) => PoolFisher.Pool.Location.Distance(p1).CompareTo(PoolFisher.Pool.Location.Distance(p2)))),
-                                                    //new Action(ret => PoolPoints.Reverse()),
-                                                    new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - New PoolPoint: {1}, Distance: {2}", Helpers.TimeNow, PoolPoints[0], StyxWoW.Me.Location.Distance(PoolPoints[0]))),
-                                                    new Action(ret => newLocAttempts++),
-                                                    new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Moving.. Attempt: {1} of {2}.", Helpers.TimeNow, newLocAttempts, PoolFisherSettings.Instance.MaxNewLocAttempts))))
-                                        )
+                                        new Action(ret => newLocAttempts++),
+                                        new Action(ret => looking4NewPoint = true)
                                 )),
 
                                 // Move without Mount
-                                new Decorator(ret => StyxWoW.Me.Location.Distance2D(PoolPoints[0]) > 2.5 && StyxWoW.Me.Location.Distance2D(PoolPoints[0]) <= 40 && !StyxWoW.Me.Mounted && GameWorld.IsInLineOfSight(StyxWoW.Me.Location, PoolPoints[0]),
+                                new Decorator(ret => StyxWoW.Me.Location.Distance(PoolPoints[0]) > 0.5 && StyxWoW.Me.Location.Distance(PoolPoints[0]) <= 10 && !StyxWoW.Me.Mounted && GameWorld.IsInLineOfSight(StyxWoW.Me.Location, PoolPoints[0]),
                                     new PrioritySelector(
 
                                         new Decorator(ret => !Navigator.CanNavigateFully(StyxWoW.Me.Location, PoolPoints[0]),
@@ -365,7 +380,7 @@ namespace PoolFishingBuddy
                                 )),
 
                                 // Move with Mount
-                                new Decorator(ret => StyxWoW.Me.Location.Distance(PoolPoints[0]) > 40 || StyxWoW.Me.Mounted || ( StyxWoW.Me.Location.Distance(PoolPoints[0]) <= 40 && !GameWorld.IsInLineOfSight(StyxWoW.Me.Location, PoolPoints[0])),
+                                new Decorator(ret => StyxWoW.Me.Location.Distance(PoolPoints[0]) > 10 || StyxWoW.Me.Mounted || ( StyxWoW.Me.Location.Distance(PoolPoints[0]) <= 10 && !GameWorld.IsInLineOfSight(StyxWoW.Me.Location, PoolPoints[0])),
                                     new Sequence(
                                         new ActionSetActivity(ret => "Moving to PoolPoint: " + PoolPoints[0] + ", Location: " + StyxWoW.Me.Location + ", distance: " + PoolPoints[0].Distance(StyxWoW.Me.Location) + "(Mounted)"),
                                         new Action(ret => Logging.Write("{0} - Moving to PoolPoint: {1}, Location: {2}, Distance: {3}. (Mounted)", Helpers.TimeNow, PoolPoints[0], StyxWoW.Me.Location, PoolPoints[0].Distance(StyxWoW.Me.Location))),
@@ -388,7 +403,7 @@ namespace PoolFishingBuddy
 
         private Composite CreateFishingBehaviour()
         {
-            return new Decorator(ret => PoolPoints.Count > 0 && StyxWoW.Me.Location.Distance(PoolPoints[0]) <= 5 && !looking4NewPool && !StyxWoW.Me.Mounted && !StyxWoW.Me.IsSwimming && !StyxWoW.Me.IsMoving && !StyxWoW.Me.Combat,// && Pool.InLineOfSight,
+            return new Decorator(ret => PoolPoints.Count > 0 && StyxWoW.Me.Location.Distance(PoolPoints[0]) <= 2.5 && !looking4NewPool && !StyxWoW.Me.Mounted && !StyxWoW.Me.IsSwimming && !StyxWoW.Me.IsMoving && !StyxWoW.Me.Combat,// && Pool.InLineOfSight,
                 new Sequence(
                     new Action(ret => Logging.WriteDebug("{0} - Composit: CreateFishingBehaviour", Helpers.TimeNow)),
                     new Action(ret => MeIsFishing = true),
@@ -406,11 +421,12 @@ namespace PoolFishingBuddy
                                 )),
 
                         // Pool locations left?
+                        /*
                         new Decorator(ret => PoolPoints.Count == 0,
                             new Sequence(
                                 new Action(ret => Helpers.BlackListPool()),
                                 new Action(delegate { return RunStatus.Success; }))),
-
+                        */
                         // Pool still there?
                         new Decorator(ret => !Helpers.PoolIsStillThere,
                             new Sequence(
@@ -422,71 +438,39 @@ namespace PoolFishingBuddy
                         // reached max attempts for casting?
                         new Decorator(ret => castAttempts == PoolFisherSettings.Instance.MaxCastAttempts,
                             new Sequence(
-                            new Action(ret => Logging.Write("{0} - Tried to cast {1} times. Moving to new location.", Helpers.TimeNow, PoolFisherSettings.Instance.MaxCastAttempts)),
-                            new Action(ret => PoolPoints.Remove(PoolPoints[0])),
-                            
-                                new PrioritySelector(
-
-                                    new Decorator(ret => PoolPoints.Count == 0,
-                                        new Action(ret => Helpers.BlackListPool())),
-
-                                    new Decorator(ret => PoolPoints.Count > 0,
-                                        new Sequence(
-                                            new Action(ret => PoolPoints.Sort((p1, p2) => PoolFisher.Pool.Location.Distance(p1).CompareTo(PoolFisher.Pool.Location.Distance(p2)))),
-                                            //new Action(ret => PoolPoints.Reverse()),
-                                            new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - New PoolPoint: {1}, Distance: {2}", Helpers.TimeNow, PoolPoints[0], StyxWoW.Me.Location.Distance(PoolPoints[0]))),
-                                            new Action(ret => MeIsFishing = false),
-                                            new Action(ret => castAttempts = 0),
-                                            new Action(ret => newLocAttempts++),
-                                            new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Moving.. Attempt: {1} of {2}.", Helpers.TimeNow, newLocAttempts, PoolFisherSettings.Instance.MaxNewLocAttempts)),
-                                            CreateMoveToPoolBehaviour()))
-                            ))),
+                                new Action(ret => Logging.Write("{0} - Tried to cast {1} times. Moving to new location.", Helpers.TimeNow, PoolFisherSettings.Instance.MaxCastAttempts)),
+                                new Action(ret => Helpers.BlacklistPoolPoint(PoolPoints[0])),
+                                new Action(ret => PoolPoints.Remove(PoolPoints[0])),
+                                new Action(ret => newLocAttempts++),
+                                new Action(ret => looking4NewPoint = true),
+                                new Action(ret => MeIsFishing = false),
+                                new Action(ret => castAttempts = 0),
+                                CreateMoveToPoolBehaviour()
+                        )),
 
                         // in Line Line of sight?
                         new Decorator(ret => !Pool.InLineOfSight,
                             new Sequence(
-                            new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Pool is not in Line of Sight! Moving to new point.", Helpers.TimeNow)),
-                            new Action(ret => PoolPoints.Remove(PoolPoints[0])),
-                            new Action(ret => PoolPoints.Sort((p1, p2) => p1.Z.CompareTo(p2.Z))),
-                            new PrioritySelector(
-
-                                new Decorator(ret => PoolPoints.Count == 0,
-                                        new Action(ret => Helpers.BlackListPool())),
-
-                                    new Decorator(ret => PoolPoints.Count > 0,
-                                        new Sequence(
-                                            new Action(ret => PoolPoints.Sort((p1, p2) => PoolFisher.Pool.Location.Distance(p1).CompareTo(PoolFisher.Pool.Location.Distance(p2)))),
-                                            //new Action(ret => PoolPoints.Reverse()),
-                                            new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - New PoolPoint: {1}, Distance: {2}", Helpers.TimeNow, PoolPoints[0], StyxWoW.Me.Location.Distance(PoolPoints[0]))),
-                                            new Action(ret => MeIsFishing = false),
-                                            new Action(ret => castAttempts = 0),
-                                            new Action(ret => newLocAttempts++),
-                                            new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Moving.. Attempt: {1} of {2}.", Helpers.TimeNow, newLocAttempts, PoolFisherSettings.Instance.MaxNewLocAttempts)),
-                                            CreateMoveToPoolBehaviour()))
-                        ))),
+                                new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Pool is not in Line of Sight! Moving to new point.", Helpers.TimeNow)),
+                                new Action(ret => Helpers.BlacklistPoolPoint(PoolPoints[0])),
+                                new Action(ret => PoolPoints.Remove(PoolPoints[0])),
+                                new Action(ret => newLocAttempts++),
+                                new Action(ret => looking4NewPoint = true),
+                                new Action(ret => MeIsFishing = false),
+                                CreateMoveToPoolBehaviour()
+                        )),
 
                         // swimming?
                         new Decorator(ret => StyxWoW.Me.IsSwimming,
                             new Sequence(
                                 new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Swimming at {1}...", Helpers.TimeNow, StyxWoW.Me.Location)),
+                                new Action(ret => Helpers.BlacklistPoolPoint(PoolPoints[0])),
                                 new Action(ret => PoolPoints.Remove(PoolPoints[0])),
-                                new Action(ret => PoolPoints.Sort((p1, p2) => p1.Z.CompareTo(p2.Z))),
-                                new PrioritySelector(
-
-                                    new Decorator(ret => PoolPoints.Count == 0,
-                                        new Action(ret => Helpers.BlackListPool())),
-
-                                    new Decorator(ret => PoolPoints.Count > 0,
-                                        new Sequence(
-                                            new Action(ret => PoolPoints.Sort((p1, p2) => PoolFisher.Pool.Location.Distance(p1).CompareTo(PoolFisher.Pool.Location.Distance(p2)))),
-                                            //new Action(ret => PoolPoints.Reverse()),
-                                            new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - New PoolPoint: {1}, Distance: {2}", Helpers.TimeNow, PoolPoints[0], StyxWoW.Me.Location.Distance(PoolPoints[0]))),
-                                            new Action(ret => MeIsFishing = false),
-                                            new Action(ret => castAttempts = 0),
-                                            new Action(ret => newLocAttempts++),
-                                            new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Moving.. Attempt: {1} of {2}.", Helpers.TimeNow, newLocAttempts, PoolFisherSettings.Instance.MaxNewLocAttempts)),
-                                            CreateMoveToPoolBehaviour()))
-                        ))),
+                                new Action(ret => newLocAttempts++),
+                                new Action(ret => looking4NewPoint = true),
+                                new Action(ret => MeIsFishing = false),
+                                CreateMoveToPoolBehaviour()
+                        )),
 
 
                         // Do we need to interact with the bobber?
@@ -743,7 +727,7 @@ namespace PoolFishingBuddy
 
                 new PrioritySelector(
 
-                    new Decorator(ret => !StyxWoW.Me.Mounted,
+                    new Decorator(ret => !StyxWoW.Me.Mounted && !StyxWoW.Me.IsIndoors,
                         CreateMountBehaviour()),
                     new ActionMove()));
         }
