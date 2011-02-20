@@ -29,6 +29,9 @@ namespace PoolFishingBuddy
         [Setting(Explanation = "Modifier for height of profiles z-coords."), DefaultValue(0)]
         public int HeightModifier { get; set; }
 
+        [Setting(Explanation = "The minimum range of locations to fish from."), DefaultValue(15)]
+        public int MinCastRange { get; set; }
+
         [Setting(Explanation = "The maximum range of locations to fish from."), DefaultValue(20)]
         public int MaxCastRange { get; set; }
 

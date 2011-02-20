@@ -43,13 +43,13 @@ namespace PoolFishingBuddy
         /// </summary>
         static public void Init(System.EventArgs args)
         {
-            /*
-            if (!StyxWoW.IsLifetimeUser)
+            
+            if (!StyxWoW.FlightChecksDisabled)
             {
-                Logging.Write(System.Drawing.Color.Red, "{0} - You don't have lifetime subscription. Stopping..", Helpers.TimeNow);
+                Logging.Write(System.Drawing.Color.Red, "{0} - You don't have lifetime subscription or valid paid plugin key. Stopping..", Helpers.TimeNow);
                 TreeRoot.Stop();
             }
-            */
+            
             if (PoolFisherSettings.Instance.FlyingMountID == 0 && TreeRoot.IsRunning)
             {
                 Logging.Write(System.Drawing.Color.Red, "{0} - You did not select any flying mount, please go to settings first. Stopping..", Helpers.TimeNow);
@@ -138,6 +138,7 @@ namespace PoolFishingBuddy
             Logging.Write(System.Drawing.Color.Green, "Flying Mount: {0}", Mount.Name);
             Logging.Write(System.Drawing.Color.Green, "Height: {0}", PoolFisherSettings.Instance.HeightModifier);
             Logging.Write(System.Drawing.Color.Green, "Bouncemode: {0}", PoolFisherSettings.Instance.BounceMode);
+            Logging.Write(System.Drawing.Color.Green, "Min. range to cast: {0}", PoolFisherSettings.Instance.MinCastRange);
             Logging.Write(System.Drawing.Color.Green, "Max. range to cast: {0}", PoolFisherSettings.Instance.MaxCastRange);
             Logging.Write(System.Drawing.Color.Green, "Max. attempts to cast: {0}", PoolFisherSettings.Instance.MaxCastAttempts);
             Logging.Write(System.Drawing.Color.Green, "Ninja Pools: {0}", PoolFisherSettings.Instance.NinjaPools);
@@ -402,7 +403,7 @@ namespace PoolFishingBuddy
             test.Start();
 
             int traceStep = 50;
-            int minRange = 12;
+            int minRange = PoolFisherSettings.Instance.MinCastRange;
             int maxRange = PoolFisherSettings.Instance.MaxCastRange + 1;
 
             float _PIx2 = 3.14159f * 2f;
@@ -416,10 +417,12 @@ namespace PoolFishingBuddy
                 //Logging.Write("{0} - testing: {1}.", TimeNow, p);
 
                 p.Z = getGroundZ(p);
+                WoWPoint pLoS = p;
+                pLoS.Z = p.Z + 0.5f;
 
                 if (p.Z != float.MinValue && !PoolFisher.badPoolPoints.Contains(p) && StyxWoW.Me.Location.Distance(p) > 1)
                 {
-                    if (GetHighestSurroundingSlope(p) < 1.2f && GameWorld.IsInLineOfSight(p, PoolFisher.Pool.Location))
+                    if (GetHighestSurroundingSlope(p) < 1.2f && GameWorld.IsInLineOfSight(pLoS, PoolFisher.Pool.Location))
                     {
                         PoolFisher.PoolPoints.Add(p);
                         PoolFisher.looking4NewPoint = false;

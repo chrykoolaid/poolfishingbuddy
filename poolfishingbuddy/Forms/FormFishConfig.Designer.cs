@@ -39,6 +39,9 @@
             this.TestButton = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.MaxNewLocAttemptsText = new System.Windows.Forms.MaskedTextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.MaxCastAttemptsText = new System.Windows.Forms.MaskedTextBox();
@@ -97,9 +100,9 @@
             this.comboMode = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.numericHeightMod = new System.Windows.Forms.NumericUpDown();
-            this.MaxNewLocAttemptsText = new System.Windows.Forms.MaskedTextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.MinCastRangeText = new System.Windows.Forms.MaskedTextBox();
+            this.label14 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -136,7 +139,7 @@
             // 
             // MaxCastRangeText
             // 
-            this.MaxCastRangeText.Location = new System.Drawing.Point(153, 55);
+            this.MaxCastRangeText.Location = new System.Drawing.Point(153, 83);
             this.MaxCastRangeText.Mask = "00";
             this.MaxCastRangeText.Name = "MaxCastRangeText";
             this.MaxCastRangeText.PromptChar = ' ';
@@ -185,7 +188,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(179, 58);
+            this.label3.Location = new System.Drawing.Point(179, 86);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(65, 13);
             this.label3.TabIndex = 12;
@@ -215,6 +218,9 @@
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.Color.White;
+            this.tabPage1.Controls.Add(this.label14);
+            this.tabPage1.Controls.Add(this.MinCastRangeText);
+            this.tabPage1.Controls.Add(this.label13);
             this.tabPage1.Controls.Add(this.MaxNewLocAttemptsText);
             this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Controls.Add(this.label1);
@@ -234,10 +240,39 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Fishing";
             // 
+            // MaxNewLocAttemptsText
+            // 
+            this.MaxNewLocAttemptsText.Location = new System.Drawing.Point(153, 139);
+            this.MaxNewLocAttemptsText.Mask = "00";
+            this.MaxNewLocAttemptsText.Name = "MaxNewLocAttemptsText";
+            this.MaxNewLocAttemptsText.PromptChar = ' ';
+            this.MaxNewLocAttemptsText.Size = new System.Drawing.Size(20, 20);
+            this.MaxNewLocAttemptsText.TabIndex = 22;
+            this.MaxNewLocAttemptsText.Text = "5";
+            this.MaxNewLocAttemptsText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(179, 142);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(59, 13);
+            this.label4.TabIndex = 21;
+            this.label4.Text = "(Default: 5)";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 142);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(142, 13);
+            this.label1.TabIndex = 20;
+            this.label1.Text = "Max. attempts to reach Pool:";
+            // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(3, 58);
+            this.label7.Location = new System.Drawing.Point(3, 86);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(117, 13);
             this.label7.TabIndex = 19;
@@ -246,7 +281,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(179, 86);
+            this.label6.Location = new System.Drawing.Point(179, 114);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(65, 13);
             this.label6.TabIndex = 18;
@@ -254,7 +289,7 @@
             // 
             // MaxCastAttemptsText
             // 
-            this.MaxCastAttemptsText.Location = new System.Drawing.Point(153, 83);
+            this.MaxCastAttemptsText.Location = new System.Drawing.Point(153, 111);
             this.MaxCastAttemptsText.Mask = "00";
             this.MaxCastAttemptsText.Name = "MaxCastAttemptsText";
             this.MaxCastAttemptsText.PromptChar = ' ';
@@ -266,7 +301,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(3, 86);
+            this.label5.Location = new System.Drawing.Point(3, 114);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(144, 13);
             this.label5.TabIndex = 16;
@@ -846,34 +881,33 @@
             this.numericHeightMod.TabIndex = 19;
             this.numericHeightMod.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
-            // MaxNewLocAttemptsText
+            // label13
             // 
-            this.MaxNewLocAttemptsText.Location = new System.Drawing.Point(153, 111);
-            this.MaxNewLocAttemptsText.Mask = "00";
-            this.MaxNewLocAttemptsText.Name = "MaxNewLocAttemptsText";
-            this.MaxNewLocAttemptsText.PromptChar = ' ';
-            this.MaxNewLocAttemptsText.Size = new System.Drawing.Size(20, 20);
-            this.MaxNewLocAttemptsText.TabIndex = 22;
-            this.MaxNewLocAttemptsText.Text = "5";
-            this.MaxNewLocAttemptsText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(3, 58);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(114, 13);
+            this.label13.TabIndex = 23;
+            this.label13.Text = "Min. range to fish from:";
             // 
-            // label4
+            // MinCastRangeText
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(179, 114);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(59, 13);
-            this.label4.TabIndex = 21;
-            this.label4.Text = "(Default: 5)";
+            this.MinCastRangeText.Location = new System.Drawing.Point(153, 55);
+            this.MinCastRangeText.Mask = "00";
+            this.MinCastRangeText.Name = "MinCastRangeText";
+            this.MinCastRangeText.Size = new System.Drawing.Size(20, 20);
+            this.MinCastRangeText.TabIndex = 24;
+            this.MinCastRangeText.Text = "15";
+            this.MinCastRangeText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
-            // label1
+            // label14
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 114);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(142, 13);
-            this.label1.TabIndex = 20;
-            this.label1.Text = "Max. attempts to reach Pool:";
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(179, 58);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(65, 13);
+            this.label14.TabIndex = 25;
+            this.label14.Text = "(Default: 15)";
             // 
             // FormFishConfig
             // 
@@ -999,6 +1033,9 @@
         private System.Windows.Forms.MaskedTextBox MaxNewLocAttemptsText;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.MaskedTextBox MinCastRangeText;
+        private System.Windows.Forms.Label label13;
 
     }
 }

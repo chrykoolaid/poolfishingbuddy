@@ -77,7 +77,7 @@ namespace PoolFishingBuddy
 
         #region Overrides of BotBase
 
-        private readonly Version _version = new Version(1, 0, 18);
+        private readonly Version _version = new Version(1, 0, 19);
 
         public override string Name
         {
