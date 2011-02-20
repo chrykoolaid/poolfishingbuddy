@@ -47,6 +47,8 @@ namespace PoolFishingBuddy.Forms
             }
 
             checkNinjaPools.Checked = PoolFisherSettings.Instance.NinjaPools;
+            MinCastRangeText.Text = PoolFisherSettings.Instance.MinCastRange.ToString();
+            MaxCastRangeText.Text = PoolFisherSettings.Instance.MaxCastRange.ToString();
             MaxCastAttemptsText.Text = PoolFisherSettings.Instance.MaxCastAttempts.ToString();
             MaxNewLocAttemptsText.Text = PoolFisherSettings.Instance.MaxNewLocAttempts.ToString();
             numericHeightMod.Value = PoolFisherSettings.Instance.HeightModifier;
@@ -305,8 +307,14 @@ namespace PoolFishingBuddy.Forms
             int.TryParse(MaxNewLocAttemptsText.Text, out MaxLocAttempts);
             int MaxCastAttempts;
             int.TryParse(MaxCastAttemptsText.Text, out MaxCastAttempts);
+            int MinCastRange;
+            int.TryParse(MinCastRangeText.Text, out MinCastRange);
+            int MaxCastRange;
+            int.TryParse(MaxCastRangeText.Text, out MaxCastRange);
 
             PoolFisherSettings.Instance.NinjaPools = checkNinjaPools.Checked;
+            PoolFisherSettings.Instance.MinCastRange = MinCastRange;
+            PoolFisherSettings.Instance.MaxCastRange = MaxCastRange;
             PoolFisherSettings.Instance.MaxNewLocAttempts = MaxLocAttempts;
             PoolFisherSettings.Instance.MaxCastAttempts = MaxCastAttempts;
             PoolFisherSettings.Instance.HeightModifier = (int)numericHeightMod.Value;
@@ -518,6 +526,7 @@ namespace PoolFishingBuddy.Forms
 
             Logging.Write(System.Drawing.Color.Green, "Height: {0}", PoolFisherSettings.Instance.HeightModifier);
             Logging.Write(System.Drawing.Color.Green, "Bouncemode: {0}", PoolFisherSettings.Instance.BounceMode);
+            Logging.Write(System.Drawing.Color.Green, "Min. range to cast: {0}", PoolFisherSettings.Instance.MinCastRange);
             Logging.Write(System.Drawing.Color.Green, "Max. range to cast: {0}", PoolFisherSettings.Instance.MaxCastRange);
             Logging.Write(System.Drawing.Color.Green, "Max. attempts to cast: {0}", PoolFisherSettings.Instance.MaxCastAttempts);
             Logging.Write(System.Drawing.Color.Green, "Ninja Pools: {0}", PoolFisherSettings.Instance.NinjaPools);
