@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Bots.Grind;
 using Bots.ArchaeologyBuddy;
+//using Gatherbuddy;
 using Levelbot;
 using CommonBehaviors.Actions;
 using PoolFishingBuddy.Forms;
@@ -76,7 +77,7 @@ namespace PoolFishingBuddy
 
         #region Overrides of BotBase
 
-        private readonly Version _version = new Version(1, 0, 17);
+        private readonly Version _version = new Version(1, 0, 18);
 
         public override string Name
         {
@@ -107,39 +108,6 @@ namespace PoolFishingBuddy
             _currenthotspot = -1;
 
             WoWSpell Mount = WoWSpell.FromId(PoolFisherSettings.Instance.FlyingMountID);
-
-            Logging.Write(System.Drawing.Color.Green, "Current Settings:");
-            Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
-            Logging.Write(System.Drawing.Color.Green, "Flying Mount: {0}", Mount.Name);
-            Logging.Write(System.Drawing.Color.Green, "Height: {0}", PoolFisherSettings.Instance.HeightModifier);
-            Logging.Write(System.Drawing.Color.Green, "Bouncemode: {0}", PoolFisherSettings.Instance.BounceMode);
-            Logging.Write(System.Drawing.Color.Green, "Max. range to cast: {0}", PoolFisherSettings.Instance.MaxCastRange);
-            Logging.Write(System.Drawing.Color.Green, "Max. attempts to cast: {0}", PoolFisherSettings.Instance.MaxCastAttempts);
-            Logging.Write(System.Drawing.Color.Green, "Ninja Pools: {0}", PoolFisherSettings.Instance.NinjaPools);
-            Logging.Write(System.Drawing.Color.Green, "Blacklist Schools: {0}", PoolFisherSettings.Instance.BlacklistSchools);
-            Logging.Write(System.Drawing.Color.Green, "Use Lure: {0}", PoolFisherSettings.Instance.useLure);
-            Logging.Write(System.Drawing.Color.Green, "Max. attempts to reach pool: {0}", PoolFisherSettings.Instance.MaxNewLocAttempts);
-
-            Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
-            Logging.Write(System.Drawing.Color.Green, "Current Profile:");
-            Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
-            try
-            {
-                Logging.Write(System.Drawing.Color.Green, "Name: {0}", ProfileManager.CurrentProfile.Name);
-                Logging.Write(System.Drawing.Color.Green, "Hotspots: {0}", ProfileManager.CurrentProfile.HotspotManager.Hotspots.Count);
-                Logging.Write(System.Drawing.Color.Green, "Blackspots: {0}", ProfileManager.CurrentProfile.Blackspots.Count);
-                //Logging.Write(System.Drawing.Color.Green, "Vendor: {0}", ProfileManager.CurrentProfile.VendorManager.Vendors.Count);
-                //Logging.Write(System.Drawing.Color.Green, "Mailbox: {0}", ProfileManager.CurrentProfile.MailboxManager.Mailboxes.Count);
-                Logging.Write(System.Drawing.Color.Green, "Protected Items: {0}", ProtectedItemsManager.GetAllItemIds().Count);
-            }
-            catch (Exception e) 
-            {
-                Logging.Write(System.Drawing.Color.Red, "ProfileExeption: {0}", e.ToString());
-            }
-
-            Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
-
-            Helpers.blacklistSchoolsFromSettings();
 
             Styx.BotEvents.OnBotStart += Helpers.Init;
             Styx.BotEvents.OnBotStop += Helpers.Final;
@@ -673,8 +641,8 @@ namespace PoolFishingBuddy
 
                     new Decorator(ret => PoolFisherSettings.Instance.BounceMode,
                         new PrioritySelector(
-                            
-                            new Decorator(ret => _currenthotspot >= HotspotList.Count,
+
+                            new Decorator(ret => _currenthotspot >= HotspotList.Count && StyxWoW.Me.Location.Distance(_modHotspot) < 30,
                                 new Sequence(
                                     new Action(ret => bounceBack = true),
                                     new Action(ret => _currenthotspot--),
@@ -682,7 +650,7 @@ namespace PoolFishingBuddy
                                     new Action(ret => _modHotspot.Z = Helpers.increaseGroundZ(_modHotspot)) 
                                     )),
 
-                            new Decorator(ret => _currenthotspot == 0,
+                            new Decorator(ret => _currenthotspot <= 0 && StyxWoW.Me.Location.Distance(_modHotspot) < 30,
                                 new Sequence(
                                     new Action(ret => bounceBack = false),
                                     new Action(ret => _currenthotspot++),
