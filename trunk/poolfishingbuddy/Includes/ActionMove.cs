@@ -42,6 +42,7 @@ namespace PoolFishingBuddy
                 //Logging.Write("Destination: {0}, Distance: {1}", destination, StyxWoW.Me.Location.Distance(destination));
                 Flightor.MoveWithTrace(destination);
                 //Flightor.MoveTo(destination);
+                //Gatherbuddy.Flightor.MoveTo(destination);
             }
             else if (!StyxWoW.Me.Mounted && StyxWoW.Me.IsIndoors)
             {

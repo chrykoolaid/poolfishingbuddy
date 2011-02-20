@@ -11,6 +11,7 @@ using Styx;
 using Styx.Helpers;
 
 using Styx.Logic;
+using Styx.Logic.Combat;
 using Styx.Logic.Pathing;
 using Styx.Logic.Profiles;
 using Styx.Logic.BehaviorTree;
@@ -129,6 +130,41 @@ namespace PoolFishingBuddy
                     TreeRoot.Stop();
                 }
             }
+
+            WoWSpell Mount = WoWSpell.FromId(PoolFisherSettings.Instance.FlyingMountID);
+
+            Logging.Write(System.Drawing.Color.Green, "Current Settings:");
+            Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
+            Logging.Write(System.Drawing.Color.Green, "Flying Mount: {0}", Mount.Name);
+            Logging.Write(System.Drawing.Color.Green, "Height: {0}", PoolFisherSettings.Instance.HeightModifier);
+            Logging.Write(System.Drawing.Color.Green, "Bouncemode: {0}", PoolFisherSettings.Instance.BounceMode);
+            Logging.Write(System.Drawing.Color.Green, "Max. range to cast: {0}", PoolFisherSettings.Instance.MaxCastRange);
+            Logging.Write(System.Drawing.Color.Green, "Max. attempts to cast: {0}", PoolFisherSettings.Instance.MaxCastAttempts);
+            Logging.Write(System.Drawing.Color.Green, "Ninja Pools: {0}", PoolFisherSettings.Instance.NinjaPools);
+            Logging.Write(System.Drawing.Color.Green, "Blacklist Schools: {0}", PoolFisherSettings.Instance.BlacklistSchools);
+            Logging.Write(System.Drawing.Color.Green, "Use Lure: {0}", PoolFisherSettings.Instance.useLure);
+            Logging.Write(System.Drawing.Color.Green, "Max. attempts to reach pool: {0}", PoolFisherSettings.Instance.MaxNewLocAttempts);
+
+            Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
+            Logging.Write(System.Drawing.Color.Green, "Current Profile:");
+            Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
+            try
+            {
+                Logging.Write(System.Drawing.Color.Green, "Name: {0}", ProfileManager.CurrentProfile.Name);
+                Logging.Write(System.Drawing.Color.Green, "Hotspots: {0}", ProfileManager.CurrentProfile.HotspotManager.Hotspots.Count);
+                Logging.Write(System.Drawing.Color.Green, "Blackspots: {0}", ProfileManager.CurrentProfile.Blackspots.Count);
+                //Logging.Write(System.Drawing.Color.Green, "Vendor: {0}", ProfileManager.CurrentProfile.VendorManager.Vendors.Count);
+                //Logging.Write(System.Drawing.Color.Green, "Mailbox: {0}", ProfileManager.CurrentProfile.MailboxManager.Mailboxes.Count);
+                Logging.Write(System.Drawing.Color.Green, "Protected Items: {0}", ProtectedItemsManager.GetAllItemIds().Count);
+            }
+            catch (Exception e)
+            {
+                Logging.Write(System.Drawing.Color.Red, "ProfileExeption: {0}", e.ToString());
+            }
+
+            Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
+
+            Helpers.blacklistSchoolsFromSettings();
         }
 
         /// <summary>
@@ -424,7 +460,7 @@ namespace PoolFishingBuddy
 
             WoWPoint ground = WoWPoint.Empty;
 
-            GameWorld.TraceLine(new WoWPoint(p.X, p.Y, (p.Z -= 0.6f)), new WoWPoint(p.X, p.Y, (p.Z += (float)PoolFisherSettings.Instance.MaxCastRange)), GameWorld.CGWorldFrameHitFlags.HitTestGroundAndStructures/* | GameWorld.CGWorldFrameHitFlags.HitTestBoundingModels | GameWorld.CGWorldFrameHitFlags.HitTestWMO*/, out ground);
+            GameWorld.TraceLine(new WoWPoint(p.X, p.Y, (p.Z -= 1)), new WoWPoint(p.X, p.Y, (p.Z += (float)PoolFisherSettings.Instance.MaxCastRange)), GameWorld.CGWorldFrameHitFlags.HitTestGroundAndStructures/* | GameWorld.CGWorldFrameHitFlags.HitTestBoundingModels | GameWorld.CGWorldFrameHitFlags.HitTestWMO*/, out ground);
 
             if (ground != WoWPoint.Empty)
             {
