@@ -77,7 +77,7 @@ namespace PoolFishingBuddy
 
         #region Overrides of BotBase
 
-        private readonly Version _version = new Version(1, 0, 19);
+        private readonly Version _version = new Version(1, 0, 20);
 
         public override string Name
         {
@@ -358,7 +358,7 @@ namespace PoolFishingBuddy
 
                                             // Move
                                             new Sequence(
-                                                new Action(ret => Flightor.MoveWithTrace(PoolPoints[0]))
+                                                new Action(ret => Styx.Logic.Pathing.Flightor.MoveTo(PoolPoints[0]))
                                                 //new Wait(2, ret => !StyxWoW.Me.IsMoving || StyxWoW.Me.Location.Distance(PoolPoints[0]) < 2, new ActionIdle())
                                                 //new Action(ret => newLocAttempts++),
                                                 //new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Moving.. Attempt: {1} of {2}.", Helpers.TimeNow, newLocAttempts, PoolFisherSettings.Instance.MaxNewLocAttempts)))

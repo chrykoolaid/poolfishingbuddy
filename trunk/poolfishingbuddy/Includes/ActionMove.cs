@@ -6,6 +6,7 @@ using Styx.Logic.Pathing;
 using Styx.WoWInternals;
 using Styx.WoWInternals.World;
 using Styx.WoWInternals.WoWObjects;
+using Bots.ArchaeologyBuddy;
 using TreeSharp;
 using Tripper.Tools.Math;
 using Action = TreeSharp.Action;
@@ -40,7 +41,8 @@ namespace PoolFishingBuddy
             if (StyxWoW.Me.Mounted)
             {
                 //Logging.Write("Destination: {0}, Distance: {1}", destination, StyxWoW.Me.Location.Distance(destination));
-                Flightor.MoveWithTrace(destination);
+                //Flightor.MoveWithTrace(destination);
+                Styx.Logic.Pathing.Flightor.MoveTo(destination);
                 //Flightor.MoveTo(destination);
                 //Gatherbuddy.Flightor.MoveTo(destination);
             }
