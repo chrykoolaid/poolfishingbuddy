@@ -2,9 +2,9 @@
 #sidebar Index
 
 <br>
-==== Fishing ====
+==== Advanced ====
 <table width="900"><tbody><tr><td>
-http://poolfishingbuddy.googlecode.com/svn/wiki/images/settings/fishing.png
+http://poolfishingbuddy.googlecode.com/svn/wiki/images/settings/advanced.png
 </td>
 <td valign="top">
 *Mount:* This combobox is generated on loading the form and will show up the mounts your char knows.
@@ -19,21 +19,21 @@ http://poolfishingbuddy.googlecode.com/svn/wiki/images/settings/fishing.png
 </td></tr></tbody></table>
 
 <br>
+==== Fishing ====
+<table width="900"><tbody><tr><td>
+http://poolfishingbuddy.googlecode.com/svn/wiki/images/settings/fishing.png
+</td>
+<td valign="top" align="left">
+*Descend on higher reaches:* By default this is disabled, so the bot will descend on lower reaches first. If your char ends up in swimming very often you might want to check this.
+
+*Max. of tries to descend:* A counter for pathing to the pool. If the counter runs to the limit, the will try to path to another point.
+</td></tr></tbody></table>
+
+<br>
 ==== Blacklisting ====
 <table width="900"><tbody><tr><td>
 http://poolfishingbuddy.googlecode.com/svn/wiki/images/settings/blacklisting.png
 </td>
 <td valign="top">
 *Blacklist Schools:* If checked, you can choose regions (only Cataclysm yet) from combobox. For each region there will appear a list with checkboxes for each school. Just check the schools you want to blacklist.
-</td></tr></tbody></table>
-
-<br>
-==== Movement ====
-<table width="900"><tbody><tr><td>
-http://poolfishingbuddy.googlecode.com/svn/wiki/images/settings/movement.png
-</td>
-<td valign="top" align="left">
-*Descend on higher reaches:* By default this is disabled, so the bot will descend on lower reaches first. If your char ends up in swimming very often you might want to check this.
-
-*Max. of tries to descend:* A counter for pathing to the pool. If the counter runs to the limit, the will try to path to another point.
 </td></tr></tbody></table>
