@@ -15,11 +15,14 @@ using Styx.Logic.Combat;
 using Styx.Logic.Pathing;
 using Styx.Logic.Profiles;
 using Styx.Logic.BehaviorTree;
+using Styx.Logic.Inventory.Frames.Gossip;
 using Styx.Logic.Inventory.Frames.LootFrame;
 
 using Styx.WoWInternals;
 using Styx.WoWInternals.World;
 using Styx.WoWInternals.WoWObjects;
+
+using Styx.Logic.Inventory.Frames.Taxi;
 
 using TreeSharp;
 using Action = TreeSharp.Action;
@@ -43,7 +46,9 @@ namespace PoolFishingBuddy
         /// </summary>
         static public void Init(System.EventArgs args)
         {
-            
+            PoolFisher.runTimer.Start();
+            PoolFisherSettings.Instance.Load();
+
             if (!StyxWoW.FlightChecksDisabled)
             {
                 Logging.Write(System.Drawing.Color.Red, "{0} - You don't have lifetime subscription or valid paid plugin key. Stopping..", Helpers.TimeNow);
@@ -71,7 +76,7 @@ namespace PoolFishingBuddy
 
             if (TreeRoot.IsRunning)
             {
-                Logging.Write(System.Drawing.Color.Blue, "{0} - Looking for weapons and fishing pole and add them to protected items.", Helpers.TimeNow);
+                Logging.Write(System.Drawing.Color.DarkCyan, "{0} - Looking for weapons and fishing pole and add them to protected items.", Helpers.TimeNow);
 
                 PoolFisher.BagItems = StyxWoW.Me.BagItems;
 
@@ -117,7 +122,7 @@ namespace PoolFishingBuddy
                     Logging.Write(System.Drawing.Color.Green, "{0} is valid.", StyxWoW.Me.Inventory.Equipped.MainHand.Name);
                 }
 
-                Logging.Write(System.Drawing.Color.Red, "{0} - ProtectedItems count: {1}", Helpers.TimeNow, ProtectedItemsManager.GetAllItemIds().Count);
+                //Logging.Write(System.Drawing.Color.Red, "{0} - ProtectedItems count: {1}", Helpers.TimeNow, ProtectedItemsManager.GetAllItemIds().Count);
 
                 if (!hasPole)
                 {
@@ -133,37 +138,38 @@ namespace PoolFishingBuddy
 
             WoWSpell Mount = WoWSpell.FromId(PoolFisherSettings.Instance.FlyingMountID);
 
-            Logging.Write(System.Drawing.Color.Green, "Current Settings:");
-            Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
-            Logging.Write(System.Drawing.Color.Green, "Flying Mount: {0}", Mount.Name);
-            Logging.Write(System.Drawing.Color.Green, "Height: {0}", PoolFisherSettings.Instance.HeightModifier);
-            Logging.Write(System.Drawing.Color.Green, "Bouncemode: {0}", PoolFisherSettings.Instance.BounceMode);
-            Logging.Write(System.Drawing.Color.Green, "Min. range to cast: {0}", PoolFisherSettings.Instance.MinCastRange);
-            Logging.Write(System.Drawing.Color.Green, "Max. range to cast: {0}", PoolFisherSettings.Instance.MaxCastRange);
-            Logging.Write(System.Drawing.Color.Green, "Max. attempts to cast: {0}", PoolFisherSettings.Instance.MaxCastAttempts);
-            Logging.Write(System.Drawing.Color.Green, "Ninja Pools: {0}", PoolFisherSettings.Instance.NinjaPools);
-            Logging.Write(System.Drawing.Color.Green, "Blacklist Schools: {0}", PoolFisherSettings.Instance.BlacklistSchools);
-            Logging.Write(System.Drawing.Color.Green, "Use Lure: {0}", PoolFisherSettings.Instance.useLure);
-            Logging.Write(System.Drawing.Color.Green, "Max. attempts to reach pool: {0}", PoolFisherSettings.Instance.MaxNewLocAttempts);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Current Settings:");
+            Logging.WriteDebug(System.Drawing.Color.Green, "-------------------------------------------");
+            Logging.WriteDebug(System.Drawing.Color.Green, "Flying Mount: {0}", Mount.Name);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Height: {0}", PoolFisherSettings.Instance.HeightModifier);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Bouncemode: {0}", PoolFisherSettings.Instance.BounceMode);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Min. range to cast: {0}", PoolFisherSettings.Instance.MinCastRange);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Max. range to cast: {0}", PoolFisherSettings.Instance.MaxCastRange);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Max. attempts to cast: {0}", PoolFisherSettings.Instance.MaxCastAttempts);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Ninja Pools: {0}", PoolFisherSettings.Instance.NinjaPools);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Blacklist Schools: {0}", PoolFisherSettings.Instance.BlacklistSchools);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Use Lure: {0}", PoolFisherSettings.Instance.useLure);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Max. attempts to reach pool: {0}", PoolFisherSettings.Instance.MaxNewLocAttempts);
 
-            Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
-            Logging.Write(System.Drawing.Color.Green, "Current Profile:");
-            Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
+            Logging.WriteDebug(System.Drawing.Color.Green, "-------------------------------------------");
+            Logging.WriteDebug(System.Drawing.Color.Green, "Current Profile:");
+            Logging.WriteDebug(System.Drawing.Color.Green, "-------------------------------------------");
             try
             {
-                Logging.Write(System.Drawing.Color.Green, "Name: {0}", ProfileManager.CurrentProfile.Name);
-                Logging.Write(System.Drawing.Color.Green, "Hotspots: {0}", ProfileManager.CurrentProfile.HotspotManager.Hotspots.Count);
-                Logging.Write(System.Drawing.Color.Green, "Blackspots: {0}", ProfileManager.CurrentProfile.Blackspots.Count);
-                //Logging.Write(System.Drawing.Color.Green, "Vendor: {0}", ProfileManager.CurrentProfile.VendorManager.Vendors.Count);
-                //Logging.Write(System.Drawing.Color.Green, "Mailbox: {0}", ProfileManager.CurrentProfile.MailboxManager.Mailboxes.Count);
-                Logging.Write(System.Drawing.Color.Green, "Protected Items: {0}", ProtectedItemsManager.GetAllItemIds().Count);
+                Logging.WriteDebug(System.Drawing.Color.Green, "Name: {0}", ProfileManager.CurrentProfile.Name);
+                Logging.WriteDebug(System.Drawing.Color.Green, "Hotspots: {0}", ProfileManager.CurrentProfile.HotspotManager.Hotspots.Count);
+                Logging.WriteDebug(System.Drawing.Color.Green, "Blackspots: {0}", ProfileManager.CurrentProfile.Blackspots.Count);
+                //Logging.WriteDebug(System.Drawing.Color.Green, "Vendor: {0}", ProfileManager.CurrentProfile.VendorManager.Vendors.Count);
+                //Logging.WriteDebug(System.Drawing.Color.Green, "Mailbox: {0}", ProfileManager.CurrentProfile.MailboxManager.Mailboxes.Count);
+                Logging.WriteDebug(System.Drawing.Color.Green, "Protected Items: {0}", ProtectedItemsManager.GetAllItemIds().Count);
             }
             catch (Exception e)
             {
-                Logging.Write(System.Drawing.Color.Red, "ProfileExeption: {0}", e.ToString());
+                Logging.Write(System.Drawing.Color.Red, "ProfileExeption: {0}. Please check the Profile you are using!", e.ToString());
+                Logging.WriteDebug(System.Drawing.Color.Red, "ProfileExeption: {0}. Please check the Profile you are using!", e.ToString());
             }
 
-            Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
+            Logging.WriteDebug(System.Drawing.Color.Green, "-------------------------------------------");
 
             Helpers.blacklistSchoolsFromSettings();
         }
@@ -173,6 +179,7 @@ namespace PoolFishingBuddy
         /// </summary>
         static public void Final(System.EventArgs args)
         {
+            
             /*
             PoolFisher.looking4NewPoint = false;
             PoolFisher.looking4NewPool = true;
@@ -302,7 +309,7 @@ namespace PoolFishingBuddy
                 }
                 else
                 {
-                    WoWItem _lureInBag = GetIteminBag((uint)PoolFisherSettings.Instance.LureID);
+                    WoWItem _lureInBag = getIteminBag((uint)PoolFisherSettings.Instance.LureID);
                     if (_lureInBag != null && _lureInBag.Use())
                     {
                         TreeRoot.StatusText = "Luring";
@@ -325,9 +332,14 @@ namespace PoolFishingBuddy
             }
         }
 
-        static public WoWItem GetIteminBag(uint entry)
+        static public WoWItem getIteminBag(uint entry)
         {
             return StyxWoW.Me.BagItems.Where(i => i.Entry == entry).FirstOrDefault();
+        }
+
+        static public bool IsItemInBag(uint entry)
+        {
+            return StyxWoW.Me.BagItems.FirstOrDefault(i => i.Entry == entry) != null;
         }
 
         #endregion
@@ -351,7 +363,7 @@ namespace PoolFishingBuddy
             {
                 if (PoolFisher.looking4NewPool)
                 {
-                    Logging.Write("{0} - Looking for pools..", TimeNow);
+                    //Logging.Write("{0} - Looking for pools..", TimeNow);
 
                     ObjectManager.Update();
                     List<WoWGameObject> poolList = ObjectManager.GetObjectsOfType<WoWGameObject>().Where(o => o.SubType == WoWGameObjectType.FishingHole && !Blacklist.Contains(o.Guid) && !PoolFisher.PermaBlacklist.Contains(o.Entry) && o.Distance2D <= 150 && o.Location.X != 0).OrderBy(o => o.Distance).ToList();
@@ -360,25 +372,43 @@ namespace PoolFishingBuddy
 
                     if (poolList.Count > 0)
                     {
-                        foreach (WoWGameObject p in poolList)
-                            Logging.Write("{0} - Found - {1} - at a distance of {2}. Guid: {3}. Entry: {4}.", TimeNow, p.Name, p.Distance, p.Guid, p.Entry);
-
-                        if (PoolFisher.BlackspotList.Count != 0)
+                        foreach (WoWGameObject o in poolList)
                         {
-                            foreach (WoWPoint Blackspot in PoolFisher.BlackspotList)
+                            WoWPoint ground = WoWPoint.Empty;
+                            GameWorld.TraceLine(new WoWPoint(o.X, o.Y, StyxWoW.Me.Location.Z), new WoWPoint(o.X, o.Y, o.Z), GameWorld.CGWorldFrameHitFlags.HitTestGroundAndStructures | GameWorld.CGWorldFrameHitFlags.HitTestBoundingModels | GameWorld.CGWorldFrameHitFlags.HitTestWMO, out ground);
+
+
+                            if (ground == WoWPoint.Empty)
                             {
-                                if (poolList[0].Location.Distance2D(Blackspot) < 20)
+                                Logging.Write(System.Drawing.Color.DarkCyan, "{0} - {1} at a Distance of {2} yards.", Helpers.TimeNow, o.Name, string.Format("{0:##.#}", o.Distance));
+                                Logging.Write(System.Drawing.Color.DarkCyan, "{0} - To Blacklist it, add this to your profile:", Helpers.TimeNow);
+                                Logging.Write(System.Drawing.Color.DarkCyan, "<Blackspot X=\"{0}\" Y=\"{1}\" Z=\"{2}\" Radius=\"1\" />", o.X, o.Y, o.Z);
+
+                                if (PoolFisher.BlackspotList.Count != 0)
                                 {
-                                    Logging.Write(System.Drawing.Color.Red, "{0} - Pool is in range of {1} (Blackspot)! Skipping.", TimeNow, Blackspot);
-                                    PoolFisher.looking4NewPool = true;
-                                    return false;
+                                    foreach (WoWPoint Blackspot in PoolFisher.BlackspotList)
+                                    {
+                                        if (poolList[0].Location.Distance2D(Blackspot) < 20)
+                                        {
+                                            Logging.Write(System.Drawing.Color.Red, "{0} - Pool is in range of {1} (Blackspot), blacklisting for 2 minutes.", TimeNow, Blackspot);
+                                            BlackListPool(o);
+                                            return false;
+                                        }
+                                    }
                                 }
+
+                                PoolFisher.Pool = poolList[0];
+                                PoolFisher.looking4NewPool = false;
+                                PoolFisher.looking4NewLoc = true;
+                                return true;
+                            }
+                            else
+                            {
+                                Logging.Write(System.Drawing.Color.Red, "{0} - Pool is underground, blacklisting for 2 minutes.", Helpers.TimeNow);
+                                BlackListPool(o);
+                                return false;
                             }
                         }
-                        PoolFisher.Pool = poolList[0];
-                        PoolFisher.looking4NewPool = false;
-                        PoolFisher.looking4NewPoint = true;
-                        return true;
                     }
                     else
                     {
@@ -396,39 +426,28 @@ namespace PoolFishingBuddy
         static public string TimeNow { get { return DateTime.Now.ToString("hh:mm:ss tt", System.Globalization.DateTimeFormatInfo.InvariantInfo); } }
 
 
-        static public void PoolPoint()
-        {
-            Logging.Write("{0} - Looking for pool point. Pool location: {1}.", TimeNow, PoolFisher.Pool.Location);
-            Stopwatch test = new Stopwatch();
-            test.Start();
 
-            int traceStep = 50;
-            int minRange = PoolFisherSettings.Instance.MinCastRange;
-            int maxRange = PoolFisherSettings.Instance.MaxCastRange + 1;
+        static public WoWPoint getSaveLocation(WoWPoint Location, int minDist, int maxDist, int traceStep)
+        {
+            Logging.WriteNavigator("{0} - Navigation: Looking for save Location around {1}.", TimeNow, Location);
 
             float _PIx2 = 3.14159f * 2f;
 
-            WoWPoint p = new WoWPoint();
-
-            for (int i = 0, x = minRange; i < traceStep && x < maxRange && PoolFisher.PoolPoints.Count < 1; i++)
+            for (int i = 0, x = minDist; i < traceStep && x < maxDist && PoolFisher.looking4NewLoc == true; i++)
             {
-                p = PoolFisher.Pool.Location.RayCast((i * _PIx2) / traceStep, x);
-
-                //Logging.Write("{0} - testing: {1}.", TimeNow, p);
+                WoWPoint p = Location.RayCast((i * _PIx2) / traceStep, x);
 
                 p.Z = getGroundZ(p);
                 WoWPoint pLoS = p;
                 pLoS.Z = p.Z + 0.5f;
 
-                if (p.Z != float.MinValue && !PoolFisher.badPoolPoints.Contains(p) && StyxWoW.Me.Location.Distance(p) > 1)
+                if (p.Z != float.MinValue && !PoolFisher.badLocations.Contains(p) && StyxWoW.Me.Location.Distance(p) > 1)
                 {
-                    if (GetHighestSurroundingSlope(p) < 1.2f && GameWorld.IsInLineOfSight(pLoS, PoolFisher.Pool.Location))
+                    if (getHighestSurroundingSlope(p) < 1.2f && GameWorld.IsInLineOfSight(pLoS, Location) /*&& Navigator.CanNavigateFully(StyxWoW.Me.Location, Location)*/)
                     {
-                        PoolFisher.PoolPoints.Add(p);
-                        PoolFisher.looking4NewPoint = false;
-                        Logging.Write("{0} - Added {1} to PoolPoints. Distance from pool: {2}", TimeNow, p, PoolFisher.Pool.Location.Distance(p));
-                        test.Stop();
-
+                        PoolFisher.looking4NewLoc = false;
+                        Logging.WriteNavigator("{0} - Navigation: Moving to {1}. Distance: {2}", TimeNow, p, Location.Distance(p));
+                        return p;
                     }
                 }
 
@@ -438,11 +457,20 @@ namespace PoolFishingBuddy
                     x++;
                 }
             }
-            if (PoolFisher.PoolPoints.Count == 0)
+
+            if (PoolFisher.Pool != null)
             {
                 Logging.Write(System.Drawing.Color.Red, "{0} - No valid points returned by RayCast, blacklisting for 2 minutes.", TimeNow);
-                BlackListPool();
+                BlackListPool(PoolFisher.Pool);
+                return WoWPoint.Empty;
             }
+            else
+            {
+                Logging.Write(System.Drawing.Color.Red, "{0} - No valid points returned by RayCast, can't navigate without user interaction. Stopping!", TimeNow);
+                TreeRoot.Stop();
+                return WoWPoint.Empty;
+            }
+            
         }
 
         /// <summary>
@@ -451,26 +479,16 @@ namespace PoolFishingBuddy
         /// <returns>Z-Coordinates for PoolPoints so we don't jump into the water.</returns>
         public static float getGroundZ(WoWPoint p)
         {
-            /*
-            try
-            {
-                float groundz;
-                Navigator.FindHeight(p.X, p.Y, out groundz);
-                return groundz;
-            }
-            catch (Exception) { }
-            */
-
             WoWPoint ground = WoWPoint.Empty;
 
-            GameWorld.TraceLine(new WoWPoint(p.X, p.Y, (p.Z -= 1)), new WoWPoint(p.X, p.Y, (p.Z += (float)PoolFisherSettings.Instance.MaxCastRange)), GameWorld.CGWorldFrameHitFlags.HitTestGroundAndStructures/* | GameWorld.CGWorldFrameHitFlags.HitTestBoundingModels | GameWorld.CGWorldFrameHitFlags.HitTestWMO*/, out ground);
+            GameWorld.TraceLine(new WoWPoint(p.X, p.Y, (p.Z + (float)PoolFisherSettings.Instance.MaxCastRange)), new WoWPoint(p.X, p.Y, (p.Z - 0.8f)), GameWorld.CGWorldFrameHitFlags.HitTestGroundAndStructures/* | GameWorld.CGWorldFrameHitFlags.HitTestBoundingModels | GameWorld.CGWorldFrameHitFlags.HitTestWMO*/, out ground);
 
             if (ground != WoWPoint.Empty)
             {
-                //Logging.Write("{0} - Ground Z: {1}.", TimeNow, ground.Z);
+                Logging.WriteDebug("{0} - Ground Z: {1}.", TimeNow, ground.Z);
                 return ground.Z;
             }
-            //Logging.Write("{0} - Ground Z returned float.MinValue.", TimeNow);
+            Logging.WriteDebug("{0} - Ground Z returned float.MinValue.", TimeNow);
             return float.MinValue;
         }
 
@@ -489,27 +507,26 @@ namespace PoolFishingBuddy
         /// Credits to funkescott.
         /// </summary>
         /// <returns>Highest slope of surrounding terrain, returns 100 if the slope can't be determined</returns>
-        public static float GetHighestSurroundingSlope(WoWPoint p)
+        public static float getHighestSurroundingSlope(WoWPoint p)
         {
-            Logging.Write("Sloapcheck on Point: {0}", p);
+            Logging.WriteNavigator("{0} - Navigation: Sloapcheck on Point: {1}", TimeNow, p);
             float _PIx2 = 3.14159f * 2f;
             float highestSlope = -100;
             float slope = 0;
-            int traceStep = 4;
-            float range = 0.2f;
+            int traceStep = 15;
+            float range = 0.5f;
             WoWPoint p2;
             for (int i = 0; i < traceStep; i++)
             {
-                // scans 1 yard from p for cliffs at every 18 degress 
                 p2 = p.RayCast((i * _PIx2) / traceStep, range);
                 p2.Z = getGroundZ(p2);
-                slope = Math.Abs( GetSlope(p, p2) );
+                slope = Math.Abs( getSlope(p, p2) );
                 if( slope > highestSlope )
                 {
                     highestSlope = (float)slope;
                 }
             }
-            Logging.Write("Highslope {0}", highestSlope);
+            Logging.WriteNavigator("{0} - Navigation: Highslope {1}", TimeNow, highestSlope);
             return Math.Abs( highestSlope );
         }
 
@@ -519,7 +536,7 @@ namespace PoolFishingBuddy
         /// <param name="p1">from WoWPoint</param>
         /// <param name="p2">to WoWPoint</param>
         /// <returns>Return slope from WoWPoint to WoWPoint.</returns>
-        public static float GetSlope(WoWPoint p1, WoWPoint p2)
+        public static float getSlope(WoWPoint p1, WoWPoint p2)
         {
             float rise = p2.Z - p1.Z;
             float run = (float)Math.Sqrt(Math.Pow(p2.X - p1.X, 2) + Math.Pow(p2.Y - p1.Y, 2));
@@ -532,13 +549,8 @@ namespace PoolFishingBuddy
         /// </summary>
         /// <param name="p">WoWPoint</param>
         /// <returns>Returns z-coords of watersurface for the current location.</returns>
-        public static float GetWaterSurface(WoWPoint p)
+        public static float getWaterSurface(WoWPoint p)
         {
-            try
-            {
-                return Navigator.FindHeights(p.X, p.Y).Max();
-            }
-            catch (Exception) { }
             WoWPoint watersurface = WoWPoint.Empty;
             GameWorld.TraceLine(new WoWPoint(p.X, p.Y, 10000), new WoWPoint(p.X, p.Y, -10000), GameWorld.CGWorldFrameHitFlags.HitTestLiquid | GameWorld.CGWorldFrameHitFlags.HitTestLiquid2, out watersurface);
             if (watersurface != WoWPoint.Empty)
@@ -548,31 +560,43 @@ namespace PoolFishingBuddy
             return float.MinValue;
         }
 
-        static public void BlacklistPoolPoint(WoWPoint p)
+        static public void blacklistLocation(WoWPoint p)
         {
-            if (!PoolFisher.badPoolPoints.Contains(p))
-                PoolFisher.badPoolPoints.Add(p);
+            if (!PoolFisher.badLocations.Contains(p))
+                PoolFisher.badLocations.Add(p);
+            Logging.WriteNavigator("{0} - Navigation: Added {1} to badLocations List.", TimeNow, p);
+            PoolFisher.looking4NewLoc = true;
         }
 
         /// <summary>
         /// Blacklists current pool and resets all variables.
         /// </summary>
-        static public void BlackListPool()
+        static public void BlackListPool(WoWObject o)
         {
-            if (!Blacklist.Contains(PoolFisher.Pool.Guid)) Blacklist.Add(PoolFisher.Pool.Guid, new TimeSpan(0, 2, 0));
+            if (!Blacklist.Contains(o.Guid)) 
             {
-                //Logging.Write("{0} - Blacklisted Guid {1}", TimeNow, PoolFisher.Pool.Guid);
+                Blacklist.Add(o.Guid, new TimeSpan(0, 2, 0));
+                //Logging.Write("{0} - Blacklisted Guid {1}", TimeNow, o.Guid);
                 equipWeapon();
-                PoolFisher.looking4NewPoint = false;
-                PoolFisher.looking4NewPool = true;
-                PoolFisher.MeIsFishing = false;
-                PoolFisher.need2Lure = false;
-                PoolFisher.castAttempts = 0;
-                PoolFisher.newLocAttempts = 0;
-                PoolFisher.PoolPoints.Clear();
-                PoolFisher.Pool = null;
-                PoolFisher._currenthotspot = -1;
+                resetVars();
             }
+        }
+
+        static public void resetVars()
+        {
+            PoolFisher.looking4NewLoc = false;
+            PoolFisher.looking4NewPool = true;
+            PoolFisher.MeIsFishing = false;
+            PoolFisher.need2Lure = false;
+            PoolFisher.castAttempts = 0;
+            PoolFisher.newLocAttempts = 0;
+            PoolFisher.saveLocation.Clear();
+            PoolFisher.mountLocation.Clear();
+            PoolFisher.Pool = null;
+            PoolFisher._currenthotspot = -1;
+            Mailing.isDone = false;
+            PoolFisher.need2Mail = false;
+            PoolFisher.movetopoolTimer.Reset();
         }
 
         /// <summary>
@@ -582,7 +606,7 @@ namespace PoolFishingBuddy
         {
             get
             {
-                Thread.Sleep((PoolFisher.Ping * 2) + 250);
+                Thread.Sleep((PoolFisher.Ping * 2) + 300);
                 if (FishingBobber != null && PoolFisher.Pool != null && FishingBobber != null)
                 {
                     if (FishingBobber.Location.Distance2D(PoolFisher.Pool.Location) <= 3.6f)
@@ -605,13 +629,14 @@ namespace PoolFishingBuddy
                 foreach (WoWObject o in ObjectManager.ObjectList)
                 {
                     if (PoolFisher.Pool.Guid != 0 && o.Guid == PoolFisher.Pool.Guid && PoolFisher.Pool.IsValid)
+                    {
                         return true;
+                    }
                 }
-                BlackListPool();
+                BlackListPool(PoolFisher.Pool);
                 PoolFisher.MeIsFishing = false;
                 PoolFisher.looking4NewPool = true;
-                PoolFisher.looking4NewPoint = true;
-                //PoolFisher.PoolPoints.Clear();
+                PoolFisher.looking4NewLoc = true;
                 return false;
             }
         }
@@ -627,8 +652,8 @@ namespace PoolFishingBuddy
         /// Fathom Eel           - Entry: 202780
         /// Highland Guppy       - Entry: 202777
         /// Mountain Trout       - Entry: 202776
-        /// Pool of Fire                - Entry: 207734
-        /// Shipwreck Debris            - Entry: 207724
+        /// Pool of Fire         - Entry: 207734
+        /// Shipwreck Debris     - Entry: 207724
         /// ----------------
         /// Wrath of the Lichking
         /// ----------------
@@ -648,12 +673,28 @@ namespace PoolFishingBuddy
         /// Bluefish / Ein Schwarm Blauflossen              - Entry: 182959
         /// Brackish Mixed / Brackwasserschwarm             - Entry: 182954
         /// Highland Mixed / Hochlandschwarm                - Entry: 182957
-        /// Mudfish /Ein Schwarm Matschflosser              - Entry: 182958
+        /// Mudfish / Ein Schwarm Matschflosser             - Entry: 182958
         /// Pure Water / Reines Wasser                      - Entry: 182951
         /// Darter / Ein Schwarm Stachelflosser             - Entry: 182956
         /// Sporefish / Ein Schwarm Sporenfische            - Entry: 182953
         /// Steam Pump Flotsam / Treibgut der Dampfpumpe    - Entry: 182952
-        /// 
+        /// ----------------
+        /// Old Azeroth
+        /// ----------------
+        /// Bloodsail Wreckage / Blutsegelwrackteile        - Entry: 180901
+        /// Firefin Snapper / Feuerflossenschnapper         - Entry: 180657, 180683, 180752, 180902 
+        /// Floating Debris / Treibgut                      - Entry: 
+        /// Floating Wreckage / Treibende Wrackteile        - Entry: 
+        /// Greater Sagefish / Großer Weisenfisch           - Entry: 180684
+        /// Sagefish / Weisenfisch                          - Entry: 180663, 180656
+        /// Oily Blackmouth / Öliges Schwarzmaul            - Entry: 180750, 180664, 180682, 180900
+        /// Deviate Fish / Deviatfisch                      - Entry: 180658
+        /// Speckled Tastyfish / Gesprenkelter Leckerfisch  - Entry: 180248
+        /// Schooner Wreckage / Schiffswrackteile           - Entry: 
+        /// Stonescale Eel / Steinschuppenaal               - Entry: 180712
+        /// Waterlogged Wreckage / Schwimmende Wrackteile   - Entry: 180685
+        /// Oil Spill / Ölpfütze                            - Entry: 180661
+        /// Elemental Water / Elementarwasser               - Entry: 180753
 
 
         public static void blacklistSchoolsFromSettings()
@@ -661,143 +702,143 @@ namespace PoolFishingBuddy
             if (PoolFisherSettings.Instance.BlacklistSchools)
             {
                 PoolFisher.PermaBlacklist.Clear();
-                Logging.Write(System.Drawing.Color.Red, "Ignoring Schools from Settings:");
-                Logging.Write(System.Drawing.Color.Red, "-------------------------------------------");
+                Logging.WriteDebug(System.Drawing.Color.Red, "Ignoring Schools from Settings:");
+                Logging.WriteDebug(System.Drawing.Color.Red, "-------------------------------------------");
                 /// Cataclysm
                 if (PoolFisherSettings.Instance.BLAlbinoCavefish && !PoolFisher.PermaBlacklist.Contains(202778))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Albino Cavefish");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Albino Cavefish");
                     PoolFisher.PermaBlacklist.Add(202778);
                 }
                 if (PoolFisherSettings.Instance.BLAlgaefinRockfish && !PoolFisher.PermaBlacklist.Contains(202781))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Algaefin Rockfish");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Algaefin Rockfish");
                     PoolFisher.PermaBlacklist.Add(202781);
                 }
                 if (PoolFisherSettings.Instance.BLBlackbellyMudfish && !PoolFisher.PermaBlacklist.Contains(202779))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Blackbelly Mudfish");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Blackbelly Mudfish");
                     PoolFisher.PermaBlacklist.Add(202779);
                 }
                 if (PoolFisherSettings.Instance.BLFathomEel && !PoolFisher.PermaBlacklist.Contains(202780))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Fathom Eel");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Fathom Eel");
                     PoolFisher.PermaBlacklist.Add(202780);
                 }
 
                 if (PoolFisherSettings.Instance.BLHighlandGuppy && !PoolFisher.PermaBlacklist.Contains(202777))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Highland Guppy");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Highland Guppy");
                     PoolFisher.PermaBlacklist.Add(202777);
                 }
                 if (PoolFisherSettings.Instance.BLMountainTrout && !PoolFisher.PermaBlacklist.Contains(202776))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Mountain Trout");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Mountain Trout");
                     PoolFisher.PermaBlacklist.Add(202776);
                 }
                 if (PoolFisherSettings.Instance.BLPoolofFire && !PoolFisher.PermaBlacklist.Contains(207734))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Pool of Fire");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Pool of Fire");
                     PoolFisher.PermaBlacklist.Add(207734);
                 }
                 if (PoolFisherSettings.Instance.BLShipwreckDebris && !PoolFisher.PermaBlacklist.Contains(207724))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Shipwreck Debris");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Shipwreck Debris");
                     PoolFisher.PermaBlacklist.Add(207724);
                 }
                 /// Northrend
                 if (PoolFisherSettings.Instance.BLBoreanManOWar && !PoolFisher.PermaBlacklist.Contains(192051))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Borean Man O' War");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Borean Man O' War");
                     PoolFisher.PermaBlacklist.Add(192051);
                 }
                 if (PoolFisherSettings.Instance.BLDeepSeaMonsterbelly && !PoolFisher.PermaBlacklist.Contains(192053))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Deep Sea Monsterbelly");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Deep Sea Monsterbelly");
                     PoolFisher.PermaBlacklist.Add(192053);
                 }
                 if (PoolFisherSettings.Instance.BLDragonfinAngelfish && !PoolFisher.PermaBlacklist.Contains(192048))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Dragonfin Angelfish");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Dragonfin Angelfish");
                     PoolFisher.PermaBlacklist.Add(192048);
                 }
                 if (PoolFisherSettings.Instance.BLFangtoothHerring && !PoolFisher.PermaBlacklist.Contains(192049))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Fangtooth Herring");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Fangtooth Herring");
                     PoolFisher.PermaBlacklist.Add(192049);
                 }
                 if (PoolFisherSettings.Instance.BLGlacialSalmon && !PoolFisher.PermaBlacklist.Contains(192050))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Glacial Salmon");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Glacial Salmon");
                     PoolFisher.PermaBlacklist.Add(192050);
                 }
                 if (PoolFisherSettings.Instance.BLGlassfinMinnow && !PoolFisher.PermaBlacklist.Contains(192059))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Glassfin Minnow");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Glassfin Minnow");
                     PoolFisher.PermaBlacklist.Add(192059);
                 }
                 if (PoolFisherSettings.Instance.BLImperialMantaRay && !PoolFisher.PermaBlacklist.Contains(192052))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Imperial Manta Ray");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Imperial Manta Ray");
                     PoolFisher.PermaBlacklist.Add(192052);
                 }
                 if (PoolFisherSettings.Instance.BLMoonglowCuttlefish && !PoolFisher.PermaBlacklist.Contains(192054))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Moonglow Cuttlefish");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Moonglow Cuttlefish");
                     PoolFisher.PermaBlacklist.Add(192054);
                 }
                 if (PoolFisherSettings.Instance.BLMusselbackSculpin && !PoolFisher.PermaBlacklist.Contains(192046))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Musselback Sculpin");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Musselback Sculpin");
                     PoolFisher.PermaBlacklist.Add(192046);
                 }
                 if (PoolFisherSettings.Instance.BLNettlefish && !PoolFisher.PermaBlacklist.Contains(192057))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Nettlefish");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Nettlefish");
                     PoolFisher.PermaBlacklist.Add(192057);
                 }
                 /// Outlands
                 if (PoolFisherSettings.Instance.BLBluefish && !PoolFisher.PermaBlacklist.Contains(182959))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Bluefish");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Bluefish");
                     PoolFisher.PermaBlacklist.Add(182959);
                 }
                 if (PoolFisherSettings.Instance.BLBrackishMix && !PoolFisher.PermaBlacklist.Contains(182954))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Brackish Mixed");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Brackish Mixed");
                     PoolFisher.PermaBlacklist.Add(182954);
                 }
                 if (PoolFisherSettings.Instance.BLHighlandMix && !PoolFisher.PermaBlacklist.Contains(182957))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Highland Mixed");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Highland Mixed");
                     PoolFisher.PermaBlacklist.Add(182957);
                 }
                 if (PoolFisherSettings.Instance.BLMudfish && !PoolFisher.PermaBlacklist.Contains(182958))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Mudfish");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Mudfish");
                     PoolFisher.PermaBlacklist.Add(182958);
                 }
                 if (PoolFisherSettings.Instance.BLPureWater && !PoolFisher.PermaBlacklist.Contains(182951))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Pure Water");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Pure Water");
                     PoolFisher.PermaBlacklist.Add(182951);
                 }
                 if (PoolFisherSettings.Instance.BLDarter && !PoolFisher.PermaBlacklist.Contains(182956))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Darter");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Darter");
                     PoolFisher.PermaBlacklist.Add(182956);
                 }
                 if (PoolFisherSettings.Instance.BLSporefish && !PoolFisher.PermaBlacklist.Contains(182953))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Sporefish");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Sporefish");
                     PoolFisher.PermaBlacklist.Add(182953);
                 }
                 if (PoolFisherSettings.Instance.BLSteamPumpFlotsam && !PoolFisher.PermaBlacklist.Contains(182952))
                 {
-                    Logging.Write(System.Drawing.Color.Red, "Steam Pump Flotsam");
+                    Logging.WriteDebug(System.Drawing.Color.Red, "Steam Pump Flotsam");
                     PoolFisher.PermaBlacklist.Add(182952);
                 }
-                Logging.Write(System.Drawing.Color.Red, "-------------------------------------------");
+                Logging.WriteDebug(System.Drawing.Color.Red, "-------------------------------------------");
             }
         }
 
@@ -812,13 +853,106 @@ namespace PoolFishingBuddy
                 List<WoWPlayer> players = new List<WoWPlayer>(ObjectManager.GetObjectsOfType<WoWPlayer>(false));
                 foreach (WoWUnit unit in players)
                 {
-                    if (PoolFisher.Pool.Location.Distance2D(unit.Location) < 30)
+                    if (PoolFisher.Pool.Location.Distance2D(unit.Location) < 25 && !unit.Mounted && !unit.IsFlying)
                     {
                         Logging.Write(System.Drawing.Color.Red, "{0} - Player detected!", TimeNow);
                         return true;
                     }
                 }
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Credits to HighVoltz 
+        /// </summary>
+        public static bool hasWaterWalking
+        {
+            get
+            { // DKs have 2 Path of Frost auras. only one can be stored in WoWAuras at any time. 
+                if (StyxWoW.Me.Auras.Values.Count(a => (a.SpellId == 11319 || a.SpellId == 1706 || a.SpellId == 546) &&
+                    a.TimeLeft >= new System.TimeSpan(0, 0, 20)) > 0 || StyxWoW.Me.HasAura("Path of Frost"))
+                    return true;
+                else
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// Credits to HighVoltz 
+        /// </summary>
+        ///
+        
+        public static bool CanWaterWalk
+        {
+            get
+            {
+                if (SpellManager.CanCast(1706) ||// priest levitate
+                    SpellManager.CanCast(546) || // shaman water walking
+                    SpellManager.CanCast(3714) ||// Dk Path of frost
+                    (PoolFisherSettings.Instance.useWaterWalkingPot && IsItemInBag(8827)))//isItemInBag(8827);
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        
+
+        /// <summary>
+        /// Credits to HighVoltz 
+        /// </summary>
+        public static void WaterWalk()
+        {
+            if (!hasWaterWalking && PoolFisherSettings.Instance.useWaterWalking)
+            {
+                Logging.Write(System.Drawing.Color.DarkCyan, "{0} - Applying water walking aura.", TimeNow);
+
+                if (!PoolFisherSettings.Instance.useWaterWalkingPot)
+                {
+                    int waterwalkingSpellID = 0;
+                    switch (StyxWoW.Me.Class)
+                    {
+                        case Styx.Combat.CombatRoutine.WoWClass.Priest:
+                            waterwalkingSpellID = 1706;
+                            break;
+                        case Styx.Combat.CombatRoutine.WoWClass.Shaman:
+                            waterwalkingSpellID = 546;
+                            break;
+                        case Styx.Combat.CombatRoutine.WoWClass.DeathKnight:
+                            waterwalkingSpellID = 3714;
+                            break;
+                    }
+                    if (SpellManager.CanCast(waterwalkingSpellID))
+                    {
+                        SpellManager.Cast(waterwalkingSpellID);
+                    }
+                }
+                else if (PoolFisherSettings.Instance.useWaterWalkingPot)
+                {
+                    WoWItem waterPot = getIteminBag(8827);
+                    if (waterPot != null)
+                    {
+                        waterPot.Use();
+                    }
+                    else
+                    {
+                        Logging.Write(System.Drawing.Color.Red, "{0} - Could not find water walking pot, won't attempt to use anymore!", TimeNow);
+                        PoolFisherSettings.Instance.Load();
+                        PoolFisherSettings.Instance.useWaterWalking = false;
+                        PoolFisherSettings.Instance.useWaterWalkingPot = false;
+                        PoolFisherSettings.Instance.Save();
+
+                        PoolFisher.saveLocation.Clear();
+                        PoolFisher.looking4NewLoc = true;
+                        PoolFisher.castAttempts = 0;
+                        PoolFisher.newLocAttempts = 0;
+                    }
+                }
+                Logging.Write(System.Drawing.Color.DarkCyan, "{0} - Finished!", TimeNow);
             }
         }
 
