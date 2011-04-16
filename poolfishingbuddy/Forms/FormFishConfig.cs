@@ -52,6 +52,39 @@ namespace PoolFishingBuddy.Forms
             MaxCastAttemptsText.Text = PoolFisherSettings.Instance.MaxCastAttempts.ToString();
             MaxNewLocAttemptsText.Text = PoolFisherSettings.Instance.MaxNewLocAttempts.ToString();
             numericHeightMod.Value = PoolFisherSettings.Instance.HeightModifier;
+            checkTraining.Checked = PoolFisherSettings.Instance.TrainingEnabled;
+
+            #region Water Walking
+
+            if (PoolFisherSettings.Instance.useWaterWalking == true)
+            {
+                checkWaterWalking.Checked = true;
+
+                if (PoolFisherSettings.Instance.useWaterWalkingPot == false)
+                {
+                    radioRacial.Enabled = true;
+                    radioRacial.Checked = true;
+                    radioPotion.Enabled = true;
+                    radioPotion.Checked = false;
+                }
+                else
+                {
+                    radioRacial.Enabled = true;
+                    radioRacial.Checked = false;
+                    radioPotion.Enabled = true;
+                    radioPotion.Checked = true;
+                }
+            }
+            else
+            {
+                checkWaterWalking.Checked = false;
+                radioRacial.Enabled = false;
+                radioRacial.Checked = false;
+                radioPotion.Enabled = false;
+                radioPotion.Checked = false;
+            }
+
+            #endregion
 
             #region Bags full
 
@@ -61,12 +94,14 @@ namespace PoolFishingBuddy.Forms
                 radioMailTo.Checked = false;
                 textMailTo.Text = "";
                 textMailTo.Enabled = false;
+                buttonMailNow.Enabled = false;
             }
             else
             {
                 radioHearthAndExit.Checked = false;
                 radioMailTo.Checked = true;
                 textMailTo.Enabled = true;
+                buttonMailNow.Enabled = true;
                 textMailTo.Text = PoolFisherSettings.Instance.MailRecipient;
             }
 
@@ -318,6 +353,14 @@ namespace PoolFishingBuddy.Forms
             PoolFisherSettings.Instance.MaxNewLocAttempts = MaxLocAttempts;
             PoolFisherSettings.Instance.MaxCastAttempts = MaxCastAttempts;
             PoolFisherSettings.Instance.HeightModifier = (int)numericHeightMod.Value;
+            PoolFisherSettings.Instance.TrainingEnabled = checkTraining.Checked;
+
+            #region Water Walking
+
+            PoolFisherSettings.Instance.useWaterWalking = checkWaterWalking.Checked;
+            PoolFisherSettings.Instance.useWaterWalkingPot = radioPotion.Checked;
+
+            #endregion
 
             #region Bags full
 
@@ -517,24 +560,25 @@ namespace PoolFishingBuddy.Forms
 
             #region Logging
 
-            Logging.Write(System.Drawing.Color.Green, "Saved Settings:");
-            Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
-            Logging.Write(System.Drawing.Color.Green, "Flying Mount: {0}", (string)comboMounts.SelectedItem);
-            Logging.Write(System.Drawing.Color.Green, "Fishing pole: {0}", (string)comboPole.SelectedItem);
-            Logging.Write(System.Drawing.Color.Green, "Mainhand: {0}", (string)comboMainhand.SelectedItem);
-            Logging.Write(System.Drawing.Color.Green, "Offhand: {0}", (string)comboOffhand.SelectedItem);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Saved Settings:");
+            Logging.WriteDebug(System.Drawing.Color.Green, "-------------------------------------------");
+            Logging.WriteDebug(System.Drawing.Color.Green, "Flying Mount: {0}", (string)comboMounts.SelectedItem);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Fishing pole: {0}", (string)comboPole.SelectedItem);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Mainhand: {0}", (string)comboMainhand.SelectedItem);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Offhand: {0}", (string)comboOffhand.SelectedItem);
 
-            Logging.Write(System.Drawing.Color.Green, "Height: {0}", PoolFisherSettings.Instance.HeightModifier);
-            Logging.Write(System.Drawing.Color.Green, "Bouncemode: {0}", PoolFisherSettings.Instance.BounceMode);
-            Logging.Write(System.Drawing.Color.Green, "Min. range to cast: {0}", PoolFisherSettings.Instance.MinCastRange);
-            Logging.Write(System.Drawing.Color.Green, "Max. range to cast: {0}", PoolFisherSettings.Instance.MaxCastRange);
-            Logging.Write(System.Drawing.Color.Green, "Max. attempts to cast: {0}", PoolFisherSettings.Instance.MaxCastAttempts);
-            Logging.Write(System.Drawing.Color.Green, "Ninja Pools: {0}", PoolFisherSettings.Instance.NinjaPools);
-            Logging.Write(System.Drawing.Color.Green, "Blacklist Schools: {0}", PoolFisherSettings.Instance.BlacklistSchools);
-            Logging.Write(System.Drawing.Color.Green, "Use Lure: {0}", PoolFisherSettings.Instance.useLure);
-            Logging.Write(System.Drawing.Color.Green, "Max. attempts to reach pool: {0}", PoolFisherSettings.Instance.MaxNewLocAttempts);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Height: {0}", PoolFisherSettings.Instance.HeightModifier);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Bouncemode: {0}", PoolFisherSettings.Instance.BounceMode);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Training: {0}", PoolFisherSettings.Instance.TrainingEnabled);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Min. range to cast: {0}", PoolFisherSettings.Instance.MinCastRange);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Max. range to cast: {0}", PoolFisherSettings.Instance.MaxCastRange);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Max. attempts to cast: {0}", PoolFisherSettings.Instance.MaxCastAttempts);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Ninja Pools: {0}", PoolFisherSettings.Instance.NinjaPools);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Blacklist Schools: {0}", PoolFisherSettings.Instance.BlacklistSchools);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Use Lure: {0}", PoolFisherSettings.Instance.useLure);
+            Logging.WriteDebug(System.Drawing.Color.Green, "Max. attempts to reach pool: {0}", PoolFisherSettings.Instance.MaxNewLocAttempts);
 
-            Logging.Write(System.Drawing.Color.Green, "-------------------------------------------");
+            Logging.WriteDebug(System.Drawing.Color.Green, "-------------------------------------------");
             Helpers.blacklistSchoolsFromSettings();
 
             #endregion
@@ -570,21 +614,67 @@ namespace PoolFishingBuddy.Forms
 
         private void TestButton_Click(object sender, EventArgs e)
         {
-            Logging.Write("Count of badPoolPoints: {0}", PoolFisher.badPoolPoints.Count);
+            //Logging.Write("Count of badPoolPoints: {0}", PoolFisher.badPoolPoints.Count);
+            //PoolFisher.need2Train = true;
+            //Helpers.getTrainer();
+            //Logging.Write("Zone: {0} - {1}", StyxWoW.Me.ZoneId, StyxWoW.Me.ZoneText);
 
-            
 
+            //ItemClass: TradeGoods, SubClassId: 8 - Fish
+            //ItemClass: TradeGoods, SubClassId: 10 - elementals
+
+            ObjectManager.Update();
+            List<WoWItem> List = StyxWoW.Me.BagItems;
+            foreach (WoWItem i in List)
+            {
+                Logging.Write("{0} - Found - {1} - Entry: {2}, ItemClass: {3}, SubClassId: {4}.", Helpers.TimeNow, i.Name, i.Entry, i.ItemInfo.ItemClass, i.ItemInfo.SubClassId);
+            }
+
+            //Logging.Write("Falling: {0}. Swimming: {1}", StyxWoW.Me.IsFalling, StyxWoW.Me.IsSwimming);
+
+            //PoolFisher.need2Mail = true;
+
+
+            /*
+            ObjectManager.Update();
+            List<WoWGameObject> List = ObjectManager.GetObjectsOfType<WoWGameObject>().Where(o => o.Distance2D <= 150).OrderBy(o => o.Distance).ToList();
+            foreach (WoWGameObject o in List)
+            {
+                Logging.Write("{0} - Found - {1} - at a distance of {2}. Location: {3} Guid: {4}. Entry: {5}.", Helpers.TimeNow, o.Name, o.Distance, o.Location, o.Guid, o.Entry);
+            }
+            */
+            // Test - watersurface and current position
+            /* 
             WoWPoint test = StyxWoW.Me.Location;
-
             test.Z = Helpers.GetWaterSurface(StyxWoW.Me.Location);
             Logging.Write(System.Drawing.Color.Red, "Location: {0}", StyxWoW.Me.Location);
             Logging.Write(System.Drawing.Color.Red, "Water Surface: {0}", test);
+            */
 
+            // Test - underground?
+            /*
             ObjectManager.Update();
             List<WoWGameObject> poolList = ObjectManager.GetObjectsOfType<WoWGameObject>().Where(o => o.SubType == WoWGameObjectType.FishingHole && !Blacklist.Contains(o.Guid) && !PoolFisher.PermaBlacklist.Contains(o.Entry) && o.Distance2D <= 150 && o.Location.X != 0).OrderBy(o => o.Distance).ToList();
             foreach (WoWGameObject p in poolList)
-                Logging.Write("{0} - Found - {1} - at a distance of {2}. Guid: {3}. Entry: {4}.", Helpers.TimeNow, p.Name, p.Distance, p.Guid, p.Entry);
+            {
+                WoWPoint ground = WoWPoint.Empty;
+                GameWorld.TraceLine(new WoWPoint(p.X, p.Y, p.Z), new WoWPoint(p.X, p.Y, StyxWoW.Me.Location.Z), GameWorld.CGWorldFrameHitFlags.HitTestGroundAndStructures | GameWorld.CGWorldFrameHitFlags.HitTestBoundingModels | GameWorld.CGWorldFrameHitFlags.HitTestWMO, out ground);
 
+
+                if (ground == WoWPoint.Empty)
+                {
+                    //if (ground.Z.CompareTo(p.Z) != 0)
+                    //Logging.Write("Pool is underground");
+                    //else
+                    Logging.Write("{0} - Found - {1} - at a distance of {2}. Location: {3} Guid: {4}. Entry: {5}.", Helpers.TimeNow, p.Name, p.Distance, p.Location, p.Guid, p.Entry);
+                }
+                else
+                {
+                    Logging.Write("{0} - Skipping - {1} - at a distance of {2}. Location: {3} Guid: {4}. Entry: {5}. Underground!", Helpers.TimeNow, p.Name, p.Distance, p.Location, p.Guid, p.Entry);
+                }
+                
+            }
+            
             try
             {
                 float groundz;
@@ -592,14 +682,8 @@ namespace PoolFishingBuddy.Forms
                 Logging.Write("{0} - Navigator groundz: {1}.", Helpers.TimeNow, groundz);
             }
             catch (Exception) { }
-
-            WoWPoint ground = WoWPoint.Empty;
-
-            GameWorld.TraceLine(new WoWPoint(StyxWoW.Me.Location.X, StyxWoW.Me.Location.Y, 10000), new WoWPoint(StyxWoW.Me.Location.X, StyxWoW.Me.Location.Y, -10000), GameWorld.CGWorldFrameHitFlags.HitTestGroundAndStructures | GameWorld.CGWorldFrameHitFlags.HitTestBoundingModels | GameWorld.CGWorldFrameHitFlags.HitTestWMO, out ground);
-            if (ground != WoWPoint.Empty)
-            {
-                Logging.Write("{0} - TraceLine groundz: {1}.", Helpers.TimeNow, ground.Z);
-            }
+            */
+            
         }
 
         private void checkUseLure_CheckedChanged(object sender, EventArgs e)
@@ -634,7 +718,7 @@ namespace PoolFishingBuddy.Forms
                 {
                     if (!PoolFisher.mainhandList.Contains(i)) PoolFisher.mainhandList.Add(i);
                 }
-                if (i.ItemInfo.IsWeapon && (i.ItemInfo.InventoryType == InventoryType.WeaponOffHand ||
+                if (i.ItemInfo.IsWeapon && (i.ItemInfo.InventoryType == InventoryType.WeaponOffHand || i.ItemInfo.InventoryType == InventoryType.TwoHandWeapon ||
                     i.ItemInfo.InventoryType == InventoryType.Weapon) && StyxWoW.Me.CanEquipItem(i))
                 {
                     if (!PoolFisher.offhandList.Contains(i)) PoolFisher.offhandList.Add(i);
@@ -707,14 +791,16 @@ namespace PoolFishingBuddy.Forms
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonMailNow_Click(object sender, EventArgs e)
         {
-            
-            //Global.ShouldMail = true;
-            //LevelBot.CreateVendorBehavior();
-            //BotPoi.Current = new BotPoi(ProfileManager.CurrentProfile.MailboxManager.GetClosestMailbox().Location, PoiType.Mail);
-            Styx.Global.ShouldMail = true;
-            Styx.Logic.Vendors.ForceMail = true;
+            PoolFisherSettings.Instance.Load();
+            PoolFisherSettings.Instance.ShouldMail = true;
+            PoolFisherSettings.Instance.MailRecipient = textMailTo.Text;
+            LevelbotSettings.Instance.Load();
+            LevelbotSettings.Instance.MailRecipient = PoolFisherSettings.Instance.MailRecipient;
+            LevelbotSettings.Instance.Save();
+            PoolFisherSettings.Instance.Save();
+            PoolFisher.need2Mail = true;
         }
 
         private void radioMailTo_CheckedChanged(object sender, EventArgs e)
@@ -722,10 +808,12 @@ namespace PoolFishingBuddy.Forms
             if (radioMailTo.Checked)
             {
                 textMailTo.Enabled = true;
+                buttonMailNow.Enabled = true;
             }
             else
             {
                 textMailTo.Enabled = false;
+                buttonMailNow.Enabled = false;
             }
         }
 
@@ -734,10 +822,63 @@ namespace PoolFishingBuddy.Forms
             if (radioHearthAndExit.Checked)
             {
                 textMailTo.Enabled = false;
+                buttonMailNow.Enabled = false;
             }
             else
             {
                 textMailTo.Enabled = true;
+                buttonMailNow.Enabled = true;
+            }
+        }
+
+        private void checkWaterWalking_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkWaterWalking.Checked)
+            {
+                radioRacial.Enabled = true;
+                radioRacial.Checked = true;
+                radioPotion.Enabled = true;
+                radioPotion.Checked = false;
+            }
+            else
+            {
+                radioRacial.Enabled = false;
+                radioRacial.Checked = false;
+                radioPotion.Enabled = false;
+                radioPotion.Checked = false;
+            }
+        }
+
+        private void buttonRefreshMounts_Click(object sender, EventArgs e)
+        {
+            comboMounts.Items.Clear();
+
+            WoWSpell SwiftFlightForm = WoWSpell.FromId(40120);
+            WoWSpell FlightForm = WoWSpell.FromId(33943);
+
+            if (SpellManager.HasSpell(SwiftFlightForm))
+            {
+                comboMounts.Items.Add(SwiftFlightForm.Name);
+                if (PoolFisherSettings.Instance.FlyingMountID == SwiftFlightForm.Id)
+                {
+                    comboMounts.SelectedText = SwiftFlightForm.Name;
+                }
+            }
+            if (SpellManager.HasSpell(FlightForm))
+            {
+                comboMounts.Items.Add(FlightForm.Name);
+                if (PoolFisherSettings.Instance.FlyingMountID == FlightForm.Id)
+                {
+                    comboMounts.SelectedText = FlightForm.Name;
+                }
+            }
+            foreach (MountHelper.MountWrapper flyingMount in MountHelper.FlyingMounts)
+            {
+                comboMounts.Items.Add(flyingMount.Name);
+                if (PoolFisherSettings.Instance.FlyingMountID == flyingMount.CreatureSpellId)
+                {
+                    comboMounts.SelectedItem = flyingMount.Name;
+                }
             }
         }
     }

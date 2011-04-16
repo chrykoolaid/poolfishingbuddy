@@ -29,6 +29,9 @@ namespace PoolFishingBuddy
         [Setting(Explanation = "Modifier for height of profiles z-coords."), DefaultValue(0)]
         public int HeightModifier { get; set; }
 
+        [Setting(Explanation = "Training enabled or not."), DefaultValue(false)]
+        public bool TrainingEnabled { get; set; }
+
         [Setting(Explanation = "The minimum range of locations to fish from."), DefaultValue(15)]
         public int MinCastRange { get; set; }
 
@@ -46,6 +49,12 @@ namespace PoolFishingBuddy
 
         [Setting(Explanation = "ID for lure item."), DefaultValue(0)]
         public int LureID { get; set; }
+
+        [Setting(Explanation = "Use water walking or not."), DefaultValue(false)]
+        public bool useWaterWalking { get; set; }
+
+        [Setting(Explanation = "Use water walking pot or not."), DefaultValue(false)]
+        public bool useWaterWalkingPot { get; set; }
 
         [Setting(Explanation = "ID for fishing pole."), DefaultValue(0)]
         public int FishingPole { get; set; }

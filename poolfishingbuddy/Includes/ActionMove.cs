@@ -2,11 +2,11 @@
 using System.Linq;
 using Styx;
 using Styx.Helpers;
+using Styx.Logic;
 using Styx.Logic.Pathing;
 using Styx.WoWInternals;
 using Styx.WoWInternals.World;
 using Styx.WoWInternals.WoWObjects;
-using Bots.ArchaeologyBuddy;
 using TreeSharp;
 using Tripper.Tools.Math;
 using Action = TreeSharp.Action;
@@ -18,7 +18,7 @@ namespace PoolFishingBuddy
         
         protected override RunStatus Run(object context)
         {
-            Logging.WriteDebug("ActionMove");
+            Logging.WriteNavigator("{0} - Navigation: ActionMove", Helpers.TimeNow);
 
             WoWPoint destination = WoWPoint.Empty;
             
@@ -35,28 +35,33 @@ namespace PoolFishingBuddy
             }
             else
             {
-                Logging.Write("Movement is of unknown type: {0}", context);
+                Logging.Write(System.Drawing.Color.Red, "Movement is of unknown type: {0}", context);
                 return RunStatus.Failure;
             }
             if (StyxWoW.Me.Mounted)
             {
+                if (StyxWoW.Me.ZoneId == 1537)
+                {
+                    float groundz;
+                    Navigator.FindHeight(destination.X, destination.Y, out groundz);
+                    destination.Z = groundz;
+                    while (StyxWoW.Me.ZoneId == 1537)
+                        Navigator.MoveTo(destination);
+                }
                 //Logging.Write("Destination: {0}, Distance: {1}", destination, StyxWoW.Me.Location.Distance(destination));
-                //Flightor.MoveWithTrace(destination);
-                Styx.Logic.Pathing.Flightor.MoveTo(destination);
-                //Flightor.MoveTo(destination);
-                //Gatherbuddy.Flightor.MoveTo(destination);
+                Flightor.MoveTo(destination);
             }
-            else if (!StyxWoW.Me.Mounted && StyxWoW.Me.IsIndoors)
+            else if (!StyxWoW.Me.Mounted && (!Mount.CanMount() || StyxWoW.Me.IsIndoors || StyxWoW.Me.ZoneId == 1537))
             {
                 float groundz;
                 Navigator.FindHeight(destination.X, destination.Y, out groundz);
                 destination.Z = groundz;
-                while (StyxWoW.Me.IsIndoors)
+                while ((!StyxWoW.Me.Combat || !StyxWoW.Me.PetInCombat) && (!Mount.CanMount() || StyxWoW.Me.IsIndoors || StyxWoW.Me.ZoneId == 1537))
                     Navigator.MoveTo(destination);
             }
             else
             {
-                Logging.Write("Not Mounted! Return: {0}", RunStatus.Failure);
+                Logging.Write(System.Drawing.Color.Red, "Not Mounted! Return: {0}", RunStatus.Failure);
                 
             }
             return RunStatus.Failure;
