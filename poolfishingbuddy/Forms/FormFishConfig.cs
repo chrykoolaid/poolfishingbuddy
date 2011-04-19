@@ -614,76 +614,18 @@ namespace PoolFishingBuddy.Forms
 
         private void TestButton_Click(object sender, EventArgs e)
         {
-            //Logging.Write("Count of badPoolPoints: {0}", PoolFisher.badPoolPoints.Count);
-            //PoolFisher.need2Train = true;
-            //Helpers.getTrainer();
-            //Logging.Write("Zone: {0} - {1}", StyxWoW.Me.ZoneId, StyxWoW.Me.ZoneText);
-
-
-            //ItemClass: TradeGoods, SubClassId: 8 - Fish
-            //ItemClass: TradeGoods, SubClassId: 10 - elementals
-
-            ObjectManager.Update();
-            List<WoWItem> List = StyxWoW.Me.BagItems;
-            foreach (WoWItem i in List)
-            {
-                Logging.Write("{0} - Found - {1} - Entry: {2}, ItemClass: {3}, SubClassId: {4}.", Helpers.TimeNow, i.Name, i.Entry, i.ItemInfo.ItemClass, i.ItemInfo.SubClassId);
-            }
-
-            //Logging.Write("Falling: {0}. Swimming: {1}", StyxWoW.Me.IsFalling, StyxWoW.Me.IsSwimming);
-
-            //PoolFisher.need2Mail = true;
-
-
             /*
-            ObjectManager.Update();
-            List<WoWGameObject> List = ObjectManager.GetObjectsOfType<WoWGameObject>().Where(o => o.Distance2D <= 150).OrderBy(o => o.Distance).ToList();
-            foreach (WoWGameObject o in List)
-            {
-                Logging.Write("{0} - Found - {1} - at a distance of {2}. Location: {3} Guid: {4}. Entry: {5}.", Helpers.TimeNow, o.Name, o.Distance, o.Location, o.Guid, o.Entry);
-            }
-            */
-            // Test - watersurface and current position
-            /* 
-            WoWPoint test = StyxWoW.Me.Location;
-            test.Z = Helpers.GetWaterSurface(StyxWoW.Me.Location);
-            Logging.Write(System.Drawing.Color.Red, "Location: {0}", StyxWoW.Me.Location);
-            Logging.Write(System.Drawing.Color.Red, "Water Surface: {0}", test);
-            */
-
-            // Test - underground?
-            /*
-            ObjectManager.Update();
-            List<WoWGameObject> poolList = ObjectManager.GetObjectsOfType<WoWGameObject>().Where(o => o.SubType == WoWGameObjectType.FishingHole && !Blacklist.Contains(o.Guid) && !PoolFisher.PermaBlacklist.Contains(o.Entry) && o.Distance2D <= 150 && o.Location.X != 0).OrderBy(o => o.Distance).ToList();
-            foreach (WoWGameObject p in poolList)
-            {
-                WoWPoint ground = WoWPoint.Empty;
-                GameWorld.TraceLine(new WoWPoint(p.X, p.Y, p.Z), new WoWPoint(p.X, p.Y, StyxWoW.Me.Location.Z), GameWorld.CGWorldFrameHitFlags.HitTestGroundAndStructures | GameWorld.CGWorldFrameHitFlags.HitTestBoundingModels | GameWorld.CGWorldFrameHitFlags.HitTestWMO, out ground);
+            bool test = Lua.GetReturnVal<bool>("local b = 0" +
+                                                   "if GetCVar(\"autoLootDefault\") == \"1\"" +
+                                                   "b = 1" +
+                                                   "break " +
+                                                   "end" +
+                                                   "return b;", 0);
 
 
-                if (ground == WoWPoint.Empty)
-                {
-                    //if (ground.Z.CompareTo(p.Z) != 0)
-                    //Logging.Write("Pool is underground");
-                    //else
-                    Logging.Write("{0} - Found - {1} - at a distance of {2}. Location: {3} Guid: {4}. Entry: {5}.", Helpers.TimeNow, p.Name, p.Distance, p.Location, p.Guid, p.Entry);
-                }
-                else
-                {
-                    Logging.Write("{0} - Skipping - {1} - at a distance of {2}. Location: {3} Guid: {4}. Entry: {5}. Underground!", Helpers.TimeNow, p.Name, p.Distance, p.Location, p.Guid, p.Entry);
-                }
-                
-            }
-            
-            try
-            {
-                float groundz;
-                Navigator.FindHeight(StyxWoW.Me.Location.X, StyxWoW.Me.Location.Y, out groundz);
-                Logging.Write("{0} - Navigator groundz: {1}.", Helpers.TimeNow, groundz);
-            }
-            catch (Exception) { }
+            Logging.Write(System.Drawing.Color.Red, "LUA: {0}", test);
             */
-            
+            //Logging.Write("{0} - autoLootDefault: {1}", Helpers.TimeNow, autoLootDefault);            
         }
 
         private void checkUseLure_CheckedChanged(object sender, EventArgs e)

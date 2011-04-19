@@ -577,7 +577,6 @@ namespace PoolFishingBuddy
             {
                 Blacklist.Add(o.Guid, new TimeSpan(0, 2, 0));
                 //Logging.Write("{0} - Blacklisted Guid {1}", TimeNow, o.Guid);
-                equipWeapon();
                 resetVars();
             }
         }
@@ -588,13 +587,14 @@ namespace PoolFishingBuddy
             PoolFisher.looking4NewPool = true;
             PoolFisher.MeIsFishing = false;
             PoolFisher.need2Lure = false;
+            PoolFisher.need2Train = false;
             PoolFisher.castAttempts = 0;
             PoolFisher.newLocAttempts = 0;
             PoolFisher.saveLocation.Clear();
             PoolFisher.mountLocation.Clear();
             PoolFisher.Pool = null;
             PoolFisher._currenthotspot = -1;
-            Mailing.isDone = false;
+            Mailing.isDone = true;
             PoolFisher.need2Mail = false;
             PoolFisher.movetopoolTimer.Reset();
         }
@@ -987,52 +987,6 @@ namespace PoolFishingBuddy
             
             }
         }
-
-        #region Test
-
-        /*
-        public static int LootItems
-        {
-            get
-            {
-                try
-                {
-                    return int.Parse(Lua.GetReturnValues("return GetNumLootItems()", "fishingbuddy.lua")[0]);
-                }
-                catch
-                {
-                    return 0;
-                }
-            }
-        }
-
-        public static void Loot(int slot)
-        {
-            Lua.DoString("LootSlot({0})", slot + 1);
-        }
-        
-        public static void LootAll()
-        {
-            for (int i = 0; i < LootItems; i++)
-            {
-                var info = new LootSlotInfo(i);
-
-                if (!info.Locked)
-                {
-                    Logging.Write("Trying to loot #{0} of {1} Rarity:{2}",
-                        info.LootQuantity,
-                        info.LootName,
-                        info.LootRarity);
-
-                    Loot(i);
-                }
-            }
-
-            //InfoPanel.LootedMob();
-        }
-        */
-
-        #endregion
     }
 
     internal static class Extensions
