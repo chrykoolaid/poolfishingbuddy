@@ -26,9 +26,6 @@ namespace PoolFishingBuddy
             Bobber.Interact();
             Bobber = null;
 
-            // wait for loot frame to apear
-            //Thread.Sleep((PoolFisher.Ping * 2) + 200);
-            
             Logging.Write(System.Drawing.Color.DarkCyan, "{0} - Interact!", Helpers.TimeNow);
 
             lootTimer.Reset();
