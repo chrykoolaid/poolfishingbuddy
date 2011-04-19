@@ -152,7 +152,7 @@
             // 
             // MaxCastRangeText
             // 
-            this.MaxCastRangeText.Location = new System.Drawing.Point(159, 141);
+            this.MaxCastRangeText.Location = new System.Drawing.Point(159, 115);
             this.MaxCastRangeText.Mask = "00";
             this.MaxCastRangeText.Name = "MaxCastRangeText";
             this.MaxCastRangeText.PromptChar = ' ';
@@ -192,7 +192,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(185, 144);
+            this.label3.Location = new System.Drawing.Point(185, 118);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(65, 13);
             this.label3.TabIndex = 12;
@@ -207,7 +207,6 @@
             this.TestButton.TabIndex = 13;
             this.TestButton.Text = "Test";
             this.TestButton.UseVisualStyleBackColor = true;
-            this.TestButton.Visible = false;
             this.TestButton.Click += new System.EventHandler(this.TestButton_Click);
             // 
             // tabControl1
@@ -252,7 +251,7 @@
             // 
             this.buttonRefreshMounts.Location = new System.Drawing.Point(244, 18);
             this.buttonRefreshMounts.Name = "buttonRefreshMounts";
-            this.buttonRefreshMounts.Size = new System.Drawing.Size(52, 21);
+            this.buttonRefreshMounts.Size = new System.Drawing.Size(64, 21);
             this.buttonRefreshMounts.TabIndex = 5;
             this.buttonRefreshMounts.Text = "Refresh";
             this.buttonRefreshMounts.UseVisualStyleBackColor = true;
@@ -458,7 +457,7 @@
             // 
             this.buttonRefreshWeaponsAndPole.Location = new System.Drawing.Point(244, 19);
             this.buttonRefreshWeaponsAndPole.Name = "buttonRefreshWeaponsAndPole";
-            this.buttonRefreshWeaponsAndPole.Size = new System.Drawing.Size(52, 21);
+            this.buttonRefreshWeaponsAndPole.Size = new System.Drawing.Size(64, 21);
             this.buttonRefreshWeaponsAndPole.TabIndex = 29;
             this.buttonRefreshWeaponsAndPole.Text = "Refresh";
             this.buttonRefreshWeaponsAndPole.UseVisualStyleBackColor = true;
@@ -495,7 +494,7 @@
             this.groupBox3.Controls.Add(this.radioPotion);
             this.groupBox3.Controls.Add(this.radioRacial);
             this.groupBox3.Controls.Add(this.checkWaterWalking);
-            this.groupBox3.Location = new System.Drawing.Point(6, 59);
+            this.groupBox3.Location = new System.Drawing.Point(6, 33);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(242, 48);
             this.groupBox3.TabIndex = 27;
@@ -537,7 +536,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(185, 116);
+            this.label14.Location = new System.Drawing.Point(185, 90);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(65, 13);
             this.label14.TabIndex = 25;
@@ -545,7 +544,7 @@
             // 
             // MinCastRangeText
             // 
-            this.MinCastRangeText.Location = new System.Drawing.Point(159, 113);
+            this.MinCastRangeText.Location = new System.Drawing.Point(159, 87);
             this.MinCastRangeText.Mask = "00";
             this.MinCastRangeText.Name = "MinCastRangeText";
             this.MinCastRangeText.Size = new System.Drawing.Size(20, 20);
@@ -556,7 +555,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(9, 116);
+            this.label13.Location = new System.Drawing.Point(9, 90);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(114, 13);
             this.label13.TabIndex = 23;
@@ -564,7 +563,7 @@
             // 
             // MaxNewLocAttemptsText
             // 
-            this.MaxNewLocAttemptsText.Location = new System.Drawing.Point(159, 197);
+            this.MaxNewLocAttemptsText.Location = new System.Drawing.Point(159, 171);
             this.MaxNewLocAttemptsText.Mask = "00";
             this.MaxNewLocAttemptsText.Name = "MaxNewLocAttemptsText";
             this.MaxNewLocAttemptsText.PromptChar = ' ';
@@ -576,7 +575,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(185, 200);
+            this.label4.Location = new System.Drawing.Point(185, 174);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(59, 13);
             this.label4.TabIndex = 21;
@@ -585,7 +584,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 200);
+            this.label1.Location = new System.Drawing.Point(9, 174);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(142, 13);
             this.label1.TabIndex = 20;
@@ -594,7 +593,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(9, 144);
+            this.label7.Location = new System.Drawing.Point(9, 118);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(117, 13);
             this.label7.TabIndex = 19;
@@ -603,7 +602,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(185, 172);
+            this.label6.Location = new System.Drawing.Point(185, 146);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(65, 13);
             this.label6.TabIndex = 18;
@@ -611,7 +610,7 @@
             // 
             // MaxCastAttemptsText
             // 
-            this.MaxCastAttemptsText.Location = new System.Drawing.Point(159, 169);
+            this.MaxCastAttemptsText.Location = new System.Drawing.Point(159, 143);
             this.MaxCastAttemptsText.Mask = "00";
             this.MaxCastAttemptsText.Name = "MaxCastAttemptsText";
             this.MaxCastAttemptsText.PromptChar = ' ';
@@ -623,7 +622,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(9, 172);
+            this.label5.Location = new System.Drawing.Point(9, 146);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(144, 13);
             this.label5.TabIndex = 16;
@@ -633,7 +632,7 @@
             // 
             this.comboLures.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboLures.FormattingEnabled = true;
-            this.comboLures.Location = new System.Drawing.Point(95, 29);
+            this.comboLures.Location = new System.Drawing.Point(95, 347);
             this.comboLures.Name = "comboLures";
             this.comboLures.Size = new System.Drawing.Size(155, 21);
             this.comboLures.TabIndex = 15;
@@ -642,7 +641,7 @@
             // checkUseLure
             // 
             this.checkUseLure.AutoSize = true;
-            this.checkUseLure.Location = new System.Drawing.Point(12, 33);
+            this.checkUseLure.Location = new System.Drawing.Point(12, 351);
             this.checkUseLure.Name = "checkUseLure";
             this.checkUseLure.Size = new System.Drawing.Size(72, 17);
             this.checkUseLure.TabIndex = 13;
