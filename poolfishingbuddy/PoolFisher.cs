@@ -110,13 +110,13 @@ namespace PoolFishingBuddy
             
             bool autoLootDefault = Lua.GetReturnVal<bool>("GetCVar(\"autoLootDefault\")", 0);
 
+            
+
             if (autoLootDefault)
             {
                 Lua.DoString("SetCVar(\"autoLootDefault\",0)", "fishingbuddy.lua");
             }
             
-            
-
             GrindArea = ProfileManager.CurrentProfile.GrindArea;
             HotspotList = GrindArea.Hotspots.ConvertAll<WoWPoint>(hs => hs.ToWoWPoint());
             BlackspotList = ProfileManager.CurrentProfile.Blackspots.ConvertAll<WoWPoint>(bs => bs.Location);
@@ -128,6 +128,10 @@ namespace PoolFishingBuddy
             Helpers.resetVars();
 
             WoWSpell Mount = WoWSpell.FromId(PoolFisherSettings.Instance.FlyingMountID);
+
+            LevelbotSettings.Instance.MountName = Mount.Name;
+            CharacterSettings.Instance.FindMountAutomatically = false;
+            CharacterSettings.Instance.UseRandomMount = false;
 
             Styx.BotEvents.OnBotStart += Helpers.Init;
             Styx.BotEvents.OnBotStop += Helpers.Final;
@@ -177,7 +181,7 @@ namespace PoolFishingBuddy
             int hours = minutes / 60;
             
 
-            Logging.Write(System.Drawing.Color.DarkCyan, "{0} - Runtime: {1} h {2} m {3} s.", Helpers.TimeNow, runTimer.Elapsed.Hours, runTimer.Elapsed.Minutes, runTimer.Elapsed.Seconds);
+            Logging.Write(System.Drawing.Color.DarkCyan, "{0} - Runtime: {1}h {2}m {3}s.", Helpers.TimeNow, runTimer.Elapsed.Hours, runTimer.Elapsed.Minutes, runTimer.Elapsed.Seconds);
             Logging.Write(System.Drawing.Color.DarkCyan, "{0} - Pool Fisher stopped!", Helpers.TimeNow);
             StyxSettings.Instance.LogoutForInactivity = true;
             PoolFisher.runTimer.Reset();
@@ -558,7 +562,7 @@ namespace PoolFishingBuddy
                                         new Action(ret => Logging.Write(System.Drawing.Color.DarkCyan, "{0} - Casting.. Attempt: {1} of {2}.", Helpers.TimeNow, castAttempts, PoolFisherSettings.Instance.MaxCastAttempts)),
                                         new Action(ret => TreeRoot.StatusText = "Cast Fishing"),
                                         new Action(ret => SpellManager.Cast("Fishing")),
-                                        new Action(ret => Thread.Sleep((Ping * 2) + 350))
+                                        new Action(ret => Thread.Sleep((Ping * 2) + 500))
                                         //new Action(ret => Logging.Write(System.Drawing.Color.DarkCyan, "Bobber in Hole: {0}.", Helpers.BobberIsInTheHole))
                                     ))
                         )),
