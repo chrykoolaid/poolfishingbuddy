@@ -81,6 +81,7 @@ namespace PoolFishingBuddy
         static public bool FlyToTrainer = true;
 
         static public bool need2Mail = false;
+        static public bool autoLootDefault = false;
         
         #endregion
 
@@ -92,7 +93,7 @@ namespace PoolFishingBuddy
 
         #region Overrides of BotBase
 
-        private readonly Version _version = new Version(1, 1, 02);
+        private readonly Version _version = new Version(1, 1, 03);
 
         public override string Name
         {
@@ -107,14 +108,21 @@ namespace PoolFishingBuddy
         {
             Logging.Write(System.Drawing.Color.DarkCyan, "{0} - Pool Fisher {1} starting!", Helpers.TimeNow, _version);
 
-            
-            bool autoLootDefault = Lua.GetReturnVal<bool>("GetCVar(\"autoLootDefault\")", 0);
+            if (Lua.GetReturnVal<int>("if GetCVar(\"AutolootDefault\") == \"1\" then return 1; else return 0; end", 0) == 1)
+            {
+                PoolFisher.autoLootDefault = true;
+            }
+            else
+            {
+                PoolFisher.autoLootDefault = false;
+            }
 
-            
+            //Logging.Write(System.Drawing.Color.DarkCyan, "{0} - autoLootDefault: {1}", Helpers.TimeNow, autoLootDefault);
+            //Logging.Write(System.Drawing.Color.DarkCyan, "{0} - return Value: {1}", Helpers.TimeNow, Lua.GetReturnVal<bool>("if GetCVar(\"AutolootDefault\") == \"1\" then return 1; else return 0; end", 0));
 
             if (autoLootDefault)
             {
-                Lua.DoString("SetCVar(\"autoLootDefault\",0)", "fishingbuddy.lua");
+                Lua.DoString("SetCVar(\"autoLootDefault\", 0)", "fishingbuddy.lua");
             }
             
             GrindArea = ProfileManager.CurrentProfile.GrindArea;
@@ -144,6 +152,11 @@ namespace PoolFishingBuddy
 
         public override void Stop()
         {
+            if (autoLootDefault)
+            {
+                Lua.DoString("SetCVar(\"autoLootDefault\", 1)", "fishingbuddy.lua");
+            }
+
             if (StyxWoW.Me.IsCasting)
             {
                 SpellManager.StopCasting();
@@ -477,7 +490,6 @@ namespace PoolFishingBuddy
                         new Decorator(ret => !Helpers.PoolIsStillThere,
                             new Sequence(
                                 new Action(ret => Logging.Write(System.Drawing.Color.DarkCyan, "{0} - Fishing Pool is gone, moving on.", Helpers.TimeNow)),
-                                new Action(ret => newLocAttempts = 0),
                                 new Action(ret => Helpers.equipWeapon())
                                 )),
 

@@ -615,17 +615,14 @@ namespace PoolFishingBuddy.Forms
         private void TestButton_Click(object sender, EventArgs e)
         {
             /*
-            bool test = Lua.GetReturnVal<bool>("local b = 0" +
-                                                   "if GetCVar(\"autoLootDefault\") == \"1\"" +
-                                                   "b = 1" +
-                                                   "break " +
-                                                   "end" +
-                                                   "return b;", 0);
+            if (Lua.GetReturnVal<int>("if GetCVar(\"AutolootDefault\") == \"1\" then return 1; else return 0; end", 0) == 1)
+                PoolFisher.autoLootDefault = true;
+            else
+                PoolFisher.autoLootDefault = false;
 
-
-            Logging.Write(System.Drawing.Color.Red, "LUA: {0}", test);
+            Logging.Write("{0} - autoLootDefault: {1}", Helpers.TimeNow, PoolFisher.autoLootDefault);
+            Logging.Write("{0} - return Value: {1}", Helpers.TimeNow, Lua.GetReturnVal<string>("if GetCVar(\"AutolootDefault\") == \"1\" then return 1; else return 0; end", 0));
             */
-            //Logging.Write("{0} - autoLootDefault: {1}", Helpers.TimeNow, autoLootDefault);            
         }
 
         private void checkUseLure_CheckedChanged(object sender, EventArgs e)

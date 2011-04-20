@@ -634,9 +634,7 @@ namespace PoolFishingBuddy
                     }
                 }
                 BlackListPool(PoolFisher.Pool);
-                PoolFisher.MeIsFishing = false;
-                PoolFisher.looking4NewPool = true;
-                PoolFisher.looking4NewLoc = true;
+                
                 return false;
             }
         }
