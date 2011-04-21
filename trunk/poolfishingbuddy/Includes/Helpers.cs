@@ -37,8 +37,21 @@ namespace PoolFishingBuddy
         /// </summary>
         static public void StartMonitoring()
         {
-            FormFishMonitoring form = new FormFishMonitoring();
-            form.ShowDialog();
+            try
+            {
+                FormFishMonitoring form = new FormFishMonitoring();
+                form.ShowDialog();
+            }
+            catch (ThreadAbortException e)
+            {
+                Console.WriteLine("Exception message: {0}", e.Message);
+                Thread.ResetAbort();
+            }
+            catch (Exception e) 
+            {
+                Console.WriteLine("Exception message: {0}", e.Message);
+                Thread.ResetAbort();
+            }
         }
 
         /// <summary>

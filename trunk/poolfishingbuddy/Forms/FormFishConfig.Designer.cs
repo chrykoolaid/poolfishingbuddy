@@ -207,6 +207,7 @@
             this.TestButton.TabIndex = 13;
             this.TestButton.Text = "Test";
             this.TestButton.UseVisualStyleBackColor = true;
+            this.TestButton.Visible = false;
             this.TestButton.Click += new System.EventHandler(this.TestButton_Click);
             // 
             // tabControl1
@@ -1022,6 +1023,7 @@
             this.buttonMonitor.Text = "Start Monitor";
             this.buttonMonitor.UseVisualStyleBackColor = true;
             this.buttonMonitor.Visible = false;
+            this.buttonMonitor.Click += new System.EventHandler(this.buttonMonitor_Click);
             // 
             // FormFishConfig
             // 
