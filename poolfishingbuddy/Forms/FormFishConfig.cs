@@ -587,13 +587,6 @@ namespace PoolFishingBuddy.Forms
             Close();
         }
 
-        private void buttonMonitor_Click(object sender, EventArgs e)
-        {
-            //FormFishMonitoring form = new FormFishMonitoring();
-            //PoolFisher.MonitoringThread = new Thread(new ThreadStart(Helpers.StartMonitoring));
-            //PoolFisher.MonitoringThread.Start();
-        }
-
         private void checkBlacklistSchools_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBlacklistSchools.Checked)
@@ -819,6 +812,13 @@ namespace PoolFishingBuddy.Forms
                     comboMounts.SelectedItem = flyingMount.Name;
                 }
             }
+        }
+
+        private void buttonMonitor_Click(object sender, EventArgs e)
+        {
+            FormFishMonitoring form = new FormFishMonitoring();
+            PoolFisher.MonitoringThread = new Thread(new ThreadStart(Helpers.StartMonitoring));
+            PoolFisher.MonitoringThread.Start();
         }
     }
 }

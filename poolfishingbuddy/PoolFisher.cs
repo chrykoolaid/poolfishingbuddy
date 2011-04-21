@@ -93,7 +93,7 @@ namespace PoolFishingBuddy
 
         #region Overrides of BotBase
 
-        private readonly Version _version = new Version(1, 1, 03);
+        private readonly Version _version = new Version(1, 1, 04);
 
         public override string Name
         {
@@ -602,6 +602,7 @@ namespace PoolFishingBuddy
             return new Sequence(
                 new Action(ret => Logging.WriteDebug("{0} - Composit: CreatePathBehavior", Helpers.TimeNow)),
                 new PrioritySelector(
+
                     new Decorator(ret => HotspotList.Count == 0,
                         new Sequence(
                             new Action(ret => Logging.Write(System.Drawing.Color.Red, "{0} - Profile has no hotspots!", Helpers.TimeNow)),
@@ -700,7 +701,7 @@ namespace PoolFishingBuddy
 
         private Composite CreateMountBehavior()
         {
-            return new Decorator(ret => !StyxWoW.Me.Mounted && !StyxWoW.Me.Combat && !StyxWoW.Me.IsSwimming && !StyxWoW.Me.IsIndoors && StyxWoW.Me.MapId != 530 && StyxWoW.Me.ZoneId != 1537, // 1537 = Ironforge
+            return new Decorator(ret => !StyxWoW.Me.Mounted && !StyxWoW.Me.Combat && !StyxWoW.Me.IsSwimming && !StyxWoW.Me.IsIndoors /*&& StyxWoW.Me.MapId != 530*/ && StyxWoW.Me.ZoneId != 1537, // 1537 = Ironforge
                 new Sequence(
                     new Action(ret => Logging.WriteDebug("{0} - Composit: CreateMountBehaviour", Helpers.TimeNow)),
                     new Action(ret => WoWMovement.MoveStop()),
