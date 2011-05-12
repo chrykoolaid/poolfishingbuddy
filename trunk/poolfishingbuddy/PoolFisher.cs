@@ -4,11 +4,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+
 using Bots.Grind;
-//using Gatherbuddy;
 using Levelbot;
 using CommonBehaviors.Actions;
 using PoolFishingBuddy.Forms;
+
 using Styx;
 using Styx.Helpers;
 using Styx.Logic;
@@ -21,6 +22,7 @@ using Styx.Logic.Inventory.Frames.LootFrame;
 using Styx.WoWInternals;
 using Styx.WoWInternals.WoWObjects;
 using Styx.WoWInternals.World;
+
 using TreeSharp;
 using Action = TreeSharp.Action;
 
@@ -82,18 +84,17 @@ namespace PoolFishingBuddy
 
         static public bool need2Mail = false;
         static public bool autoLootDefault = false;
-        
-        #endregion
 
         static public List<WoWPoint> HotspotList;
         static public List<WoWPoint> BlackspotList;
 
         static public GrindArea GrindArea { get; set; }
         
+        #endregion
 
         #region Overrides of BotBase
 
-        private readonly Version _version = new Version(1, 1, 04);
+        private readonly Version _version = new Version(1, 1, 05);
 
         public override string Name
         {

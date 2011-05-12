@@ -36,16 +36,6 @@ namespace PoolFishingBuddy.Forms
             ProtectedItemsManager.ReloadProtectedItems();
             //Logging.Write(System.Drawing.Color.Red, "{0} - ProtectedItems count: {1}", Helpers.TimeNow, ProtectedItemsManager.GetAllItemIds().Count);
 
-            try
-            {
-                pictureBox1.Image = Image.FromStream(new MemoryStream(new WebClient().DownloadData("http://poolfishingbuddy.googlecode.com/svn/images/fish.png")));
-                Icon = new Icon(new MemoryStream(new WebClient().DownloadData("http://poolfishingbuddy.googlecode.com/svn/images/fish.ico")), 32, 32);
-            }
-            catch (InvalidCastException ex)
-            {
-                Logging.Write(System.Drawing.Color.Red, "{0} - Exception: {1}", Helpers.TimeNow, ex);
-            }
-
             checkNinjaPools.Checked = PoolFisherSettings.Instance.NinjaPools;
             MinCastRangeText.Text = PoolFisherSettings.Instance.MinCastRange.ToString();
             MaxCastRangeText.Text = PoolFisherSettings.Instance.MaxCastRange.ToString();
@@ -234,7 +224,7 @@ namespace PoolFishingBuddy.Forms
                 comboMounts.Items.Add(SwiftFlightForm.Name);
                 if (PoolFisherSettings.Instance.FlyingMountID == SwiftFlightForm.Id)
                 {
-                    comboMounts.SelectedText = SwiftFlightForm.Name;
+                    comboMounts.SelectedItem = SwiftFlightForm.Name;
                 }
             }
             if (SpellManager.HasSpell(FlightForm))
@@ -242,7 +232,7 @@ namespace PoolFishingBuddy.Forms
                 comboMounts.Items.Add(FlightForm.Name);
                 if (PoolFisherSettings.Instance.FlyingMountID == FlightForm.Id)
                 {
-                    comboMounts.SelectedText = FlightForm.Name;
+                    comboMounts.SelectedItem = FlightForm.Name;
                 }
             }
             foreach (MountHelper.MountWrapper flyingMount in MountHelper.FlyingMounts)
@@ -334,6 +324,24 @@ namespace PoolFishingBuddy.Forms
             }
             
             #endregion
+
+            try
+            {
+                pictureBox1.Image = Image.FromStream(new MemoryStream(new WebClient().DownloadData("http://poolfishingbuddy.googlecode.com/svn/images/fish.png")));
+            }
+            catch (WebException ex)
+            {
+                Logging.WriteDebug(System.Drawing.Color.Red, "{0} - Download fish.png from googlecode.com failed. Exception: {1}", Helpers.TimeNow, ex);
+            }
+
+            try
+            {
+                Icon = new Icon(new MemoryStream(new WebClient().DownloadData("http://poolfishingbuddy.googlecode.com/svn/images/fish.ico")), 32, 32);
+            }
+            catch (WebException ex)
+            {
+                Logging.WriteDebug(System.Drawing.Color.Red, "{0} - Download fish.ico from googlecode.com failed. Exception: {1}", Helpers.TimeNow, ex);
+            }
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
@@ -616,6 +624,29 @@ namespace PoolFishingBuddy.Forms
             Logging.Write("{0} - autoLootDefault: {1}", Helpers.TimeNow, PoolFisher.autoLootDefault);
             Logging.Write("{0} - return Value: {1}", Helpers.TimeNow, Lua.GetReturnVal<string>("if GetCVar(\"AutolootDefault\") == \"1\" then return 1; else return 0; end", 0));
             */
+
+
+            if (StyxWoW.Me.Inventory.Backpack.FreeSlots > 0)
+            {
+                Lua.DoString("ClearCursor() PickupInventoryItem(16) PutItemInBackpack()");
+            }
+            else
+            {
+                Dictionary<uint, WoWBag> bags = new Dictionary<uint, WoWBag>();
+
+                for (uint bagID = 0; bagID < 4; bagID++)
+                {
+                    WoWContainer bag = StyxWoW.Me.GetBagAtIndex(bagID);
+                    if (bag == null || bag.FreeSlots == 0)
+                    {
+                        continue;
+                    }
+                    else if (bag.FreeSlots > 0)
+                    {
+                        Lua.DoString("ClearCursor() PickupInventoryItem(16) PutItemInBag(" + (bagID + 20) + ")");
+                    }
+                }
+            }
         }
 
         private void checkUseLure_CheckedChanged(object sender, EventArgs e)
