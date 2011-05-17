@@ -1,0 +1,17 @@
+F:\__Visual Sudio\PoolFishingBuddy\PoolFishingBuddy\bin\Debug\PoolFishingBuddy.dll.config
+F:\__Visual Sudio\PoolFishingBuddy\PoolFishingBuddy\bin\Debug\PoolFishingBuddy.dll
+F:\__Visual Sudio\PoolFishingBuddy\PoolFishingBuddy\bin\Debug\PoolFishingBuddy.pdb
+F:\__Visual Sudio\PoolFishingBuddy\PoolFishingBuddy\bin\Debug\ArchaeologyBuddy.dll
+F:\__Visual Sudio\PoolFishingBuddy\PoolFishingBuddy\bin\Debug\Tripper.Tools.dll
+F:\__Visual Sudio\PoolFishingBuddy\PoolFishingBuddy\bin\Debug\fasmdll_managed.dll
+F:\__Visual Sudio\PoolFishingBuddy\PoolFishingBuddy\bin\Debug\Tripper.RecastManaged.dll
+F:\__Visual Sudio\PoolFishingBuddy\PoolFishingBuddy\obj\x86\Debug\ResolveAssemblyReference.cache
+F:\__Visual Sudio\PoolFishingBuddy\PoolFishingBuddy\obj\x86\Debug\PoolFishingBuddy.Properties.Resources.resources
+F:\__Visual Sudio\PoolFishingBuddy\PoolFishingBuddy\obj\x86\Debug\GenerateResource.read.1.tlog
+F:\__Visual Sudio\PoolFishingBuddy\PoolFishingBuddy\obj\x86\Debug\GenerateResource.write.1.tlog
+F:\__Visual Sudio\PoolFishingBuddy\PoolFishingBuddy\obj\x86\Debug\PoolFishingBuddy.dll
+F:\__Visual Sudio\PoolFishingBuddy\PoolFishingBuddy\obj\x86\Debug\PoolFishingBuddy.pdb
+F:\__Visual Sudio\PoolFishingBuddy\PoolFishingBuddy\obj\x86\Debug\PoolFishingBuddy.Forms.FormFishConfig.resources
+F:\__Visual Sudio\PoolFishingBuddy\PoolFishingBuddy\bin\Debug\bud.exe
+F:\__Visual Sudio\PoolFishingBuddy\PoolFishingBuddy\obj\x86\Debug\PoolFishingBuddy.Forms.FormFishMonitoring.resources
+F:\__Visual Sudio\PoolFishingBuddy\PoolFishingBuddy\bin\Debug\RemoteASMNative.dll

@@ -17,11 +17,23 @@ namespace PoolFishingBuddy
         [Setting(Explanation = "Entry for custom flying mount."), DefaultValue(0)]
         public int FlyingMountID { get; set; }
 
+        [Setting(Explanation = "Should the bot mail or not."), DefaultValue(false)]
+        public bool ShouldMail { get; set; }
+
+        [Setting(Explanation = "Name of the character you want to mail to."), DefaultValue("")]
+        public string MailRecipient { get; set; }
+
         [Setting(Explanation = "Bounce mode on or not."), DefaultValue(false)]
         public bool BounceMode { get; set; }
 
         [Setting(Explanation = "Modifier for height of profiles z-coords."), DefaultValue(0)]
         public int HeightModifier { get; set; }
+
+        [Setting(Explanation = "Training enabled or not."), DefaultValue(false)]
+        public bool TrainingEnabled { get; set; }
+
+        [Setting(Explanation = "The minimum range of locations to fish from."), DefaultValue(15)]
+        public int MinCastRange { get; set; }
 
         [Setting(Explanation = "The maximum range of locations to fish from."), DefaultValue(20)]
         public int MaxCastRange { get; set; }
@@ -37,6 +49,12 @@ namespace PoolFishingBuddy
 
         [Setting(Explanation = "ID for lure item."), DefaultValue(0)]
         public int LureID { get; set; }
+
+        [Setting(Explanation = "Use water walking or not."), DefaultValue(false)]
+        public bool useWaterWalking { get; set; }
+
+        [Setting(Explanation = "Use water walking pot or not."), DefaultValue(false)]
+        public bool useWaterWalkingPot { get; set; }
 
         [Setting(Explanation = "ID for fishing pole."), DefaultValue(0)]
         public int FishingPole { get; set; }
@@ -171,6 +189,34 @@ namespace PoolFishingBuddy
 
         [Setting(Explanation = "Blacklist Steam Pump Flotsam."), DefaultValue(false)]
         public bool BLSteamPumpFlotsam { get; set; }
+
+        #endregion
+
+        #region Old Azeroth
+
+        /// ----------------
+        /// Old Azeroth
+        /// ----------------
+        /// Bloodsail Wreckage / Blutsegelwrackteile        - Entry: 180901
+        /// Firefin Snapper / Feuerflossenschnapper         - Entry: 180657, 180683, 180752, 180902 
+        /// Floating Debris / Treibgut                      - Entry: 
+        /// Floating Wreckage / Treibende Wrackteile        - Entry: 
+        /// Greater Sagefish / Großer Weisenfisch           - Entry: 180684
+        /// Sagefish / Weisenfisch                          - Entry: 180663, 180656
+        /// Oily Blackmouth / Öliges Schwarzmaul            - Entry: 180750, 180664, 180682, 180900
+        /// Deviate Fish / Deviatfisch                      - Entry: 180658
+        /// Speckled Tastyfish / Gesprenkelter Leckerfisch  - Entry: 180248
+        /// Schooner Wreckage / Schiffswrackteile           - Entry: 
+        /// Stonescale Eel / Steinschuppenaal               - Entry: 180712
+        /// Waterlogged Wreckage / Schwimmende Wrackteile   - Entry: 180685
+        /// Oil Spill / Ölpfütze                            - Entry: 180661
+        /// Elemental Water / Elementarwasser               - Entry: 180753
+
+        [Setting(Explanation = "Bloodsail Wreckage."), DefaultValue(false)]
+        public bool BloodsailWreckage { get; set; }
+
+        [Setting(Explanation = "Firefin Snapper."), DefaultValue(false)]
+        public bool BLFirefinSnapper { get; set; }
 
         #endregion
 
