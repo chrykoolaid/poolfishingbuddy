@@ -1,0 +1,41 @@
+<HBProfile>
+  <Name>26414 - Einen Zander erwischen</Name>
+  <MinDurability>0.4</MinDurability>
+  <MinFreeBagSlots>1</MinFreeBagSlots>
+  
+  <MinLevel>1</MinLevel>
+  <MaxLevel>86</MaxLevel>
+  <Factions>99999</Factions>
+  
+  <MailGrey>False</MailGrey>
+  <MailWhite>True</MailWhite>
+  <MailGreen>True</MailGreen>
+  <MailBlue>True</MailBlue>
+  <MailPurple>True</MailPurple>
+ 
+  <SellGrey>True</SellGrey>
+  <SellWhite>True</SellWhite>
+  <SellGreen>False</SellGreen>
+  <SellBlue>False</SellBlue>
+  <SellPurple>False</SellPurple>
+
+    <Vendors>
+
+    </Vendors>
+	
+    <Mailboxes>
+
+    </Mailboxes>
+	
+    <Hotspots>
+<Hotspot X="-8466.827" Y="774.3341" Z="98.03096" />
+<Hotspot X="-8397.521" Y="756.472" Z="97.9055" />
+<Hotspot X="-8309.267" Y="793.6794" Z="98.88909" />
+<Hotspot X="-8301.945" Y="844.1254" Z="97.56519" />
+<Hotspot X="-8352.431" Y="893.7453" Z="95.89332" />
+<Hotspot X="-8396.067" Y="904.5367" Z="97.51306" />
+<Hotspot X="-8449.917" Y="876.3563" Z="97.63067" />
+<Hotspot X="-8451.179" Y="803.0504" Z="97.78921" />
+    </Hotspots>
+  
+</HBProfile>

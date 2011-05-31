@@ -1,0 +1,41 @@
+<HBProfile>
+  <Name>26442 - Felshummer</Name>
+  <MinDurability>0.4</MinDurability>
+  <MinFreeBagSlots>1</MinFreeBagSlots>
+  
+  <MinLevel>1</MinLevel>
+  <MaxLevel>86</MaxLevel>
+  <Factions>99999</Factions>
+  
+  <MailGrey>False</MailGrey>
+  <MailWhite>True</MailWhite>
+  <MailGreen>True</MailGreen>
+  <MailBlue>True</MailBlue>
+  <MailPurple>True</MailPurple>
+ 
+  <SellGrey>True</SellGrey>
+  <SellWhite>True</SellWhite>
+  <SellGreen>False</SellGreen>
+  <SellBlue>False</SellBlue>
+  <SellPurple>False</SellPurple>
+
+    <Vendors>
+
+    </Vendors>
+	
+    <Mailboxes>
+
+    </Mailboxes>
+	
+    <Hotspots>
+<Hotspot X="-8679.738" Y="1365.159" Z="-41.20912" />
+<Hotspot X="-8643.317" Y="1368.216" Z="-43.92462" />
+<Hotspot X="-8606.845" Y="1370.127" Z="-46.18691" />
+<Hotspot X="-8558.914" Y="1372.639" Z="-49.15995" />
+<Hotspot X="-8517.773" Y="1373.789" Z="-48.54247" />
+<Hotspot X="-8489.489" Y="1374.418" Z="-47.45293" />
+<Hotspot X="-8456.634" Y="1375.15" Z="-46.18729" />
+<Hotspot X="-8411.388" Y="1376.157" Z="-44.44435" />
+    </Hotspots>
+  
+</HBProfile>
